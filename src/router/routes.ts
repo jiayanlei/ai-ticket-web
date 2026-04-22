@@ -1,10 +1,11 @@
 import type { RouteRecordRaw } from 'vue-router';
 
 import BasicLayout from '@/layouts/BasicLayout.vue';
+import { HOME_PATH, LOGIN_PATH } from '@/router/constants';
 
 export const constantRoutes: RouteRecordRaw[] = [
   {
-    path: '/login',
+    path: LOGIN_PATH,
     name: 'Login',
     component: () => import('@/views/auth/login/index.vue'),
     meta: {
@@ -16,7 +17,7 @@ export const constantRoutes: RouteRecordRaw[] = [
     path: '/',
     name: 'Root',
     component: BasicLayout,
-    redirect: '/dashboard/workbench',
+    redirect: HOME_PATH,
     meta: {
       title: '首页',
     },

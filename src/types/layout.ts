@@ -1,12 +1,17 @@
-export type LayoutMode = 'side' | 'top' | 'mixed';
+import type { LayoutMode, MenuMode, ThemeMode } from '@/config/settings';
+
+export type { LayoutMode, MenuMode };
 
 export interface LayoutSettings {
-  mode: LayoutMode;
+  layoutMode: LayoutMode;
+  menuMode: MenuMode;
   fixedHeader: boolean;
+  showLogo: boolean;
   showBreadcrumb: boolean;
   showTabs: boolean;
   sidebarCollapsed: boolean;
   sidebarWidth: number;
   sidebarCollapsedWidth: number;
-  theme: 'light' | 'dark';
+  contentPadding: number;
+  theme: ThemeMode;
 }

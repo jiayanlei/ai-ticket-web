@@ -1,5 +1,6 @@
 import type { Router } from 'vue-router';
 
+import { appSettings, envConfig } from '@/config';
 import { HOME_PATH, LOGIN_PATH, ROUTE_WHITE_LIST } from '@/router/constants';
 import { useUserStore } from '@/stores/user';
 
@@ -7,9 +8,13 @@ export function setupRouterGuards(router: Router) {
   router.beforeEach(async (to) => {
     const userStore = useUserStore();
     const isPublicRoute = Boolean(to.meta.public) || ROUTE_WHITE_LIST.includes(to.path);
-    const title = to.meta.title ? `${String(to.meta.title)} - AI 智能工单分析平台` : 'AI 智能工单分析平台';
+    const title = to.meta.title ? `${String(to.meta.title)} - ${envConfig.appTitle}` : envConfig.appTitle;
 
     document.title = title;
+
+    if (!appSettings.system.enableRouteGuard) {
+      return true;
+    }
 
     if (userStore.isLoggedIn && to.path === LOGIN_PATH) {
       return HOME_PATH;
@@ -43,7 +48,14 @@ export function setupRouterGuards(router: Router) {
     }
 
     const requiredRoles = to.meta.roles;
-    if (requiredRoles?.length && !requiredRoles.some((role) => userStore.roles.includes(role))) {
+    const shouldCheckFrontendPermission =
+      appSettings.system.enablePermission && appSettings.auth.permissionMode === 'frontend';
+
+    if (
+      shouldCheckFrontendPermission &&
+      requiredRoles?.length &&
+      !requiredRoles.some((role) => userStore.roles.includes(role))
+    ) {
       return '/403';
     }
 

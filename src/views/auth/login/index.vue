@@ -3,17 +3,17 @@
     <aside class="login-page__aside">
       <div class="login-page__status">
         <a-tag color="processing">Console Ready</a-tag>
-        <a-tag color="success">Mock Auth</a-tag>
+        <a-tag color="success">{{ authModeText }}</a-tag>
       </div>
       <h2>面向工单运营团队的 AI 分析管理端</h2>
-      <p>当前阶段使用本地 mock 登录接口，接口、token、用户状态和路由守卫均按真实项目结构预留。</p>
+      <p>认证接口、token、用户状态和路由守卫均通过统一配置接入。</p>
     </aside>
 
     <section class="login-page__panel">
       <div class="login-page__brand">
-        <span class="login-page__logo">AI</span>
+        <span v-if="appSettings.app.showLogo" class="login-page__logo">AI</span>
         <div>
-          <h1>AI 智能工单分析平台</h1>
+          <h1>{{ envConfig.appTitle }}</h1>
           <p>统一工单处理、AI 分析和知识库运营入口</p>
         </div>
       </div>
@@ -53,6 +53,7 @@ import type { Rule } from 'ant-design-vue/es/form';
 import { computed, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+import { appSettings, envConfig } from '@/config';
 import { HOME_PATH } from '@/router/constants';
 import { useUserStore } from '@/stores/user';
 
@@ -66,6 +67,7 @@ const userStore = useUserStore();
 
 const loading = ref(false);
 const remember = ref(true);
+const authModeText = computed(() => (envConfig.useMock ? 'Mock Auth' : 'API Auth'));
 const formState = reactive({
   username: 'admin',
   password: 'admin123',

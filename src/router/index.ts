@@ -1,10 +1,13 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 
+import { envConfig } from '@/config';
 import { setupRouterGuards } from '@/router/guards';
 import { constantRoutes } from '@/router/routes';
 
+const createHistory = envConfig.routerHistory === 'hash' ? createWebHashHistory : createWebHistory;
+
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createHistory(envConfig.publicPath),
   routes: constantRoutes,
   scrollBehavior: () => ({ left: 0, top: 0 }),
 });

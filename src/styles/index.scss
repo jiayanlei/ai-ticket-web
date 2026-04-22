@@ -28,6 +28,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body.app-gray-mode {
+  filter: grayscale(1);
+}
+
+body.app-color-weakness {
+  filter: invert(0.85);
+}
+
+body.app-gray-mode.app-color-weakness {
+  filter: grayscale(1) invert(0.85);
+}
+
 a {
   color: inherit;
   text-decoration: none;

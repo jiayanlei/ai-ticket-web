@@ -9,14 +9,38 @@
       </a-button>
 
       <div class="app-header__brand">
-        <span class="app-header__logo">AI</span>
-        <span class="app-header__title">AI 智能工单分析平台</span>
+        <span v-if="appStore.layout.showLogo" class="app-header__logo">AI</span>
+        <span class="app-header__title">{{ envConfig.appTitle }}</span>
       </div>
     </div>
 
     <AppTopMenu v-if="showTopMenu" />
 
     <div class="app-header__right">
+      <a-tooltip v-if="appSettings.app.showSearch" title="全局搜索">
+        <a-button type="text" @click="handleSearch">
+          <template #icon>
+            <SearchOutlined />
+          </template>
+        </a-button>
+      </a-tooltip>
+
+      <a-tooltip v-if="appSettings.app.showRefreshButton" title="刷新当前页">
+        <a-button type="text" @click="handleRefresh">
+          <template #icon>
+            <ReloadOutlined />
+          </template>
+        </a-button>
+      </a-tooltip>
+
+      <a-tooltip v-if="appSettings.app.showFullscreenButton" title="全屏">
+        <a-button type="text" @click="toggleFullscreen">
+          <template #icon>
+            <FullscreenOutlined />
+          </template>
+        </a-button>
+      </a-tooltip>
+
       <a-tooltip title="布局设置预留">
         <a-button type="text" @click="settingsOpen = true">
           <template #icon>
@@ -45,11 +69,19 @@
 </template>
 
 <script setup lang="ts">
-import { MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined } from '@ant-design/icons-vue';
+import {
+  FullscreenOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  ReloadOutlined,
+  SearchOutlined,
+  SettingOutlined,
+} from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { appSettings, envConfig } from '@/config';
 import AppLayoutSettings from '@/layouts/components/AppLayoutSettings.vue';
 import AppTopMenu from '@/layouts/components/AppTopMenu.vue';
 import { LOGIN_PATH } from '@/router/constants';
@@ -60,9 +92,26 @@ const appStore = useAppStore();
 const userStore = useUserStore();
 const router = useRouter();
 const settingsOpen = ref(false);
-const showTopMenu = computed(() => ['top', 'mixed'].includes(appStore.layout.mode));
-const showSiderControl = computed(() => ['side', 'mixed'].includes(appStore.layout.mode));
+const showTopMenu = computed(() => ['top', 'mixed'].includes(appStore.layout.menuMode));
+const showSiderControl = computed(() => ['side', 'mixed'].includes(appStore.layout.menuMode));
 const userInitial = computed(() => userStore.displayName.slice(0, 1));
+
+function handleSearch() {
+  message.info('全局搜索能力已通过配置预留');
+}
+
+function handleRefresh() {
+  router.go(0);
+}
+
+async function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    await document.documentElement.requestFullscreen();
+    return;
+  }
+
+  await document.exitFullscreen();
+}
 
 async function handleLogout() {
   await userStore.logout();

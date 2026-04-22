@@ -1,5 +1,5 @@
 <template>
-  <div class="app-tabs">
+  <div class="app-tabs" :style="tabsStyle">
     <a-tabs
       :active-key="tabsStore.activePath"
       size="small"
@@ -14,14 +14,20 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue';
+import { computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+import { useAppStore } from '@/stores/app';
 import { useTabsStore } from '@/stores/tabs';
 
 const route = useRoute();
 const router = useRouter();
+const appStore = useAppStore();
 const tabsStore = useTabsStore();
+const tabsStyle = computed(() => ({
+  paddingLeft: `${appStore.layout.contentPadding}px`,
+  paddingRight: `${appStore.layout.contentPadding}px`,
+}));
 
 watch(
   () => route.fullPath,
@@ -54,7 +60,8 @@ function handleEdit(targetKey: string | MouseEvent | KeyboardEvent, action: 'add
   align-items: center;
   height: $app-tabs-height;
   min-width: 0;
-  padding: 5px $app-content-padding 4px;
+  padding-top: 5px;
+  padding-bottom: 4px;
   overflow: hidden;
   background: #ffffff;
   border-bottom: 1px solid $app-border;

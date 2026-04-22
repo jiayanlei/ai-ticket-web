@@ -1,3 +1,6 @@
+import { envConfig } from '@/config';
+import { http } from '@/utils/http';
+
 export interface LoginParams {
   username: string;
   password: string;
@@ -16,27 +19,40 @@ export interface UserInfo {
 }
 
 export async function loginApi(params: LoginParams): Promise<LoginResult> {
-  await mockLatency();
+  if (envConfig.useMock) {
+    await mockLatency();
 
-  return {
-    token: `mock-token-${params.username}-${Date.now()}`,
-  };
+    return {
+      token: `mock-token-${params.username}-${Date.now()}`,
+    };
+  }
+
+  return http.post<LoginResult, LoginResult>('/auth/login', params);
 }
 
 export async function logoutApi(): Promise<void> {
-  await mockLatency(120);
+  if (envConfig.useMock) {
+    await mockLatency(120);
+    return;
+  }
+
+  return http.post<void, void>('/auth/logout');
 }
 
 export async function getUserInfoApi(): Promise<UserInfo> {
-  await mockLatency();
+  if (envConfig.useMock) {
+    await mockLatency();
 
-  return {
-    id: 1,
-    username: 'admin',
-    nickname: '系统管理员',
-    roles: ['admin'],
-    permissions: ['*'],
-  };
+    return {
+      id: 1,
+      username: 'admin',
+      nickname: '系统管理员',
+      roles: ['admin'],
+      permissions: ['*'],
+    };
+  }
+
+  return http.get<UserInfo, UserInfo>('/auth/user-info');
 }
 
 function mockLatency(delay = 240) {

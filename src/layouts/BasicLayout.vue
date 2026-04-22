@@ -23,8 +23,8 @@ import { useAppStore } from '@/stores/app';
 
 const appStore = useAppStore();
 
-const showSideMenu = computed(() => ['side', 'mixed'].includes(appStore.layout.mode));
-const layoutClass = computed(() => `basic-layout--${appStore.layout.mode}`);
+const showSideMenu = computed(() => ['side', 'mixed'].includes(appStore.layout.menuMode));
+const layoutClass = computed(() => `basic-layout--${appStore.layout.layoutMode}`);
 </script>
 
 <style scoped lang="scss">

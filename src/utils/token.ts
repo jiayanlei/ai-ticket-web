@@ -1,21 +1,34 @@
-const TOKEN_KEY = 'AI_TICKET_WEB_TOKEN';
+import { appSettings } from '@/config';
+import { getStorageItemFromAny, removeStorageItem, setStorageItem } from '@/utils/storage';
+
+const { tokenKey, refreshTokenKey } = appSettings.auth;
 
 export function getToken(): string {
-  return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || '';
+  return getStorageItemFromAny<string>(tokenKey, '') ?? '';
 }
 
 export function setToken(token: string, remember = true) {
   clearToken();
 
-  if (remember) {
-    localStorage.setItem(TOKEN_KEY, token);
-    return;
-  }
-
-  sessionStorage.setItem(TOKEN_KEY, token);
+  const storageType = appSettings.auth.storageType === 'session' || !remember ? 'session' : 'local';
+  setStorageItem(tokenKey, token, storageType);
 }
 
 export function clearToken() {
-  localStorage.removeItem(TOKEN_KEY);
-  sessionStorage.removeItem(TOKEN_KEY);
+  removeStorageItem(tokenKey);
+}
+
+export function getRefreshToken(): string {
+  return getStorageItemFromAny<string>(refreshTokenKey, '') ?? '';
+}
+
+export function setRefreshToken(token: string, remember = true) {
+  clearRefreshToken();
+
+  const storageType = appSettings.auth.storageType === 'session' || !remember ? 'session' : 'local';
+  setStorageItem(refreshTokenKey, token, storageType);
+}
+
+export function clearRefreshToken() {
+  removeStorageItem(refreshTokenKey);
 }

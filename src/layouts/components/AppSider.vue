@@ -7,9 +7,9 @@
     :trigger="null"
     :width="appStore.layout.sidebarWidth"
   >
-    <div class="app-sider__brand">
-      <span class="app-sider__logo">AI</span>
-      <span v-if="!appStore.layout.sidebarCollapsed" class="app-sider__title">工单分析</span>
+    <div v-if="appStore.layout.showLogo || !appStore.layout.sidebarCollapsed" class="app-sider__brand">
+      <span v-if="appStore.layout.showLogo" class="app-sider__logo">AI</span>
+      <span v-if="!appStore.layout.sidebarCollapsed" class="app-sider__title">{{ envConfig.appTitle }}</span>
     </div>
 
     <AppMenu :theme="appStore.layout.theme" />
@@ -17,6 +17,7 @@
 </template>
 
 <script setup lang="ts">
+import { envConfig } from '@/config';
 import AppMenu from '@/layouts/components/AppMenu.vue';
 import { useAppStore } from '@/stores/app';
 

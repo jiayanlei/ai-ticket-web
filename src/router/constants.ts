@@ -1,4 +1,6 @@
-export const LOGIN_PATH = '/login';
-export const HOME_PATH = '/dashboard/workbench';
+import { appSettings } from '@/config';
 
-export const ROUTE_WHITE_LIST = [LOGIN_PATH, '/403', '/404', '/500'];
+export const LOGIN_PATH = appSettings.auth.loginRoutePath;
+export const HOME_PATH = appSettings.app.defaultHomePath;
+
+export const ROUTE_WHITE_LIST = appSettings.auth.authWhiteList;

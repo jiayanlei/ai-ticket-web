@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia';
 
+import { appSettings } from '@/config';
 import { getUserInfoApi, loginApi, logoutApi } from '@/api/auth';
 import type { LoginParams, UserInfo } from '@/api/auth';
-import { clearToken, getToken, setToken } from '@/utils/token';
+import { clearRefreshToken, clearToken, getToken, setToken } from '@/utils/token';
+import { getStorageItemFromAny, removeStorageItem, setStorageItem } from '@/utils/storage';
 
 interface UserState {
   token: string;
@@ -12,7 +14,7 @@ interface UserState {
 export const useUserStore = defineStore('user', {
   state: (): UserState => ({
     token: getToken(),
-    userInfo: null,
+    userInfo: getStorageItemFromAny<UserInfo | null>(appSettings.auth.userInfoKey, null) ?? null,
   }),
   getters: {
     isLoggedIn: (state) => Boolean(state.token),
@@ -32,6 +34,7 @@ export const useUserStore = defineStore('user', {
       }
 
       this.userInfo = await getUserInfoApi();
+      setStorageItem(appSettings.auth.userInfoKey, this.userInfo);
       return this.userInfo;
     },
     async logout() {
@@ -45,6 +48,8 @@ export const useUserStore = defineStore('user', {
       this.token = '';
       this.userInfo = null;
       clearToken();
+      clearRefreshToken();
+      removeStorageItem(appSettings.auth.userInfoKey);
     },
   },
 });
