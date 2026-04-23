@@ -22,19 +22,11 @@ function getInitialTabsCache(): TabsCache {
   }
 
   return (
-    getStorageItem<TabsCache>(appSettings.cache.tabsCacheKey) ?? {
+    getStorageItem<TabsCache>(appSettings.cache.tabsCacheKey, undefined, 'local') ?? {
       tabs: [],
       activePath: '',
     }
   );
-}
-
-function persistTabsCache(cache: TabsCache) {
-  if (!appSettings.cache.enableTabsCache) {
-    return;
-  }
-
-  setStorageItem(appSettings.cache.tabsCacheKey, cache);
 }
 
 const initialTabsCache = getInitialTabsCache();
@@ -52,23 +44,51 @@ export const useTabsStore = defineStore('tabs', {
       this.activePath = tab.path;
       this.persist();
     },
-    removeTab(path: string) {
-      this.tabs = this.tabs.filter((item) => item.path !== path);
-      if (this.activePath === path) {
-        this.activePath = this.tabs[this.tabs.length - 1]?.path ?? '';
-      }
+    setActive(path: string) {
+      this.activePath = path;
       this.persist();
+    },
+    removeTab(path: string) {
+      const index = this.tabs.findIndex((item) => item.path === path);
+
+      if (index < 0) {
+        return this.activePath;
+      }
+
+      const nextTab =
+        this.tabs[index + 1] ??
+        this.tabs[index - 1] ?? {
+          path: appSettings.app.defaultHomePath,
+          title: '',
+        };
+
+      this.tabs = this.tabs.filter((item) => item.path !== path);
+
+      if (this.activePath === path) {
+        this.activePath = this.tabs.length ? nextTab.path : '';
+      }
+
+      this.persist();
+      return this.activePath || appSettings.app.defaultHomePath;
     },
     clearTabs() {
       this.tabs = [];
       this.activePath = '';
-      removeStorageItem(appSettings.cache.tabsCacheKey);
+      removeStorageItem(appSettings.cache.tabsCacheKey, 'local');
     },
     persist() {
-      persistTabsCache({
-        tabs: this.tabs,
-        activePath: this.activePath,
-      });
+      if (!appSettings.cache.enableTabsCache) {
+        return;
+      }
+
+      setStorageItem(
+        appSettings.cache.tabsCacheKey,
+        {
+          tabs: this.tabs,
+          activePath: this.activePath,
+        },
+        'local',
+      );
     },
   },
 });

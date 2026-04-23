@@ -45,6 +45,8 @@ declare module 'vue-router' {
     parentTitle?: string;
     public?: boolean;
     keepAlive?: boolean;
+    permission?: string;
+    dynamic?: boolean;
     roles?: string[];
   }
 }

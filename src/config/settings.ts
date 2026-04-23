@@ -42,6 +42,9 @@ export const appSettings = Object.freeze({
   cache: {
     cachePrefix: 'AI_TICKET_',
     tabsCacheKey: 'TABS_CACHE',
+    layoutCacheKey: 'LAYOUT_SETTINGS',
+    themeCacheKey: 'THEME_MODE',
+    menuCacheKey: 'DYNAMIC_MENUS',
     enableTabsCache: true,
   },
   system: {

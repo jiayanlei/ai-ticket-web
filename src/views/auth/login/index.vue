@@ -56,6 +56,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { appSettings, envConfig } from '@/config';
 import { HOME_PATH } from '@/router/constants';
 import { useUserStore } from '@/stores/user';
+import { getErrorMessage } from '@/utils/api-error';
 
 defineOptions({
   name: 'LoginPage',
@@ -103,11 +104,11 @@ async function handleLogin() {
   loading.value = true;
 
   try {
-    await userStore.login(formState, remember.value);
+    await userStore.login(formState, remember.value, router);
     message.success('登录成功');
     await router.replace(redirectPath.value);
-  } catch {
-    message.error('登录失败，请稍后重试');
+  } catch (error) {
+    message.error(getErrorMessage(error, '登录失败，请稍后重试'));
   } finally {
     loading.value = false;
   }

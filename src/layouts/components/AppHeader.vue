@@ -114,7 +114,7 @@ async function toggleFullscreen() {
 }
 
 async function handleLogout() {
-  await userStore.logout();
+  await userStore.logout(router);
   message.success('已退出登录');
   router.replace(LOGIN_PATH);
 }
@@ -130,7 +130,8 @@ async function handleLogout() {
   padding: 0 12px;
   line-height: normal;
   background: #ffffff;
-  border-bottom: 1px solid $app-border;
+  background: var(--app-surface);
+  border-bottom: 1px solid var(--app-border);
 
   &--fixed {
     position: sticky;
@@ -187,7 +188,7 @@ async function handleLogout() {
 
   &__title {
     overflow: hidden;
-    color: #111827;
+    color: var(--app-text);
     font-size: 16px;
     font-weight: 650;
     text-overflow: ellipsis;
@@ -200,14 +201,14 @@ async function handleLogout() {
     gap: 8px;
     max-width: 180px;
     padding: 4px 6px;
-    color: #374151;
+    color: var(--app-text);
     cursor: pointer;
     background: transparent;
     border: 0;
     border-radius: 6px;
 
     &:hover {
-      background: #f3f4f6;
+      background: var(--app-surface-muted);
     }
   }
 

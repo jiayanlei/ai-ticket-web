@@ -11,6 +11,11 @@
         <a-segmented v-model:value="menuMode" :options="menuModeOptions" block />
       </div>
 
+      <div class="layout-settings__group">
+        <div class="layout-settings__label">主题模式</div>
+        <a-segmented v-model:value="themeMode" :options="themeModeOptions" block />
+      </div>
+
       <a-divider />
 
       <a-space direction="vertical" class="layout-settings__switches">
@@ -44,8 +49,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import { appSettings } from '@/config';
 import { useAppStore } from '@/stores/app';
-import type { LayoutMode, MenuMode } from '@/types/layout';
+import type { LayoutMode, MenuMode, ThemeMode } from '@/types/layout';
 
 defineProps<{
   open: boolean;
@@ -63,6 +69,10 @@ const layoutModeOptions = [
   { label: '混合', value: 'mixed' },
 ];
 const menuModeOptions = layoutModeOptions;
+const themeModeOptions = [
+  { label: '浅色', value: 'light' },
+  { label: '暗色', value: 'dark' },
+];
 
 const layoutMode = computed({
   get: () => appStore.layout.layoutMode,
@@ -75,6 +85,15 @@ const menuMode = computed({
   get: () => appStore.layout.menuMode,
   set: (mode: MenuMode) => {
     appStore.setMenuMode(mode);
+  },
+});
+
+const themeMode = computed({
+  get: () => appStore.layout.theme,
+  set: (theme: ThemeMode) => {
+    if (appSettings.system.enableThemeSwitch) {
+      appStore.setTheme(theme);
+    }
   },
 });
 </script>

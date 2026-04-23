@@ -12,7 +12,9 @@
       <span v-if="!appStore.layout.sidebarCollapsed" class="app-sider__title">{{ envConfig.appTitle }}</span>
     </div>
 
-    <AppMenu :theme="appStore.layout.theme" />
+    <div class="app-sider__menu-wrap">
+      <AppMenu :theme="appStore.layout.theme" />
+    </div>
   </a-layout-sider>
 </template>
 
@@ -27,9 +29,8 @@ const appStore = useAppStore();
 <style scoped lang="scss">
 .app-sider {
   min-height: 100vh;
-  overflow: auto;
-  background: #ffffff;
-  border-right: 1px solid $app-border;
+  background: var(--app-surface);
+  border-right: 1px solid var(--app-border);
 
   :deep(.ant-layout-sider-children) {
     display: flex;
@@ -40,6 +41,7 @@ const appStore = useAppStore();
     flex: 1;
     min-width: 0;
     border-inline-end: 0;
+    background: transparent;
   }
 
   &__brand {
@@ -48,7 +50,7 @@ const appStore = useAppStore();
     gap: 10px;
     height: $app-header-height;
     padding: 0 16px;
-    border-bottom: 1px solid $app-border;
+    border-bottom: 1px solid var(--app-border);
   }
 
   &__logo {
@@ -67,11 +69,17 @@ const appStore = useAppStore();
 
   &__title {
     overflow: hidden;
-    color: #111827;
+    color: var(--app-text);
     font-size: 16px;
     font-weight: 650;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  &__menu-wrap {
+    height: calc(100vh - #{$app-header-height});
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 }
 </style>

@@ -12,19 +12,31 @@
 
 <script setup lang="ts">
 import {
+  ApartmentOutlined,
   BarChartOutlined,
   BookOutlined,
   CodeOutlined,
   DashboardOutlined,
+  DeleteOutlined,
+  FileSearchOutlined,
+  HomeOutlined,
+  MenuOutlined,
+  PlusCircleOutlined,
   ProfileOutlined,
+  QuestionCircleOutlined,
+  ReadOutlined,
   RobotOutlined,
+  ScheduleOutlined,
   SettingOutlined,
+  TeamOutlined,
+  UnorderedListOutlined,
+  UserOutlined,
 } from '@ant-design/icons-vue';
 import type { MenuProps } from 'ant-design-vue';
 import { computed, h, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { appMenus } from '@/config/menu';
+import { usePermissionStore } from '@/stores/permission';
 import type { AppMenuItem } from '@/types/menu';
 
 withDefaults(
@@ -40,34 +52,60 @@ withDefaults(
 
 const route = useRoute();
 const router = useRouter();
+const permissionStore = usePermissionStore();
 const openKeys = ref<string[]>([]);
 
 const iconMap = {
-  BarChartOutlined,
-  BookOutlined,
-  CodeOutlined,
-  DashboardOutlined,
-  ProfileOutlined,
-  RobotOutlined,
-  SettingOutlined,
+  apartment: ApartmentOutlined,
+  'area-chart': BarChartOutlined,
+  barChart: BarChartOutlined,
+  book: BookOutlined,
+  building: ApartmentOutlined,
+  code: CodeOutlined,
+  'code-sandbox': CodeOutlined,
+  dashboard: DashboardOutlined,
+  delete: DeleteOutlined,
+  'file-search': FileSearchOutlined,
+  home: HomeOutlined,
+  list: UnorderedListOutlined,
+  menu: MenuOutlined,
+  plusCircle: PlusCircleOutlined,
+  'plus-circle': PlusCircleOutlined,
+  profile: ProfileOutlined,
+  questionCircle: QuestionCircleOutlined,
+  'question-circle': QuestionCircleOutlined,
+  read: ReadOutlined,
+  robot: RobotOutlined,
+  schedule: ScheduleOutlined,
+  setting: SettingOutlined,
+  settings: SettingOutlined,
+  shield: TeamOutlined,
+  team: TeamOutlined,
+  ticket: ProfileOutlined,
+  unorderedList: UnorderedListOutlined,
+  'unordered-list': UnorderedListOutlined,
+  user: UserOutlined,
 };
 
-const menuItems = computed<MenuProps['items']>(() => appMenus.map(toAntMenuItem));
-const selectedKeys = computed(() => findSelectedKeys(appMenus, route.path));
+const menuItems = computed<MenuProps['items']>(() => permissionStore.menus.map(toAntMenuItem));
+const selectedKeys = computed(() => findSelectedKeys(permissionStore.menus, route.path));
 
 watch(
   () => route.path,
   (path) => {
-    const parentKey = findParentKey(appMenus, path);
-    if (parentKey) {
-      openKeys.value = [parentKey];
-    }
+    openKeys.value = findAncestorKeys(permissionStore.menus, path);
   },
   { immediate: true },
 );
 
 function toAntMenuItem(item: AppMenuItem): NonNullable<MenuProps['items']>[number] {
-  const icon = typeof item.icon === 'string' ? iconMap[item.icon as keyof typeof iconMap] : item.icon;
+  const iconKey =
+    typeof item.icon === 'string'
+      ? item.icon
+          .replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`)
+          .replace(/^-/, '')
+      : undefined;
+  const icon = iconKey ? iconMap[iconKey as keyof typeof iconMap] : undefined;
 
   return {
     key: item.path ?? item.key,
@@ -81,9 +119,9 @@ function toAntMenuItem(item: AppMenuItem): NonNullable<MenuProps['items']>[numbe
 function findSelectedKeys(menus: AppMenuItem[], path: string): string[] {
   for (const item of menus) {
     if (item.path === path) {
-      return [item.path];
+      return [path];
     }
-    if (item.children) {
+    if (item.children?.length) {
       const childKeys = findSelectedKeys(item.children, path);
       if (childKeys.length) {
         return childKeys;
@@ -94,20 +132,22 @@ function findSelectedKeys(menus: AppMenuItem[], path: string): string[] {
   return [];
 }
 
-function findParentKey(menus: AppMenuItem[], path: string, parentKey?: string): string | undefined {
+function findAncestorKeys(menus: AppMenuItem[], path: string, ancestors: string[] = []): string[] {
   for (const item of menus) {
+    const currentAncestors = item.path ? [...ancestors, item.path] : ancestors;
+
     if (item.path === path) {
-      return parentKey;
+      return ancestors;
     }
-    if (item.children) {
-      const matchedKey = findParentKey(item.children, path, item.key);
-      if (matchedKey) {
-        return matchedKey;
+    if (item.children?.length) {
+      const matched = findAncestorKeys(item.children, path, currentAncestors);
+      if (matched.length) {
+        return matched;
       }
     }
   }
 
-  return undefined;
+  return [];
 }
 
 function handleMenuClick({ key }: { key: string }) {

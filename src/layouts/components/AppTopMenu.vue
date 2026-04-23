@@ -1,11 +1,14 @@
 <template>
   <div class="app-top-menu">
-    <AppMenu mode="horizontal" theme="light" />
+    <AppMenu mode="horizontal" :theme="appStore.layout.theme" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { useAppStore } from '@/stores/app';
 import AppMenu from '@/layouts/components/AppMenu.vue';
+
+const appStore = useAppStore();
 </script>
 
 <style scoped lang="scss">

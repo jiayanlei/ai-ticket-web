@@ -17,6 +17,7 @@
 import { computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+import { appSettings } from '@/config';
 import { useAppStore } from '@/stores/app';
 import { useTabsStore } from '@/stores/tabs';
 
@@ -32,6 +33,10 @@ const tabsStyle = computed(() => ({
 watch(
   () => route.fullPath,
   () => {
+    if (route.meta.public || !route.meta.title) {
+      return;
+    }
+
     tabsStore.addTab({
       path: route.fullPath,
       title: (route.meta.title as string | undefined) ?? '未命名页面',
@@ -41,15 +46,14 @@ watch(
 );
 
 function handleChange(key: string) {
+  tabsStore.setActive(key);
   router.push(key);
 }
 
 function handleEdit(targetKey: string | MouseEvent | KeyboardEvent, action: 'add' | 'remove') {
   if (action === 'remove' && typeof targetKey === 'string') {
-    tabsStore.removeTab(targetKey);
-    if (tabsStore.activePath) {
-      router.push(tabsStore.activePath);
-    }
+    const nextPath = tabsStore.removeTab(targetKey) || appSettings.app.defaultHomePath;
+    router.push(nextPath || appSettings.app.defaultHomePath);
   }
 }
 </script>
@@ -63,8 +67,8 @@ function handleEdit(targetKey: string | MouseEvent | KeyboardEvent, action: 'add
   padding-top: 5px;
   padding-bottom: 4px;
   overflow: hidden;
-  background: #ffffff;
-  border-bottom: 1px solid $app-border;
+  background: var(--app-surface);
+  border-bottom: 1px solid var(--app-border);
 
   :deep(.ant-tabs) {
     width: 100%;
@@ -88,15 +92,15 @@ function handleEdit(targetKey: string | MouseEvent | KeyboardEvent, action: 'add
     height: 30px;
     margin: 0 6px 0 0;
     padding: 5px 12px;
-    color: #4b5563;
-    background: #f8fafc;
-    border-color: #e5e7eb;
+    color: var(--app-text-secondary);
+    background: var(--app-surface-muted);
+    border-color: var(--app-border);
     border-radius: 6px 6px 0 0;
   }
 
   :deep(.ant-tabs-tab-active) {
-    background: #ffffff;
-    border-bottom-color: #ffffff;
+    background: var(--app-surface);
+    border-bottom-color: var(--app-surface);
   }
 
   :deep(.ant-tabs-tab-btn) {

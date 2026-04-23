@@ -5,5 +5,6 @@ export interface AppMenuItem {
   title: string;
   path?: string;
   icon?: string | Component;
+  permission?: string;
   children?: AppMenuItem[];
 }

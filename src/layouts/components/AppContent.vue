@@ -1,7 +1,7 @@
 <template>
   <a-layout-content class="app-content" :style="contentStyle">
     <router-view v-slot="{ Component, route }">
-      <keep-alive>
+      <keep-alive :key="appStore.keepAliveVersion">
         <component :is="Component" v-if="route.meta.keepAlive" :key="route.fullPath" />
       </keep-alive>
       <component :is="Component" v-if="!route.meta.keepAlive" :key="route.fullPath" />
@@ -16,15 +16,9 @@ import { useAppStore } from '@/stores/app';
 
 const appStore = useAppStore();
 
-const headerHeight = 56;
-const tabsHeight = 40;
-const breadcrumbHeight = 44;
-
 const contentStyle = computed(() => {
   const occupiedHeight =
-    headerHeight +
-    (appStore.layout.showTabs ? tabsHeight : 0) +
-    (appStore.layout.showBreadcrumb ? breadcrumbHeight : 0);
+    56 + (appStore.layout.showTabs ? 40 : 0) + (appStore.layout.showBreadcrumb ? 44 : 0);
 
   return {
     height: `calc(100vh - ${occupiedHeight}px)`,
@@ -38,6 +32,6 @@ const contentStyle = computed(() => {
   min-width: 0;
   min-height: 0;
   overflow: auto;
-  background: $app-bg;
+  background: var(--app-bg);
 }
 </style>

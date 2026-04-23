@@ -30,11 +30,11 @@ const layoutClass = computed(() => `basic-layout--${appStore.layout.layoutMode}`
 <style scoped lang="scss">
 .basic-layout {
   min-height: 100vh;
-  background: $app-bg;
+  background: var(--app-bg);
 
   &__main {
     min-width: 0;
-    background: $app-bg;
+    background: var(--app-bg);
   }
 }
 </style>

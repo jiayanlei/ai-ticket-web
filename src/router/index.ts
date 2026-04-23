@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 
 import { envConfig } from '@/config';
+import { registerCachedDynamicRoutes } from '@/router/dynamic';
 import { setupRouterGuards } from '@/router/guards';
 import { constantRoutes } from '@/router/routes';
 
@@ -12,6 +13,7 @@ const router = createRouter({
   scrollBehavior: () => ({ left: 0, top: 0 }),
 });
 
+registerCachedDynamicRoutes(router);
 setupRouterGuards(router);
 
 export default router;

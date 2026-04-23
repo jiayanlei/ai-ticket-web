@@ -70,7 +70,7 @@ function createProxyConfig(env: ViteAppEnv) {
     return undefined;
   }
 
-  const rewritePrefix = env.proxyRewrite || env.apiPrefix;
+  const rewritePrefix = env.proxyRewrite && env.proxyRewrite !== env.apiPrefix ? env.proxyRewrite : '';
 
   return {
     [env.apiPrefix]: {
