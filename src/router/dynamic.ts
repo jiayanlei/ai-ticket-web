@@ -3,6 +3,7 @@ import type { RouteRecordRaw, Router } from 'vue-router';
 import type { MenuItem, MenuType } from '@/api/menu';
 import { appSettings } from '@/config';
 import RouteView from '@/router/components/RouteView.vue';
+import { CATCH_ALL_ROUTE_NAME, ROOT_ROUTE_NAME, catchAllRoute } from '@/router/routes';
 import type { AppMenuItem } from '@/types/menu';
 import { getStorageItem } from '@/utils/storage';
 
@@ -104,13 +105,25 @@ export function registerCachedDynamicRoutes(router: Router) {
   const tree = buildBackendMenuTree(cachedMenus);
   const { routes, registeredNames } = buildDynamicRoutes(tree);
 
+  removeCatchAllRoute(router);
   routes.forEach((route) => {
     if (!router.hasRoute(String(route.name))) {
-      router.addRoute('Root', route);
+      router.addRoute(ROOT_ROUTE_NAME, route);
     }
   });
 
   return registeredNames;
+}
+
+export function registerCatchAllRoute(router: Router) {
+  removeCatchAllRoute(router);
+  router.addRoute(catchAllRoute);
+}
+
+export function removeCatchAllRoute(router: Router) {
+  if (router.hasRoute(CATCH_ALL_ROUTE_NAME)) {
+    router.removeRoute(CATCH_ALL_ROUTE_NAME);
+  }
 }
 
 function toRouteRecord(node: BackendMenuNode, parentPath = '', parentTitle?: string): RouteRecordRaw | null {

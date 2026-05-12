@@ -8,8 +8,11 @@ import {
   buildBackendMenuTree,
   buildDynamicRoutes,
   collectPermissionCodes,
+  registerCatchAllRoute,
+  removeCatchAllRoute,
   toAppMenuItems,
 } from '@/router/dynamic';
+import { ROOT_ROUTE_NAME } from '@/router/routes';
 import type { BackendMenuNode } from '@/router/dynamic';
 import type { AppMenuItem } from '@/types/menu';
 import { getStorageItem, removeStorageItem, setStorageItem } from '@/utils/storage';
@@ -47,7 +50,7 @@ export const usePermissionStore = defineStore('permission', {
       const menus = await getMenuListApi({ status: 'ENABLED' });
       this.rawMenus = menus;
       setStorageItem(appSettings.cache.menuCacheKey, menus, 'local');
-      this.rebuildFromMenus(router, buildBackendMenuTree(menus));
+      this.rebuildFromMenus(router, buildBackendMenuTree(menus), true);
       return true;
     },
     rebuildCachedRoutes(router: Router) {
@@ -55,28 +58,40 @@ export const usePermissionStore = defineStore('permission', {
         return false;
       }
 
-      this.rebuildFromMenus(router, buildBackendMenuTree(this.rawMenus));
+      this.rebuildFromMenus(router, buildBackendMenuTree(this.rawMenus), false);
       return true;
     },
-    rebuildFromMenus(router: Router, tree: BackendMenuNode[]) {
+    rebuildFromMenus(router: Router, tree: BackendMenuNode[], markRoutesLoaded = true) {
       this.menuTree = toAppMenuItems(tree);
       this.permissions = collectPermissionCodes(tree);
 
       const { routes, registeredNames } = buildDynamicRoutes(tree);
-      registeredNames.forEach((name) => {
+      removeCatchAllRoute(router);
+      const dynamicRouteNames = new Set([...this.registeredRouteNames, ...registeredNames]);
+      router.getRoutes().forEach((route) => {
+        if (route.name && route.meta.dynamic) {
+          dynamicRouteNames.add(String(route.name));
+        }
+      });
+      dynamicRouteNames.forEach((name) => {
         if (router.hasRoute(name)) {
           router.removeRoute(name);
         }
       });
       routes.forEach((route) => {
-        router.addRoute('Root', route);
+        router.addRoute(ROOT_ROUTE_NAME, route);
       });
 
       this.registeredRouteNames = registeredNames;
-      this.routesLoaded = true;
+      this.routesLoaded = markRoutesLoaded;
+
+      if (markRoutesLoaded) {
+        registerCatchAllRoute(router);
+      }
     },
     resetDynamicRoutes(router?: Router) {
       if (router) {
+        removeCatchAllRoute(router);
         this.registeredRouteNames.forEach((name) => {
           if (router.hasRoute(name)) {
             router.removeRoute(name);

@@ -9,6 +9,7 @@ import { useUserStore } from '@/stores/user';
 export function setupRouterGuards(router: Router) {
   router.beforeEach(async (to) => {
     const userStore = useUserStore();
+    const isRootRoute = to.path === '/';
     const isPublicRoute = Boolean(to.meta.public) || ROUTE_WHITE_LIST.includes(to.path);
     const title = to.meta.title ? `${String(to.meta.title)} - ${envConfig.appTitle}` : envConfig.appTitle;
 
@@ -18,8 +19,15 @@ export function setupRouterGuards(router: Router) {
       return true;
     }
 
+    if (isRootRoute && !userStore.isLoggedIn) {
+      return LOGIN_PATH;
+    }
+
     if (userStore.isLoggedIn && to.path === LOGIN_PATH) {
-      return HOME_PATH;
+      return {
+        path: HOME_PATH,
+        replace: true,
+      };
     }
 
     if (isPublicRoute) {
@@ -55,8 +63,18 @@ export function setupRouterGuards(router: Router) {
     if (!permissionStore.routesLoaded) {
       try {
         await permissionStore.ensureDynamicRoutes(router);
+
+        if (isRootRoute) {
+          return {
+            path: HOME_PATH,
+            replace: true,
+          };
+        }
+
         return {
-          path: to.fullPath,
+          path: to.path,
+          query: to.query,
+          hash: to.hash,
           replace: true,
         };
       } catch {
@@ -70,6 +88,13 @@ export function setupRouterGuards(router: Router) {
           },
         };
       }
+    }
+
+    if (isRootRoute) {
+      return {
+        path: HOME_PATH,
+        replace: true,
+      };
     }
 
     const requiredRoles = to.meta.roles;

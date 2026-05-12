@@ -1,7 +1,10 @@
 import type { RouteRecordRaw } from 'vue-router';
 
 import BasicLayout from '@/layouts/BasicLayout.vue';
-import { HOME_PATH, LOGIN_PATH } from '@/router/constants';
+import { LOGIN_PATH } from '@/router/constants';
+
+export const ROOT_ROUTE_NAME = 'Root';
+export const CATCH_ALL_ROUTE_NAME = 'CatchAllNotFound';
 
 export const constantRoutes: RouteRecordRaw[] = [
   {
@@ -15,9 +18,8 @@ export const constantRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/',
-    name: 'Root',
+    name: ROOT_ROUTE_NAME,
     component: BasicLayout,
-    redirect: HOME_PATH,
     meta: {
       title: '首页',
     },
@@ -50,11 +52,13 @@ export const constantRoutes: RouteRecordRaw[] = [
       public: true,
     },
   },
-  {
-    path: '/:pathMatch(.*)*',
-    redirect: '/404',
-    meta: {
-      public: true,
-    },
-  },
 ];
+
+export const catchAllRoute: RouteRecordRaw = {
+  path: '/:pathMatch(.*)*',
+  name: CATCH_ALL_ROUTE_NAME,
+  redirect: '/404',
+  meta: {
+    public: true,
+  },
+};
