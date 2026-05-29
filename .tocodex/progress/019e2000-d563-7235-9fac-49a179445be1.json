@@ -1,0 +1,27 @@
+{
+  "taskId": "019e2000-d563-7235-9fac-49a179445be1",
+  "todos": [
+    {
+      "id": "074812bd13c56fd470c0b39a54529036",
+      "content": "定位当前大屏“AI 分析概览”模块实现",
+      "status": "completed"
+    },
+    {
+      "id": "29bdf5361c25f90de72fee1ccbee0dab",
+      "content": "将旧“大圆环 + 文字说明”改造为纵向 4 条 AI 指标卡片",
+      "status": "completed"
+    },
+    {
+      "id": "50ed6924472b9eb5f4fca42777b2dcd0",
+      "content": "校验样式适配左侧窄栏且无裁切/大空白",
+      "status": "completed"
+    },
+    {
+      "id": "c177db97a3b4f292ad26aa5b08010736",
+      "content": "编写变更备忘录并完成交付",
+      "status": "completed"
+    }
+  ],
+  "lastUpdated": 1778653667917,
+  "status": "active"
+}

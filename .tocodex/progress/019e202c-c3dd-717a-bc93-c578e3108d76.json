@@ -1,0 +1,32 @@
+{
+  "taskId": "019e202c-c3dd-717a-bc93-c578e3108d76",
+  "todos": [
+    {
+      "id": "bc9b5b2e598a8a7ffd72d8092890eb39",
+      "content": "全局定位业务页面顶部 header / title / description / toolbar 结构",
+      "status": "completed"
+    },
+    {
+      "id": "1d0615fcee4c6712881914c81fd77cdb",
+      "content": "判断核心业务按钮保留策略并设计移动位置",
+      "status": "completed"
+    },
+    {
+      "id": "40a79a6d273e61f02078177c0f12dcd2",
+      "content": "修改相关页面与样式，删除页面级头部区域",
+      "status": "completed"
+    },
+    {
+      "id": "e738bf5c9b7ddd4ad9af6fa2e74b356e",
+      "content": "运行检查并修复潜在问题",
+      "status": "completed"
+    },
+    {
+      "id": "c177db97a3b4f292ad26aa5b08010736",
+      "content": "编写变更备忘录并完成交付",
+      "status": "completed"
+    }
+  ],
+  "lastUpdated": 1778656621780,
+  "status": "active"
+}

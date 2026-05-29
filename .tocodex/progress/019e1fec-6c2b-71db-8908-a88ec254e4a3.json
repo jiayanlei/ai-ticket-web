@@ -1,0 +1,27 @@
+{
+  "taskId": "019e1fec-6c2b-71db-8908-a88ec254e4a3",
+  "todos": [
+    {
+      "id": "32a9e528d82456ba57e515734a102e4b",
+      "content": "复查左侧核心指标与 AI 分析概览当前模板/样式",
+      "status": "completed"
+    },
+    {
+      "id": "bd3c561823e9738de0042c9b38f0530a",
+      "content": "调整核心指标卡片文字完整展示与高度分配",
+      "status": "completed"
+    },
+    {
+      "id": "471fad36569a0c31d6985d298aeca7f1",
+      "content": "将 AI 分析概览重构为 4 条横向指标卡片",
+      "status": "completed"
+    },
+    {
+      "id": "b426eaf99c2f26947e5f796b1859b1f7",
+      "content": "构建验证并记录变更备忘录",
+      "status": "completed"
+    }
+  ],
+  "lastUpdated": 1778652796519,
+  "status": "active"
+}

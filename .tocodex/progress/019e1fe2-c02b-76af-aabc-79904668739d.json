@@ -1,0 +1,32 @@
+{
+  "taskId": "019e1fe2-c02b-76af-aabc-79904668739d",
+  "todos": [
+    {
+      "id": "1d71433c85711f0355f3ec64ac59c8c7",
+      "content": "定位首页大屏核心指标模块模板与样式",
+      "status": "completed"
+    },
+    {
+      "id": "9128e37ac8f9f36f55ba208d4728ae4b",
+      "content": "修改核心指标卡片为左右结构",
+      "status": "completed"
+    },
+    {
+      "id": "d276430c928ee2977881c2ceab2c621e",
+      "content": "检查响应式与避免裁切压缩",
+      "status": "completed"
+    },
+    {
+      "id": "1d0c3ae5acf63c46f05098efd5d43037",
+      "content": "运行构建验证并编写变更备忘录",
+      "status": "completed"
+    },
+    {
+      "id": "7e2ce48c49470dcfc4305c52cf7cb8f4",
+      "content": "汇总完成结果",
+      "status": "completed"
+    }
+  ],
+  "lastUpdated": 1778653311736,
+  "status": "active"
+}
