@@ -1,13 +1,5 @@
 <template>
   <div class="page-view">
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">我的待办</h1>
-        <p class="page-description">基于工单状态筛选待处理、处理中和挂起工单。</p>
-      </div>
-      <a-button @click="loadTodos">刷新</a-button>
-    </div>
-
     <a-card :bordered="false">
       <a-tabs v-model:active-key="activeStatus" @change="handleStatusChange">
         <a-tab-pane key="NEW" tab="新建" />

@@ -1,210 +1,353 @@
 <template>
-  <div class="codex-console page-view">
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">Codex 工作台</h1>
-        <p class="page-description">内置开发控制台骨架，后续用于接入 codex-cli 并围绕当前项目进行对话式开发辅助。</p>
-      </div>
-      <div class="toolbar-row">
-        <a-tag color="processing">Frontend Shell</a-tag>
-        <a-tag color="default">CLI Pending</a-tag>
-      </div>
-    </div>
-
-    <section class="codex-console__workspace">
-      <aside class="codex-console__side">
-        <a-card title="项目上下文" :bordered="false" class="codex-console__card">
-          <a-descriptions :column="1" size="small">
-            <a-descriptions-item label="项目">ai-ticket-web</a-descriptions-item>
-            <a-descriptions-item label="栈">Vue 3 / Vite / TypeScript</a-descriptions-item>
-            <a-descriptions-item label="模式">Local Workspace</a-descriptions-item>
-            <a-descriptions-item label="状态">等待 CLI 接入</a-descriptions-item>
-          </a-descriptions>
-        </a-card>
-
-        <a-card title="快捷操作" :bordered="false" class="codex-console__card">
-          <div class="codex-console__quick-actions">
-            <button v-for="action in quickActions" :key="action.key" type="button" @click="applyQuickAction(action)">
-              <span>{{ action.title }}</span>
-              <small>{{ action.command }}</small>
-            </button>
-          </div>
-        </a-card>
+  <div class="codex-workbench page-view">
+    <section class="codex-workbench__layout">
+      <aside class="codex-workbench__left">
+        <ProjectStatusCard :status="projectStatus" :source="statusSource" :loading="statusLoading" />
+        <QuickTaskList :tasks="quickTasks" :active-task-type="activeTaskType" @select="handleQuickTaskSelect" />
       </aside>
 
-      <main class="codex-console__main">
-        <a-card title="对话区" :bordered="false" class="codex-console__chat">
-          <div class="codex-console__messages">
-            <div
-              v-for="messageItem in messages"
-              :key="messageItem.id"
-              class="codex-console__message"
-              :class="`codex-console__message--${messageItem.role}`"
-            >
-              <span>{{ messageItem.role }}</span>
-              <p>{{ messageItem.content }}</p>
-              <time>{{ messageItem.time }}</time>
-            </div>
-          </div>
-        </a-card>
-
-        <a-card title="命令区" :bordered="false" class="codex-console__command">
-          <a-textarea
-            v-model:value="commandDraft"
-            :rows="4"
-            placeholder="输入未来要交给 codex-cli 的任务或命令，例如：分析当前路由守卫实现"
-          />
-          <div class="codex-console__command-actions">
-            <a-button @click="clearDraft">清空</a-button>
-            <a-button type="primary" @click="submitMockCommand">加入模拟队列</a-button>
-          </div>
-        </a-card>
+      <main class="codex-workbench__center">
+        <ChatPanel
+          ref="chatPanelRef"
+          v-model:draft="inputDraft"
+          :messages="messages"
+          :loading="chatLoading"
+          :error="chatError"
+          @send="sendMessage"
+          @clear="clearCurrentSession"
+          @regenerate="regenerateLastAnswer"
+        />
       </main>
 
-      <aside class="codex-console__logs">
-        <a-card title="日志区" :bordered="false" class="codex-console__card">
-          <div class="codex-console__log-list">
-            <div
-              v-for="log in logs"
-              :key="log.id"
-              class="codex-console__log"
-              :class="`codex-console__log--${log.level}`"
-            >
-              <span>{{ log.time }}</span>
-              <p>{{ log.content }}</p>
-            </div>
-          </div>
-        </a-card>
-      </aside>
+      <ActionPlanPanel
+        class="codex-workbench__right"
+        :plan="plan"
+        :logs="logs"
+        :confirming="confirming"
+        @generate="generatePlan"
+        @confirm="confirmTask"
+        @cancel="cancelTask"
+      />
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
+import { message } from 'ant-design-vue';
+
+import {
+  confirmAiAgentAction,
+  getAiAgentProjectStatus,
+  getAiAgentRecentLogs,
+  sendAiAgentMessage,
+} from '@/api/aiAgent';
+import type {
+  AiAgentChatResult,
+  AiAgentLog,
+  AiAgentMessageRole,
+  AiAgentPlan,
+  AiAgentRiskLevel,
+  AiAgentTaskType,
+} from '@/api/aiAgent';
+import ActionPlanPanel from './components/ActionPlanPanel.vue';
+import ChatPanel from './components/ChatPanel.vue';
+import ProjectStatusCard from './components/ProjectStatusCard.vue';
+import QuickTaskList from './components/QuickTaskList.vue';
+import {
+  createDefaultMessages,
+  createDefaultPlan,
+  createMockAiReply,
+  mockLogs,
+  mockProjectStatus,
+  quickTasks,
+  taskTypeTextMap,
+} from './mock';
+import type { ActionPlan, ChatMessage, ChatMessageType, ExecutionLogItem, ProjectStatus, QuickTask } from './types';
 
 defineOptions({
   name: 'CodexConsolePage',
 });
 
-type ConsoleRole = 'system' | 'user' | 'assistant';
-type ConsoleLogLevel = 'info' | 'success' | 'warning';
+const activeSessionId = ref('session-default');
+const activeTaskType = ref<AiAgentTaskType>('CHANGE_PLAN');
+const messages = ref<ChatMessage[]>(deepClone(createDefaultMessages()));
+const logs = ref<ExecutionLogItem[]>(deepClone(mockLogs));
+const plan = ref<ActionPlan>(deepClone(createDefaultPlan()));
+const projectStatus = ref<ProjectStatus>(deepClone(mockProjectStatus));
+const statusSource = ref<'api' | 'mock'>('mock');
+const statusLoading = ref(false);
+const chatLoading = ref(false);
+const confirming = ref(false);
+const chatError = ref('');
+const inputDraft = ref('');
+const chatPanelRef = ref<InstanceType<typeof ChatPanel>>();
 
-interface ConsoleMessage {
-  id: number;
-  role: ConsoleRole;
-  content: string;
-  time: string;
+let idSeed = Date.now();
+
+onMounted(() => {
+  loadProjectStatus();
+  loadRecentLogs();
+  scrollChatToBottom();
+});
+
+function handleQuickTaskSelect(task: QuickTask) {
+  inputDraft.value = task.prompt;
+  activeTaskType.value = task.taskType;
+  plan.value = createDefaultPlan(task.taskType);
+  appendLog('info', `已填充快捷任务：${task.title}`);
+  persistCurrentSession();
+  scrollChatToBottom();
 }
 
-interface ConsoleLog {
-  id: number;
-  level: ConsoleLogLevel;
-  content: string;
-  time: string;
-}
+async function sendMessage() {
+  const content = inputDraft.value.trim();
 
-interface QuickAction {
-  key: string;
-  title: string;
-  command: string;
-}
-
-const commandDraft = ref('分析当前项目结构，并给出下一阶段开发建议');
-const messages = ref<ConsoleMessage[]>([
-  {
-    id: 1,
-    role: 'system',
-    content: '控制台前端骨架已就绪，当前阶段仅维护任务草稿、模拟对话和运行日志。',
-    time: '16:20',
-  },
-  {
-    id: 2,
-    role: 'assistant',
-    content: '后续接入 codex-cli 时，可将命令区输入、项目上下文和日志流统一接入任务会话。',
-    time: '16:21',
-  },
-]);
-const logs = ref<ConsoleLog[]>([
-  {
-    id: 1,
-    level: 'info',
-    content: 'Console shell mounted',
-    time: '16:20:01',
-  },
-  {
-    id: 2,
-    level: 'success',
-    content: 'Workspace context loaded: ai-ticket-web',
-    time: '16:20:03',
-  },
-]);
-
-const quickActions: QuickAction[] = [
-  {
-    key: 'inspect',
-    title: '检查项目结构',
-    command: 'codex inspect workspace',
-  },
-  {
-    key: 'typecheck',
-    title: '类型检查',
-    command: 'npm run type-check',
-  },
-  {
-    key: 'build',
-    title: '生产构建',
-    command: 'npm run build',
-  },
-  {
-    key: 'review',
-    title: '代码审查',
-    command: 'codex review current changes',
-  },
-];
-
-let idSeed = 10;
-
-function applyQuickAction(action: QuickAction) {
-  commandDraft.value = action.command;
-  appendLog('info', `Quick action selected: ${action.title}`);
-}
-
-function submitMockCommand() {
-  const command = commandDraft.value.trim();
-
-  if (!command) {
-    appendLog('warning', 'Command draft is empty');
+  if (!content || chatLoading.value) {
     return;
   }
 
-  messages.value.push({
-    id: idSeed++,
-    role: 'user',
-    content: command,
-    time: createShortTime(),
-  });
-  messages.value.push({
-    id: idSeed++,
-    role: 'assistant',
-    content: '已加入模拟队列。真实命令执行将在后续接入 codex-cli 后启用。',
-    time: createShortTime(),
-  });
-  appendLog('success', `Mock command queued: ${command}`);
+  const taskType = activeTaskType.value || 'NORMAL_CHAT';
+  inputDraft.value = '';
+  chatError.value = '';
+  messages.value.push(createMessage('user', content));
+  appendLog('info', `发送任务：${taskTypeTextMap[taskType]}`);
+  persistCurrentSession();
+
+  await requestAssistantReply(content, taskType);
 }
 
-function clearDraft() {
-  commandDraft.value = '';
-  appendLog('info', 'Command draft cleared');
+async function regenerateLastAnswer() {
+  if (chatLoading.value) {
+    return;
+  }
+
+  const lastUserMessage = [...messages.value].reverse().find((item) => item.type === 'user');
+
+  if (!lastUserMessage) {
+    message.warning('当前会话还没有可重新生成的用户消息');
+    return;
+  }
+
+  chatError.value = '';
+  appendLog('info', '重新生成上一条 AI 回复');
+  await requestAssistantReply(lastUserMessage.content, activeTaskType.value);
 }
 
-function appendLog(level: ConsoleLogLevel, content: string) {
+function clearCurrentSession() {
+  messages.value = [];
+  logs.value = [];
+  plan.value = createDefaultPlan(activeTaskType.value);
+  chatError.value = '';
+  persistCurrentSession();
+  message.success('当前会话已清空');
+}
+
+function generatePlan() {
+  plan.value = createDefaultPlan(activeTaskType.value);
+  messages.value.push(
+    createMessage(
+      'assistant',
+      `已生成 **${taskTypeTextMap[activeTaskType.value]}** 的结构化方案。请在右侧查看影响范围、涉及文件、执行步骤和风险等级。`,
+    ),
+  );
+  appendLog('success', `生成方案：${plan.value.taskType}`);
+  persistCurrentSession();
+  scrollChatToBottom();
+}
+
+async function confirmTask() {
+  if (confirming.value) {
+    return;
+  }
+
+  confirming.value = true;
+
+  try {
+    const result = await confirmAiAgentAction({
+      sessionId: activeSessionId.value,
+      actionType: 'GENERATE_DIFF',
+      confirm: true,
+    });
+
+    if (result.plan) {
+      plan.value = normalizePlan(result.plan, activeTaskType.value);
+    }
+
+    if (result.logs?.length) {
+      logs.value = normalizeLogs(result.logs);
+    }
+
+    messages.value.push(createMessage('success', result.message || '后端确认接口已记录确认。第一阶段不会直接执行危险操作。'));
+    appendLog('success', '确认执行已提交到 AI Agent');
+    message.success('已记录确认');
+  } catch {
+    messages.value.push(createMessage('warning', '确认接口暂不可用，已使用本地 mock 记录确认；不会执行发布、删除或数据库变更。'));
+    appendLog('warning', '后端确认接口不可用，已记录 mock 确认');
+    message.warning('已使用 mock 记录确认，不会执行危险操作');
+  } finally {
+    confirming.value = false;
+    persistCurrentSession();
+    scrollChatToBottom();
+  }
+}
+
+function cancelTask() {
+  plan.value = {
+    ...plan.value,
+    needConfirm: false,
+  };
+  messages.value.push(createMessage('warning', '当前任务已取消，待确认动作已关闭。'));
+  appendLog('warning', '任务已取消');
+  persistCurrentSession();
+  scrollChatToBottom();
+}
+
+async function requestAssistantReply(content: string, taskType: AiAgentTaskType) {
+  chatLoading.value = true;
+  scrollChatToBottom();
+
+  try {
+    const result = await sendAiAgentMessage({
+      sessionId: activeSessionId.value,
+      message: content,
+      taskType,
+    });
+
+    applyChatResult(result, taskType, content);
+  } catch {
+    chatError.value = 'AI Agent 接口暂不可用，已使用本地 mock 回复。';
+    messages.value.push(createMessage('warning', '后端 /api/ai-agent/chat 暂不可用，当前展示本地 mock 方案。'));
+    messages.value.push(createMessage('assistant', createMockAiReply(taskType, content)));
+    plan.value = createDefaultPlan(taskType);
+    appendLog('warning', 'AI Agent chat 接口不可用，使用 mock 回复');
+  } finally {
+    chatLoading.value = false;
+    persistCurrentSession();
+    scrollChatToBottom();
+  }
+}
+
+function applyChatResult(result: AiAgentChatResult, taskType: AiAgentTaskType, fallbackMessage: string) {
+  const role = normalizeMessageRole(result.message?.role);
+  const content =
+    result.message?.content ||
+    result.reply ||
+    result.content ||
+    `后端已收到请求，但未返回回复内容。\n\n${createMockAiReply(taskType, fallbackMessage)}`;
+
+  messages.value.push(createMessage(role, content));
+  plan.value = result.plan ? normalizePlan(result.plan, taskType) : createDefaultPlan(taskType);
+
+  if (result.logs?.length) {
+    logs.value = normalizeLogs(result.logs);
+  } else {
+    appendLog('success', `AI Agent 已返回：${taskTypeTextMap[taskType]}`);
+  }
+}
+
+async function loadProjectStatus() {
+  statusLoading.value = true;
+
+  try {
+    projectStatus.value = await getAiAgentProjectStatus();
+    statusSource.value = 'api';
+  } catch {
+    projectStatus.value = deepClone(mockProjectStatus);
+    statusSource.value = 'mock';
+  } finally {
+    statusLoading.value = false;
+  }
+}
+
+async function loadRecentLogs() {
+  try {
+    const recentLogs = await getAiAgentRecentLogs();
+
+    if (recentLogs.length) {
+      logs.value = normalizeLogs(recentLogs);
+      persistCurrentSession();
+    }
+  } catch {
+    logs.value = deepClone(mockLogs);
+    persistCurrentSession();
+  }
+}
+
+function normalizePlan(source: AiAgentPlan, taskType: AiAgentTaskType): ActionPlan {
+  const fallback = createDefaultPlan(taskType);
+  const riskLevel = normalizeRiskLevel(source.riskLevel);
+  const taskText = isKnownTaskType(source.taskType) ? taskTypeTextMap[source.taskType] : source.taskType;
+
+  return {
+    taskType: taskText || fallback.taskType,
+    riskLevel,
+    scope: Array.isArray(source.scope) && source.scope.length ? source.scope : fallback.scope,
+    affectedFiles:
+      Array.isArray(source.affectedFiles) && source.affectedFiles.length ? source.affectedFiles : fallback.affectedFiles,
+    steps: Array.isArray(source.steps) && source.steps.length ? source.steps : fallback.steps,
+    needConfirm: Boolean(source.needConfirm),
+  };
+}
+
+function normalizeLogs(source: AiAgentLog[]): ExecutionLogItem[] {
+  return source.map((item) => ({
+    id: String(item.id ?? createId('log')),
+    level: item.level,
+    content: item.content,
+    time: item.time || createLogTime(),
+  }));
+}
+
+function normalizeMessageRole(role?: AiAgentMessageRole): ChatMessageType {
+  const allowList: ChatMessageType[] = ['user', 'assistant', 'system', 'log', 'warning', 'success', 'error'];
+
+  return role && allowList.includes(role) ? role : 'assistant';
+}
+
+function normalizeRiskLevel(level?: string): AiAgentRiskLevel {
+  if (level === 'LOW' || level === 'MEDIUM' || level === 'HIGH') {
+    return level;
+  }
+
+  return 'MEDIUM';
+}
+
+function isKnownTaskType(taskType: string): taskType is AiAgentTaskType {
+  return taskType in taskTypeTextMap;
+}
+
+function createMessage(type: ChatMessageType, content: string): ChatMessage {
+  return {
+    id: createId('msg'),
+    type,
+    content,
+    time: createShortTime(),
+  };
+}
+
+function appendLog(level: ExecutionLogItem['level'], content: string) {
   logs.value.unshift({
-    id: idSeed++,
+    id: createId('log'),
     level,
     content,
     time: createLogTime(),
   });
+}
+
+function persistCurrentSession() {
+  // 最近会话模块已从页面移除，这里保留会话持久化入口，便于后续接入后端会话存储。
+}
+
+function scrollChatToBottom() {
+  nextTick(() => {
+    chatPanelRef.value?.scrollToBottom();
+  });
+}
+
+function createId(prefix: string) {
+  idSeed += 1;
+  return `${prefix}-${idSeed}`;
 }
 
 function createShortTime() {
@@ -223,173 +366,101 @@ function createLogTime() {
     hour12: false,
   }).format(new Date());
 }
+
+function deepClone<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
 </script>
 
 <style scoped lang="scss">
-.codex-console {
-  &__workspace {
+.codex-workbench {
+  position: relative;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 8% 0%, rgb(22 119 255 / 7%), transparent 32%),
+    linear-gradient(135deg, #f8fbff 0%, #f5f7fb 48%, #ffffff 100%);
+
+  &__layout {
     display: grid;
-    grid-template-columns: 280px minmax(0, 1fr) 320px;
+    grid-template-columns: minmax(240px, 280px) minmax(0, 1fr) minmax(320px, 360px);
     gap: 16px;
-    min-height: calc(100vh - 180px);
-  }
-
-  &__side,
-  &__main,
-  &__logs {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    width: 100%;
+    height: 100%;
     min-width: 0;
+    min-height: 0;
+    overflow: hidden;
   }
 
-  &__card,
-  &__chat,
-  &__command {
-    background: #101827;
-    border: 1px solid #1f2a3d;
-
-    :deep(.ant-card-head) {
-      min-height: 44px;
-      color: #dbeafe;
-      background: #111c2f;
-      border-bottom-color: #1f2a3d;
-    }
-
-    :deep(.ant-card-body) {
-      color: #d1d5db;
-    }
+  &__left,
+  &__center,
+  &__right {
+    min-width: 0;
+    min-height: 0;
   }
 
-  &__chat {
-    flex: 1;
-    min-height: 420px;
-  }
-
-  &__messages,
-  &__log-list {
+  &__left {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    overflow: hidden;
   }
 
-  &__message {
-    padding: 12px;
-    background: #0b1220;
-    border: 1px solid #1f2a3d;
-    border-radius: 8px;
-
-    span {
-      color: #93c5fd;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    p {
-      margin: 8px 0;
-      color: #e5e7eb;
-      line-height: 1.7;
-    }
-
-    time {
-      color: #64748b;
-      font-size: 12px;
-    }
-
-    &--user {
-      background: #0f1f35;
-      border-color: #1d4ed8;
-    }
-  }
-
-  &__quick-actions {
+  &__center {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-
-    button {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      width: 100%;
-      padding: 12px;
-      color: #dbeafe;
-      text-align: left;
-      cursor: pointer;
-      background: #0b1220;
-      border: 1px solid #24324a;
-      border-radius: 8px;
-
-      &:hover {
-        border-color: #1677ff;
-      }
-    }
-
-    small {
-      color: #94a3b8;
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
-    }
+    overflow: hidden;
   }
 
-  &__command {
-    :deep(.ant-input) {
-      color: #d1d5db;
-      background: #060b14;
-      border-color: #24324a;
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
-    }
+  :deep(.workbench-card) {
+    box-shadow: 0 12px 34px rgb(15 23 42 / 6%);
   }
 
-  &__command-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 12px;
+  :deep(.ant-card) {
+    background: rgb(255 255 255 / 92%);
+    border: 1px solid rgb(226 232 240 / 90%);
+    border-radius: 14px;
   }
 
-  &__log {
-    padding: 10px 0;
-    border-bottom: 1px solid #1f2a3d;
+  :deep(.ant-card-head) {
+    min-height: 42px;
+    border-bottom-color: rgb(226 232 240 / 78%);
+  }
 
-    span {
-      color: #64748b;
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
-      font-size: 12px;
-    }
+  :deep(.ant-card-head-title) {
+    color: var(--app-text);
+    font-size: 14px;
+    font-weight: 700;
+  }
 
-    p {
-      margin: 6px 0 0;
-      color: #cbd5e1;
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
-      font-size: 12px;
-      line-height: 1.6;
-      word-break: break-word;
-    }
+  :deep(.ant-card-body) {
+    padding: 12px;
+  }
 
-    &--success p {
-      color: #86efac;
-    }
+  :deep(.ant-tag) {
+    margin-inline-end: 0;
+    border-radius: 999px;
+  }
+}
 
-    &--warning p {
-      color: #fde68a;
+@media (max-width: 1320px) {
+  .codex-workbench {
+    &__layout {
+      grid-template-columns: minmax(220px, 250px) minmax(0, 1fr) minmax(280px, 320px);
+      gap: 12px;
     }
   }
 }
 
-@media (max-width: 1280px) {
-  .codex-console__workspace {
-    grid-template-columns: 260px minmax(0, 1fr);
-  }
-
-  .codex-console__logs {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 860px) {
-  .codex-console__workspace {
-    grid-template-columns: 1fr;
+@media (max-width: 960px) {
+  .codex-workbench {
+    &__layout {
+      grid-template-columns: minmax(160px, 0.68fr) minmax(0, 1.35fr) minmax(200px, 0.9fr);
+      gap: 10px;
+    }
   }
 }
 </style>

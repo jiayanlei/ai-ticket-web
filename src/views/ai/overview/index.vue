@@ -1,13 +1,5 @@
 <template>
   <div class="page-view">
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">AI 分析总览</h1>
-        <p class="page-description">基于工单列表中的 AI 摘要、风险等级和分类字段生成概览。</p>
-      </div>
-      <a-button @click="loadOverview">刷新</a-button>
-    </div>
-
     <div class="stat-grid">
       <a-card v-for="item in stats" :key="item.title" :bordered="false" :loading="loading">
         <a-statistic :title="item.title" :value="item.value" :suffix="item.suffix" />

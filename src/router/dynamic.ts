@@ -23,6 +23,11 @@ const componentAliasMap: Record<string, string> = {
   'system/dept/index': 'system/depts/index',
   'system/menu/index': 'system/menus/index',
   'ticket/order/index': 'ticket/list/index',
+  'knowledge/document/index': 'knowledge/manage/index',
+  'knowledge/document': 'knowledge/manage/index',
+  'knowledge/documents/index': 'knowledge/manage/index',
+  'knowledge/documents': 'knowledge/manage/index',
+  'knowledge/base': 'knowledge/base/index',
 };
 
 export function buildBackendMenuTree(list: MenuItem[]): BackendMenuNode[] {
@@ -117,7 +122,7 @@ export function registerCachedDynamicRoutes(router: Router) {
 
 export function registerCatchAllRoute(router: Router) {
   removeCatchAllRoute(router);
-  router.addRoute(catchAllRoute);
+  router.addRoute(ROOT_ROUTE_NAME, catchAllRoute);
 }
 
 export function removeCatchAllRoute(router: Router) {
@@ -147,7 +152,7 @@ function toRouteRecord(node: BackendMenuNode, parentPath = '', parentTitle?: str
     name: createRouteName(node),
     component,
     redirect: hasChildren ? findFirstRoutePath(node.children ?? []) : undefined,
-      meta: {
+    meta: {
       title: node.menuName,
       parentTitle,
       permission: node.perms ?? undefined,

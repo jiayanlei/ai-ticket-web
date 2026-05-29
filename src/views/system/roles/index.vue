@@ -1,16 +1,5 @@
 <template>
   <div class="page-view">
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">角色管理</h1>
-        <p class="page-description">维护角色基础信息；菜单授权接口后端尚未提供。</p>
-      </div>
-      <a-space>
-        <a-button @click="loadRoles">刷新</a-button>
-        <a-button type="primary" @click="openCreate">新增角色</a-button>
-      </a-space>
-    </div>
-
     <a-card :bordered="false">
       <div class="system-page__filters">
         <a-input v-model:value="query.roleName" allow-clear placeholder="角色名称" @press-enter="handleSearch" />
@@ -22,6 +11,7 @@
         <a-space>
           <a-button @click="resetQuery">重置</a-button>
           <a-button type="primary" @click="handleSearch">查询</a-button>
+          <a-button type="primary" @click="openCreate">新增角色</a-button>
         </a-space>
       </div>
 

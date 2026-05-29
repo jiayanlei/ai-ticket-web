@@ -1,8 +1,8 @@
 <template>
   <div class="not-found">
-    <a-result status="404" title="404" sub-title="当前页面不存在或已被移除">
+    <a-result status="404" title="页面不存在" sub-title="当前页面不存在或已被移除，请返回首页继续操作">
       <template #extra>
-        <router-link to="/dashboard/workbench">
+        <router-link :to="HOME_PATH">
           <a-button type="primary">返回首页</a-button>
         </router-link>
       </template>
@@ -11,6 +11,8 @@
 </template>
 
 <script setup lang="ts">
+import { HOME_PATH } from '@/router/constants';
+
 defineOptions({
   name: 'NotFoundPage',
 });
@@ -21,7 +23,8 @@ defineOptions({
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background: $app-bg;
+  min-height: 100%;
+  padding: 48px 16px;
+  background: transparent;
 }
 </style>

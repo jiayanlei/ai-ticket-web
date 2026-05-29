@@ -1,16 +1,5 @@
 <template>
   <div class="page-view">
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">部门管理</h1>
-        <p class="page-description">维护部门平铺数据并按 parentId 组装组织树。</p>
-      </div>
-      <a-space>
-        <a-button @click="loadDepts">刷新</a-button>
-        <a-button type="primary" @click="openCreate">新增部门</a-button>
-      </a-space>
-    </div>
-
     <a-card :bordered="false">
       <div class="system-page__filters">
         <a-input v-model:value="query.deptName" allow-clear placeholder="部门名称" @press-enter="handleSearch" />
@@ -22,6 +11,7 @@
         <a-space>
           <a-button @click="resetQuery">重置</a-button>
           <a-button type="primary" @click="handleSearch">查询</a-button>
+          <a-button type="primary" @click="openCreate">新增部门</a-button>
         </a-space>
       </div>
 

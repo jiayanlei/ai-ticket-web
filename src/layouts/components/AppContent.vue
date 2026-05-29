@@ -33,5 +33,9 @@ const contentStyle = computed(() => {
   min-height: 0;
   overflow: auto;
   background: var(--app-bg);
+
+  &:has(> .codex-workbench) {
+    overflow: hidden;
+  }
 }
 </style>

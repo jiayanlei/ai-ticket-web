@@ -1,13 +1,5 @@
 <template>
   <div class="page-view">
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">数据驾驶舱</h1>
-        <p class="page-description">当前驾驶舱数据由工单分页接口派生，后端暂无专用统计 Controller。</p>
-      </div>
-      <a-button @click="loadCockpit">刷新</a-button>
-    </div>
-
     <div class="stat-grid">
       <a-card v-for="item in stats" :key="item.title" :bordered="false" :loading="loading">
         <a-statistic :title="item.title" :value="item.value" :suffix="item.suffix" />

@@ -1,13 +1,5 @@
 <template>
   <div class="page-view">
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">智能分析结果</h1>
-        <p class="page-description">当前从工单列表接口读取 AI 摘要和风险字段；后端尚无独立 AI 分析记录接口。</p>
-      </div>
-      <a-button @click="loadResults">刷新</a-button>
-    </div>
-
     <a-card :bordered="false">
       <div class="system-page__filters">
         <a-input-search

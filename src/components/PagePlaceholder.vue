@@ -1,13 +1,5 @@
 <template>
   <div class="page-view">
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">{{ title }}</h1>
-        <p class="page-description">{{ description }}</p>
-      </div>
-      <slot name="actions" />
-    </div>
-
     <a-card :bordered="false">
       <a-empty :description="emptyText" />
     </a-card>

@@ -33,7 +33,7 @@ const tabsStyle = computed(() => ({
 watch(
   () => route.fullPath,
   () => {
-    if (route.meta.public || !route.meta.title) {
+    if (route.meta.public || route.meta.hidden || !route.meta.title) {
       return;
     }
 

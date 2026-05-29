@@ -23,7 +23,17 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: {
       title: '首页',
     },
-    children: [],
+    children: [
+      {
+        path: '404',
+        name: 'NotFound',
+        component: () => import('@/views/exception/NotFound.vue'),
+        meta: {
+          title: '页面不存在',
+          hidden: true,
+        },
+      },
+    ],
   },
   {
     path: '/403',
@@ -31,15 +41,6 @@ export const constantRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/exception/Forbidden.vue'),
     meta: {
       title: '无权访问',
-      public: true,
-    },
-  },
-  {
-    path: '/404',
-    name: 'NotFound',
-    component: () => import('@/views/exception/NotFound.vue'),
-    meta: {
-      title: '页面不存在',
       public: true,
     },
   },
@@ -55,10 +56,10 @@ export const constantRoutes: RouteRecordRaw[] = [
 ];
 
 export const catchAllRoute: RouteRecordRaw = {
-  path: '/:pathMatch(.*)*',
+  path: ':pathMatch(.*)*',
   name: CATCH_ALL_ROUTE_NAME,
   redirect: '/404',
   meta: {
-    public: true,
+    hidden: true,
   },
 };

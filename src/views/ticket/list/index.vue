@@ -1,13 +1,5 @@
 <template>
   <div class="page-view">
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">工单列表</h1>
-        <p class="page-description">对接工单分页、详情、修改、删除和状态变更接口。</p>
-      </div>
-      <a-button type="primary" @click="router.push('/ticket/create')">新建工单</a-button>
-    </div>
-
     <div class="stat-grid">
       <a-card v-for="item in statusStats" :key="item.status" :bordered="false" :loading="statsLoading">
         <a-statistic :title="item.label" :value="item.count" suffix="件" />
@@ -31,6 +23,7 @@
         <a-space>
           <a-button @click="resetQuery">重置</a-button>
           <a-button type="primary" @click="handleSearch">查询</a-button>
+          <a-button type="primary" @click="router.push('/ticket/create')">新建工单</a-button>
         </a-space>
       </div>
 

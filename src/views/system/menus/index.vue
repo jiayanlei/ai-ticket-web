@@ -1,16 +1,5 @@
 <template>
   <div class="page-view">
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">菜单管理</h1>
-        <p class="page-description">维护菜单结构、路由映射和权限标识；后端返回平铺列表，前端按 parentId 组装树。</p>
-      </div>
-      <a-space>
-        <a-button @click="loadMenus">刷新</a-button>
-        <a-button type="primary" @click="openCreate">新增菜单</a-button>
-      </a-space>
-    </div>
-
     <a-card :bordered="false">
       <div class="system-page__filters">
         <a-input v-model:value="query.menuName" allow-clear placeholder="菜单名称" @press-enter="handleSearch" />
@@ -26,6 +15,7 @@
         <a-space>
           <a-button @click="resetQuery">重置</a-button>
           <a-button type="primary" @click="handleSearch">查询</a-button>
+          <a-button type="primary" @click="openCreate">新增菜单</a-button>
         </a-space>
       </div>
 

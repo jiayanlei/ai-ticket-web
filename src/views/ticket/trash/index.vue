@@ -1,13 +1,5 @@
 <template>
   <div class="page-view">
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">工单回收站</h1>
-        <p class="page-description">查询已逻辑删除的工单，并支持恢复到普通工单列表。</p>
-      </div>
-      <a-button @click="loadTickets">刷新</a-button>
-    </div>
-
     <a-card :bordered="false">
       <div class="ticket-trash__filters">
         <a-input-search

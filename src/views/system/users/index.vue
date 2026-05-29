@@ -1,16 +1,5 @@
 <template>
   <div class="page-view">
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">用户管理</h1>
-        <p class="page-description">维护系统用户、组织归属、账号状态和登录权限。</p>
-      </div>
-      <a-space>
-        <a-button @click="loadUsers">刷新</a-button>
-        <a-button type="primary" @click="openCreate">新增用户</a-button>
-      </a-space>
-    </div>
-
     <a-card :bordered="false">
       <div class="system-page__filters">
         <a-input v-model:value="query.username" allow-clear placeholder="用户名" @press-enter="handleSearch" />
@@ -27,6 +16,7 @@
         <a-space>
           <a-button @click="resetQuery">重置</a-button>
           <a-button type="primary" @click="handleSearch">查询</a-button>
+          <a-button type="primary" @click="openCreate">新增用户</a-button>
         </a-space>
       </div>
 

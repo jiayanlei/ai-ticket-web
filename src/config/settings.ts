@@ -36,7 +36,7 @@ export const appSettings = Object.freeze({
     userInfoKey: 'USER_INFO',
     storageType: 'local' as StorageType,
     permissionMode: 'frontend' as PermissionMode,
-    authWhiteList: ['/login', '/403', '/404', '/500'],
+    authWhiteList: ['/login', '/403', '/500'],
     loginRoutePath: '/login',
   },
   cache: {
