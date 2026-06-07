@@ -1,4 +1,15 @@
 import type { ApiId } from '@/api/types';
+import {
+  addMockTicketComment,
+  analyzeMockTicketByAi,
+  createLifecycleTicket,
+  getMockLifecycleDetail,
+  getMockTicketAttachments,
+  getMockTicketComments,
+  getMockTicketFlowRecords,
+  updateLifecycleTicketStatus,
+} from '@/mock/ticket';
+import { resolveMockResponse } from '@/mock/core';
 
 export type LifecycleTicketStatus =
   | 'DRAFT'
@@ -92,231 +103,103 @@ export interface TicketOperationLog {
   time: string;
 }
 
-function nowText() {
-  return new Date().toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-');
-}
-
-function mockDelay<T>(data: T, delay = 360): Promise<T> {
-  return new Promise((resolve) => {
-    window.setTimeout(() => resolve(data), delay);
-  });
-}
-
-function createMockTicket(payload: LifecycleTicketPayload, status: LifecycleTicketStatus): LifecycleTicketDetail {
-  const now = nowText();
-
-  return {
-    ...payload,
-    id: `mock-${Date.now()}`,
-    ticketNo: `TK${new Date().getFullYear()}${String(Date.now()).slice(-8)}`,
-    status,
-    createTime: now,
-    updateTime: now,
-  };
-}
-
 export function createTicket(data: LifecycleTicketPayload): Promise<LifecycleTicketDetail> {
-  return mockDelay(createMockTicket(data, 'DRAFT'));
+  return resolveMockResponse(createLifecycleTicket(data, 'DRAFT'));
 }
 
 export function saveTicketDraft(data: LifecycleTicketPayload): Promise<LifecycleTicketDetail> {
-  return mockDelay(createMockTicket(data, 'DRAFT'));
+  return resolveMockResponse(createLifecycleTicket(data, 'DRAFT'));
 }
 
 export function submitTicket(data: LifecycleTicketPayload): Promise<LifecycleTicketDetail> {
-  return mockDelay(createMockTicket(data, 'PENDING_ACCEPT'));
+  return resolveMockResponse(createLifecycleTicket(data, 'PENDING_ACCEPT'));
 }
 
-export function acceptTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus; acceptedTime: string }> {
-  return mockDelay({ id, status: 'ACCEPTED', acceptedTime: nowText() });
+export async function acceptTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus; acceptedTime: string }> {
+  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'ACCEPTED', { acceptedTime: new Date().toISOString().slice(0, 19).replace('T', ' ') }));
+  return { id: detail.id, status: detail.status, acceptedTime: detail.acceptedTime || detail.updateTime };
 }
 
-export function startProcessTicket(
+export async function startProcessTicket(
   id: ApiId,
 ): Promise<{ id: ApiId; status: LifecycleTicketStatus; startProcessTime: string }> {
-  return mockDelay({ id, status: 'PROCESSING', startProcessTime: nowText() });
+  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PROCESSING', { startProcessTime: new Date().toISOString().slice(0, 19).replace('T', ' ') }));
+  return { id: detail.id, status: detail.status, startProcessTime: detail.startProcessTime || detail.updateTime };
 }
 
-export function finishProcessTicket(
+export async function finishProcessTicket(
   id: ApiId,
 ): Promise<{ id: ApiId; status: LifecycleTicketStatus; finishTime: string }> {
-  return mockDelay({ id, status: 'WAIT_CONFIRM', finishTime: nowText() });
+  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'WAIT_CONFIRM', { finishTime: new Date().toISOString().slice(0, 19).replace('T', ' ') }));
+  return { id: detail.id, status: detail.status, finishTime: detail.finishTime || detail.updateTime };
 }
 
-export function confirmTicket(
+export async function confirmTicket(
   id: ApiId,
 ): Promise<{ id: ApiId; status: LifecycleTicketStatus; completedTime: string; processingDuration: string }> {
-  return mockDelay({
-    id,
-    status: 'COMPLETED',
-    completedTime: nowText(),
-    processingDuration: '2小时35分钟',
-  });
+  const detail = await resolveMockResponse(
+    updateLifecycleTicketStatus(id, 'COMPLETED', {
+      completedTime: new Date().toISOString().slice(0, 19).replace('T', ' '),
+      processingDuration: '3小时20分钟',
+    }),
+  );
+
+  return {
+    id: detail.id,
+    status: detail.status,
+    completedTime: detail.completedTime || detail.updateTime,
+    processingDuration: detail.processingDuration || '3小时20分钟',
+  };
 }
 
-export function reopenTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus }> {
-  return mockDelay({ id, status: 'PROCESSING' });
+export async function reopenTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus }> {
+  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PROCESSING'));
+  return { id: detail.id, status: detail.status };
 }
 
-export function suspendTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus }> {
-  return mockDelay({ id, status: 'PENDING' });
+export async function suspendTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus }> {
+  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PENDING'));
+  return { id: detail.id, status: detail.status };
 }
 
-export function resumeTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus }> {
-  return mockDelay({ id, status: 'PROCESSING' });
+export async function resumeTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus }> {
+  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PROCESSING'));
+  return { id: detail.id, status: detail.status };
 }
 
-export function transferTicket(
+export async function transferTicket(
   id: ApiId,
   assignee: { assigneeId?: ApiId; assigneeName?: string },
 ): Promise<{ id: ApiId; status: LifecycleTicketStatus; assigneeId?: ApiId; assigneeName?: string }> {
-  return mockDelay({ id, status: 'PENDING_ACCEPT', ...assignee });
+  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PENDING_ACCEPT', assignee));
+  return {
+    id: detail.id,
+    status: detail.status,
+    assigneeId: detail.assigneeId,
+    assigneeName: detail.assigneeName,
+  };
 }
 
 export function getTicketDetail(id: ApiId): Promise<LifecycleTicketDetail> {
-  const detail = createMockTicket(
-    {
-      title: '核心系统登录异常',
-      priority: 'IMPORTANT',
-      source: 'WEB',
-      category: '系统故障',
-      applicantId: '10001',
-      applicantName: '李雷',
-      assigneeId: '20002',
-      assigneeName: '张三',
-      dueTime: nowText(),
-      description: '用户反馈核心系统登录后反复跳转，需要排查登录态与权限链路。',
-      attachments: [],
-    },
-    'PROCESSING',
-  );
-
-  return mockDelay({ ...detail, id });
+  return resolveMockResponse(getMockLifecycleDetail(id));
 }
 
-export function getTicketFlowRecords(_id: ApiId): Promise<TicketFlowRecord[]> {
-  void _id;
-
-  return mockDelay([
-    {
-      id: 'flow-1',
-      title: '提交工单',
-      operator: '李雷',
-      description: '工单进入待受理队列',
-      status: 'PENDING_ACCEPT',
-      time: nowText(),
-    },
-    {
-      id: 'flow-2',
-      title: 'AI完成分析',
-      operator: 'AI助手',
-      description: '已识别问题类型、风险等级和推荐处理方案',
-      status: 'PENDING_ACCEPT',
-      time: nowText(),
-    },
-    {
-      id: 'flow-3',
-      title: '张三受理',
-      operator: '张三',
-      description: '工单已分配到平台运维组',
-      status: 'ACCEPTED',
-      time: nowText(),
-    },
-    {
-      id: 'flow-4',
-      title: '开始处理',
-      operator: '张三',
-      description: '开始排查登录态异常',
-      status: 'PROCESSING',
-      time: nowText(),
-    },
-    {
-      id: 'flow-5',
-      title: '处理完成',
-      operator: '张三',
-      description: '等待申请人确认处理结果',
-      status: 'WAIT_CONFIRM',
-      time: nowText(),
-    },
-  ]);
+export function getTicketFlowRecords(id: ApiId): Promise<TicketFlowRecord[]> {
+  return resolveMockResponse(getMockTicketFlowRecords(id));
 }
 
-export function getTicketComments(_id: ApiId): Promise<TicketComment[]> {
-  void _id;
-
-  return mockDelay([
-    {
-      id: 'comment-1',
-      userName: '张三',
-      content: '已复现问题，正在查看统一认证日志。',
-      time: nowText(),
-    },
-  ]);
+export function getTicketComments(id: ApiId): Promise<TicketComment[]> {
+  return resolveMockResponse(getMockTicketComments(id));
 }
 
-export function addTicketComment(_id: ApiId, content: string): Promise<TicketComment> {
-  void _id;
-
-  return mockDelay({
-    id: `comment-${Date.now()}`,
-    userName: '管理员',
-    content,
-    time: nowText(),
-  });
+export function addTicketComment(id: ApiId, content: string): Promise<TicketComment> {
+  return resolveMockResponse(addMockTicketComment(id, content));
 }
 
-export function getTicketAttachments(_id: ApiId): Promise<TicketAttachment[]> {
-  void _id;
-
-  return mockDelay([
-    {
-      id: 'attach-1',
-      name: '登录异常截图.png',
-      size: '486 KB',
-      uploader: '李雷',
-      uploadTime: nowText(),
-    },
-    {
-      id: 'attach-2',
-      name: '浏览器控制台日志.txt',
-      size: '32 KB',
-      uploader: '李雷',
-      uploadTime: nowText(),
-    },
-  ]);
+export function getTicketAttachments(id: ApiId): Promise<TicketAttachment[]> {
+  return resolveMockResponse(getMockTicketAttachments(id));
 }
 
 export function analyzeTicketByAi(data: LifecycleTicketPayload): Promise<TicketAiAnalysis> {
-  const riskLevel = data.priority === 'URGENT' ? '高风险' : data.priority === 'IMPORTANT' ? '中风险' : '低风险';
-
-  return mockDelay(
-    {
-      category: data.category || '系统故障',
-      riskLevel,
-      recommendedDepartment: data.category === '账号权限' ? '账号权限组' : '平台运维部',
-      recommendedHandler: data.assigneeName || '张三',
-      estimatedDuration: data.priority === 'URGENT' ? '2小时内' : '1个工作日',
-      similarTickets: [
-        {
-          ticketNo: 'TK202605120126',
-          title: '核心系统登录后反复跳转',
-          status: '已完成',
-          similarity: 92,
-        },
-        {
-          ticketNo: 'TK202605110087',
-          title: '用户权限同步延迟导致菜单缺失',
-          status: '已完成',
-          similarity: 86,
-        },
-      ],
-      suggestions: [
-        '优先检查统一认证服务登录态刷新记录。',
-        '核对申请人账号角色、部门和菜单权限是否同步完成。',
-        '如影响多人登录，建议升级为平台级故障并同步值班负责人。',
-      ],
-      summary: 'AI 判断该问题可能与登录态刷新或账号权限同步有关，建议由平台运维部优先排查认证链路。',
-    },
-    900,
-  );
+  return resolveMockResponse(analyzeMockTicketByAi(data), 380);
 }

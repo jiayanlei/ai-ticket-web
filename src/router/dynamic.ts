@@ -16,17 +16,18 @@ interface DynamicRouteBuildResult {
   registeredNames: string[];
 }
 
+type ResolvedRouteComponent = NonNullable<RouteRecordRaw['component']>;
+
 const viewModules = import.meta.glob('../views/**/*.vue');
+const placeholderView: ResolvedRouteComponent = () => import('@/views/common/page-placeholder/index.vue');
 const componentAliasMap: Record<string, string> = {
   'system/user/index': 'system/users/index',
   'system/role/index': 'system/roles/index',
   'system/dept/index': 'system/depts/index',
   'system/menu/index': 'system/menus/index',
   'ticket/order/index': 'ticket/list/index',
-  'knowledge/document/index': 'knowledge/manage/index',
-  'knowledge/document': 'knowledge/manage/index',
-  'knowledge/documents/index': 'knowledge/manage/index',
-  'knowledge/documents': 'knowledge/manage/index',
+  'knowledge/document/index': 'knowledge/documents/index',
+  'knowledge/document': 'knowledge/documents/index',
   'knowledge/base': 'knowledge/base/index',
 };
 
@@ -58,16 +59,8 @@ export function buildBackendMenuTree(list: MenuItem[]): BackendMenuNode[] {
 
 export function toAppMenuItems(nodes: BackendMenuNode[]): AppMenuItem[] {
   return nodes
-    .filter((node) => node.visible && isRenderableMenuType(node.menuType))
-    .map((node) => ({
-      key: createMenuKey(node),
-      title: node.menuName,
-      path: node.path ?? undefined,
-      icon: node.icon ?? undefined,
-      permission: node.perms ?? undefined,
-      children: node.children ? toAppMenuItems(node.children) : undefined,
-    }))
-    .filter((item) => item.path || item.children?.length);
+    .map((node) => toAppMenuItem(node))
+    .filter((item): item is AppMenuItem => Boolean(item));
 }
 
 export function collectPermissionCodes(nodes: BackendMenuNode[]): string[] {
@@ -89,14 +82,11 @@ export function collectPermissionCodes(nodes: BackendMenuNode[]): string[] {
 }
 
 export function buildDynamicRoutes(nodes: BackendMenuNode[]): DynamicRouteBuildResult {
-  const routes = nodes
-    .filter((node) => isRouteMenuType(node.menuType))
-    .map((node) => toRouteRecord(node))
-    .filter((route): route is RouteRecordRaw => Boolean(route));
+  const routes = nodes.flatMap((node) => toRouteRecords(node));
 
   return {
     routes,
-    registeredNames: routes.map((route) => String(route.name)),
+    registeredNames: collectRouteNames(routes),
   };
 }
 
@@ -112,7 +102,7 @@ export function registerCachedDynamicRoutes(router: Router) {
 
   removeCatchAllRoute(router);
   routes.forEach((route) => {
-    if (!router.hasRoute(String(route.name))) {
+    if (!route.name || !router.hasRoute(String(route.name))) {
       router.addRoute(ROOT_ROUTE_NAME, route);
     }
   });
@@ -131,52 +121,137 @@ export function removeCatchAllRoute(router: Router) {
   }
 }
 
-function toRouteRecord(node: BackendMenuNode, parentPath = '', parentTitle?: string): RouteRecordRaw | null {
-  if (!node.path || !isRouteMenuType(node.menuType)) {
+function toAppMenuItem(node: BackendMenuNode): AppMenuItem | null {
+  if (!node.visible || !isRenderableMenuType(node.menuType)) {
     return null;
   }
 
-  const routeChildren = (node.children ?? [])
-    .filter((child) => isRouteMenuType(child.menuType))
-    .map((child) => toRouteRecord(child, node.path ?? parentPath, node.menuName))
-    .filter((route): route is RouteRecordRaw => Boolean(route));
-  const hasChildren = routeChildren.length > 0;
-  const component = hasChildren ? RouteView : resolveViewComponent(node.component);
+  const children = (node.children ?? [])
+    .map((child) => toAppMenuItem(child))
+    .filter((item): item is AppMenuItem => Boolean(item));
+  const path = normalizeMenuPath(node.path);
+  const targetPath = path ?? findFirstMenuTarget(children);
 
-  if (!component) {
+  if (!targetPath && !children.length) {
     return null;
   }
 
   return {
-    path: normalizeRoutePath(node.path, parentPath),
-    name: createRouteName(node),
+    key: createMenuKey(node),
+    title: node.menuName,
+    path,
+    targetPath,
+    icon: node.icon ?? undefined,
+    permission: node.perms ?? undefined,
+    children: children.length ? children : undefined,
+  };
+}
+
+function toRouteRecords(node: BackendMenuNode, parentPath = '', parentTitle?: string): RouteRecordRaw[] {
+  if (!isRouteMenuType(node.menuType)) {
+    return [];
+  }
+
+  const currentPath = normalizeMenuPath(node.path);
+  const childNodes = (node.children ?? []).filter((child) => isRouteMenuType(child.menuType));
+
+  if (!currentPath) {
+    return childNodes.flatMap((child) => toRouteRecords(child, parentPath, node.menuName));
+  }
+
+  const routeChildren = childNodes.flatMap((child) => toRouteRecords(child, currentPath, node.menuName));
+  const meta = {
+    title: node.menuName,
+    parentTitle,
+    permission: node.perms ?? undefined,
+    keepAlive: node.menuType === 'MENU',
+    dynamic: true,
+  };
+
+  if (routeChildren.length) {
+    const route: RouteRecordRaw = {
+      path: normalizeRoutePath(currentPath, parentPath),
+      name: createRouteName(node),
+      component: RouteView,
+      meta: {
+        ...meta,
+        keepAlive: false,
+      },
+      children: routeChildren,
+    };
+
+    const selfComponent = node.component ? resolveViewComponent(node.component) : undefined;
+
+    if (selfComponent) {
+      route.children = [createIndexRoute(node, selfComponent, parentTitle), ...routeChildren];
+    } else {
+      const redirectPath = findFirstRoutePath(childNodes);
+      if (redirectPath) {
+        route.redirect = redirectPath;
+      }
+    }
+
+    return [route];
+  }
+
+  return [
+    {
+      path: normalizeRoutePath(currentPath, parentPath),
+      name: createRouteName(node),
+      component: resolveViewComponent(node.component),
+      meta,
+    },
+  ];
+}
+
+function createIndexRoute(
+  node: BackendMenuNode,
+  component: ResolvedRouteComponent,
+  parentTitle?: string,
+): RouteRecordRaw {
+  return {
+    path: '',
+    name: `${createRouteName(node)}Index`,
     component,
-    redirect: hasChildren ? findFirstRoutePath(node.children ?? []) : undefined,
     meta: {
       title: node.menuName,
       parentTitle,
       permission: node.perms ?? undefined,
-      keepAlive: node.menuType === 'MENU',
+      keepAlive: true,
       dynamic: true,
+      hidden: true,
     },
-    children: routeChildren,
   };
 }
 
-function resolveViewComponent(componentPath: string | null): RouteRecordRaw['component'] | undefined {
+function resolveViewComponent(componentPath?: string | null): ResolvedRouteComponent {
   if (!componentPath) {
-    return undefined;
+    return placeholderView;
   }
 
   const normalized = normalizeComponentPath(componentPath);
   const target = componentAliasMap[normalized] ?? normalized;
   const modulePath = `../views/${target}.vue`;
 
-  return viewModules[modulePath] as RouteRecordRaw['component'] | undefined;
+  return (viewModules[modulePath] as ResolvedRouteComponent | undefined) ?? placeholderView;
 }
 
 function normalizeComponentPath(componentPath: string) {
   return componentPath.replace(/^\/+/, '').replace(/\.vue$/, '');
+}
+
+function normalizeMenuPath(path?: string | null) {
+  if (!path) {
+    return undefined;
+  }
+
+  const trimmed = path.trim();
+
+  if (!trimmed) {
+    return undefined;
+  }
+
+  return trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
 }
 
 function normalizeRoutePath(path: string, parentPath: string) {
@@ -198,8 +273,10 @@ function normalizeRoutePath(path: string, parentPath: string) {
 
 function findFirstRoutePath(nodes: BackendMenuNode[]): string | undefined {
   for (const node of nodes) {
-    if (node.path && node.menuType === 'MENU') {
-      return node.path;
+    const currentPath = normalizeMenuPath(node.path);
+
+    if (currentPath) {
+      return currentPath;
     }
 
     const childPath = findFirstRoutePath(node.children ?? []);
@@ -211,12 +288,40 @@ function findFirstRoutePath(nodes: BackendMenuNode[]): string | undefined {
   return undefined;
 }
 
+function findFirstMenuTarget(nodes: AppMenuItem[]): string | undefined {
+  for (const node of nodes) {
+    if (node.targetPath) {
+      return node.targetPath;
+    }
+  }
+
+  return undefined;
+}
+
+function collectRouteNames(routes: RouteRecordRaw[]): string[] {
+  const names: string[] = [];
+
+  function walk(items: RouteRecordRaw[]) {
+    items.forEach((item) => {
+      if (item.name) {
+        names.push(String(item.name));
+      }
+      if (item.children?.length) {
+        walk(item.children);
+      }
+    });
+  }
+
+  walk(routes);
+  return names;
+}
+
 function createMenuKey(node: MenuItem) {
-  return node.path || String(node.id);
+  return normalizeMenuPath(node.path) || String(node.id);
 }
 
 function createRouteName(node: MenuItem) {
-  const pathPart = (node.path || String(node.id))
+  const pathPart = (normalizeMenuPath(node.path) || String(node.id))
     .replace(/^\//, '')
     .split('/')
     .filter(Boolean)

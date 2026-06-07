@@ -1,146 +1,148 @@
 <template>
   <a-menu
-    :items="menuItems"
-    :open-keys="openKeys"
+    :open-keys="menuOpenKeys"
     :selected-keys="selectedKeys"
     :theme="theme"
     :mode="mode"
-    @click="handleMenuClick"
+    :trigger-sub-menu-action="isTopScope ? 'click' : undefined"
     @open-change="handleOpenChange"
-  />
+  >
+    <AppMenuNode
+      v-for="item in displayedMenus"
+      :key="item.key"
+      :item="item"
+      :render-children-as-submenu="renderChildrenAsSubmenu"
+      @navigate="handleNavigate"
+      @toggle="handleToggle"
+    />
+  </a-menu>
 </template>
 
 <script setup lang="ts">
-import {
-  ApartmentOutlined,
-  BarChartOutlined,
-  BookOutlined,
-  CodeOutlined,
-  DashboardOutlined,
-  DeleteOutlined,
-  FileSearchOutlined,
-  HomeOutlined,
-  MenuOutlined,
-  PlusCircleOutlined,
-  ProfileOutlined,
-  QuestionCircleOutlined,
-  ReadOutlined,
-  RobotOutlined,
-  ScheduleOutlined,
-  SettingOutlined,
-  TeamOutlined,
-  UnorderedListOutlined,
-  UserOutlined,
-} from '@ant-design/icons-vue';
-import type { MenuProps } from 'ant-design-vue';
-import { computed, h, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+import AppMenuNode from '@/layouts/components/AppMenuNode.vue';
+import { useAppStore } from '@/stores/app';
 import { usePermissionStore } from '@/stores/permission';
 import type { AppMenuItem } from '@/types/menu';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     mode?: 'inline' | 'horizontal';
     theme?: 'light' | 'dark';
+    scope?: 'side' | 'top';
   }>(),
   {
     mode: 'inline',
     theme: 'light',
+    scope: 'side',
   },
 );
 
 const route = useRoute();
 const router = useRouter();
+const appStore = useAppStore();
 const permissionStore = usePermissionStore();
 const openKeys = ref<string[]>([]);
 
-const iconMap = {
-  apartment: ApartmentOutlined,
-  'area-chart': BarChartOutlined,
-  barChart: BarChartOutlined,
-  book: BookOutlined,
-  building: ApartmentOutlined,
-  code: CodeOutlined,
-  'code-sandbox': CodeOutlined,
-  dashboard: DashboardOutlined,
-  delete: DeleteOutlined,
-  'file-search': FileSearchOutlined,
-  home: HomeOutlined,
-  list: UnorderedListOutlined,
-  menu: MenuOutlined,
-  plusCircle: PlusCircleOutlined,
-  'plus-circle': PlusCircleOutlined,
-  profile: ProfileOutlined,
-  questionCircle: QuestionCircleOutlined,
-  'question-circle': QuestionCircleOutlined,
-  read: ReadOutlined,
-  robot: RobotOutlined,
-  schedule: ScheduleOutlined,
-  setting: SettingOutlined,
-  settings: SettingOutlined,
-  shield: TeamOutlined,
-  team: TeamOutlined,
-  ticket: ProfileOutlined,
-  unorderedList: UnorderedListOutlined,
-  'unordered-list': UnorderedListOutlined,
-  user: UserOutlined,
-};
-
-const menuItems = computed<MenuProps['items']>(() => permissionStore.menus.map(toAntMenuItem));
-const selectedKeys = computed(() => findSelectedKeys(permissionStore.menus, route.path));
-
-watch(
-  () => route.path,
-  (path) => {
-    openKeys.value = findAncestorKeys(permissionStore.menus, path);
-  },
-  { immediate: true },
+const isTopScope = computed(() => props.scope === 'top');
+const isSideScope = computed(() => props.scope === 'side');
+const isMixedMenuMode = computed(() => appStore.layout.menuMode === 'mixed');
+const allMenus = computed(() => permissionStore.menus);
+const currentRouteRootMenu = computed(() => findRootMenuByPath(allMenus.value, route.path));
+const activeRootMenu = computed(
+  () =>
+    allMenus.value.find((item) => item.key === permissionStore.activeRootMenuKey) ??
+    currentRouteRootMenu.value ??
+    allMenus.value[0],
 );
 
-function toAntMenuItem(item: AppMenuItem): NonNullable<MenuProps['items']>[number] {
-  const iconKey =
-    typeof item.icon === 'string'
-      ? item.icon
-          .replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`)
-          .replace(/^-/, '')
-      : undefined;
-  const icon = iconKey ? iconMap[iconKey as keyof typeof iconMap] : undefined;
+const displayedMenus = computed(() => {
+  if (isTopScope.value) {
+    return allMenus.value;
+  }
 
-  return {
-    key: item.path ?? item.key,
-    label: item.title,
-    title: item.title,
-    icon: icon ? () => h(icon) : undefined,
-    children: item.children?.map(toAntMenuItem),
-  } as NonNullable<MenuProps['items']>[number];
-}
+  if (isMixedMenuMode.value) {
+    return activeRootMenu.value?.children ?? [];
+  }
 
-function findSelectedKeys(menus: AppMenuItem[], path: string): string[] {
+  return allMenus.value;
+});
+
+const renderChildrenAsSubmenu = computed(() => !(isTopScope.value && isMixedMenuMode.value));
+const selectedKeys = computed(() => {
+  if (isTopScope.value) {
+    const topKey = isMixedMenuMode.value
+      ? permissionStore.activeRootMenuKey || currentRouteRootMenu.value?.key
+      : currentRouteRootMenu.value?.key || permissionStore.activeRootMenuKey;
+
+    return topKey ? [topKey] : [];
+  }
+
+  const matchedItem = findSelectedMenuItem(displayedMenus.value, route.path);
+  return matchedItem ? [matchedItem.key] : [];
+});
+
+const menuOpenKeys = computed(() => (renderChildrenAsSubmenu.value ? openKeys.value : undefined));
+
+watch(
+  [() => route.path, allMenus],
+  () => {
+    const matchedRoot = findRootMenuByPath(allMenus.value, route.path);
+
+    if (matchedRoot) {
+      permissionStore.setActiveRootMenuKey(matchedRoot.key);
+    }
+  },
+  { immediate: true, deep: true },
+);
+
+watch(
+  [() => route.path, displayedMenus],
+  () => {
+    if (!renderChildrenAsSubmenu.value) {
+      return;
+    }
+
+    if (isSideScope.value) {
+      openKeys.value = findAncestorKeys(displayedMenus.value, route.path);
+      return;
+    }
+
+    openKeys.value = [];
+  },
+  { immediate: true, deep: true },
+);
+
+function findSelectedMenuItem(menus: AppMenuItem[], path: string): AppMenuItem | undefined {
   for (const item of menus) {
     if (item.path === path) {
-      return [path];
+      return item;
     }
+
     if (item.children?.length) {
-      const childKeys = findSelectedKeys(item.children, path);
-      if (childKeys.length) {
-        return childKeys;
+      const childMatched = findSelectedMenuItem(item.children, path);
+      if (childMatched) {
+        return childMatched;
       }
     }
   }
 
-  return [];
+  return undefined;
 }
 
 function findAncestorKeys(menus: AppMenuItem[], path: string, ancestors: string[] = []): string[] {
   for (const item of menus) {
-    const currentAncestors = item.path ? [...ancestors, item.path] : ancestors;
+    const hasChildren = Boolean(item.children?.length);
+    const nextAncestors = hasChildren ? [...ancestors, item.key] : ancestors;
 
     if (item.path === path) {
       return ancestors;
     }
-    if (item.children?.length) {
-      const matched = findAncestorKeys(item.children, path, currentAncestors);
+
+    if (hasChildren) {
+      const matched = findAncestorKeys(item.children ?? [], path, nextAncestors);
       if (matched.length) {
         return matched;
       }
@@ -150,13 +152,74 @@ function findAncestorKeys(menus: AppMenuItem[], path: string, ancestors: string[
   return [];
 }
 
-function handleMenuClick({ key }: { key: string }) {
-  if (key.startsWith('/')) {
-    router.push(key);
+function handleNavigate(item: AppMenuItem) {
+  const hasChildren = Boolean(item.children?.length);
+
+  if (isTopScope.value && isMixedMenuMode.value) {
+    permissionStore.setActiveRootMenuKey(item.key);
+
+    if (hasChildren) {
+      return;
+    }
+  } else if (hasChildren) {
+    return;
   }
+
+  const targetPath = item.path;
+
+  if (!targetPath || targetPath === route.path) {
+    return;
+  }
+
+  const matchedRoot = findRootMenuByPath(allMenus.value, targetPath);
+  if (matchedRoot) {
+    permissionStore.setActiveRootMenuKey(matchedRoot.key);
+  }
+
+  router.push(targetPath);
 }
 
 function handleOpenChange(keys: (string | number)[]) {
+  if (!renderChildrenAsSubmenu.value) {
+    return;
+  }
+
   openKeys.value = keys.map(String);
+}
+
+function handleToggle(item: AppMenuItem) {
+  if (!item.children?.length) {
+    return;
+  }
+
+  if (isTopScope.value && isMixedMenuMode.value) {
+    permissionStore.setActiveRootMenuKey(item.key);
+    return;
+  }
+
+  const currentKeys = new Set(openKeys.value);
+
+  if (currentKeys.has(item.key)) {
+    currentKeys.delete(item.key);
+  } else if (isTopScope.value) {
+    currentKeys.clear();
+    currentKeys.add(item.key);
+  } else {
+    currentKeys.add(item.key);
+  }
+
+  openKeys.value = [...currentKeys];
+}
+
+function findRootMenuByPath(menus: AppMenuItem[], path: string): AppMenuItem | undefined {
+  return menus.find((item) => containsPath(item, path));
+}
+
+function containsPath(item: AppMenuItem, path: string): boolean {
+  if (item.path === path) {
+    return true;
+  }
+
+  return Boolean(item.children?.some((child) => containsPath(child, path)));
 }
 </script>

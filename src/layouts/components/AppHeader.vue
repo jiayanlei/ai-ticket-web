@@ -8,7 +8,7 @@
         </template>
       </a-button>
 
-      <div class="app-header__brand">
+      <div v-if="showHeaderBrand" class="app-header__brand">
         <span v-if="appStore.layout.showLogo" class="app-header__logo">AI</span>
         <span class="app-header__title">{{ envConfig.appTitle }}</span>
       </div>
@@ -94,6 +94,7 @@ const router = useRouter();
 const settingsOpen = ref(false);
 const showTopMenu = computed(() => ['top', 'mixed'].includes(appStore.layout.menuMode));
 const showSiderControl = computed(() => ['side', 'mixed'].includes(appStore.layout.menuMode));
+const showHeaderBrand = computed(() => ['top', 'mixed'].includes(appStore.layout.menuMode));
 const userInitial = computed(() => userStore.displayName.slice(0, 1));
 
 function handleSearch() {
@@ -125,10 +126,12 @@ async function handleLogout() {
   z-index: 10;
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
   gap: 12px;
   height: $app-header-height;
   padding: 0 12px;
   line-height: normal;
+  overflow: hidden;
   background: #ffffff;
   background: var(--app-surface);
   border-bottom: 1px solid var(--app-border);
@@ -144,6 +147,7 @@ async function handleLogout() {
     align-items: center;
     gap: 10px;
     min-width: 0;
+    white-space: nowrap;
   }
 
   &__left {

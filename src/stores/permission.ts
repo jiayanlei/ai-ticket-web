@@ -23,6 +23,7 @@ interface PermissionState {
   permissions: string[];
   routesLoaded: boolean;
   registeredRouteNames: string[];
+  activeRootMenuKey: string;
 }
 
 function readCachedMenus() {
@@ -36,6 +37,7 @@ export const usePermissionStore = defineStore('permission', {
     permissions: [],
     routesLoaded: false,
     registeredRouteNames: [],
+    activeRootMenuKey: '',
   }),
   getters: {
     menus: (state): AppMenuItem[] => state.menuTree,
@@ -64,6 +66,12 @@ export const usePermissionStore = defineStore('permission', {
     rebuildFromMenus(router: Router, tree: BackendMenuNode[], markRoutesLoaded = true) {
       this.menuTree = toAppMenuItems(tree);
       this.permissions = collectPermissionCodes(tree);
+      if (this.activeRootMenuKey && !this.menuTree.some((item) => item.key === this.activeRootMenuKey)) {
+        this.activeRootMenuKey = '';
+      }
+      if (!this.activeRootMenuKey && this.menuTree.length) {
+        this.activeRootMenuKey = this.menuTree[0].key;
+      }
 
       const { routes, registeredNames } = buildDynamicRoutes(tree);
       removeCatchAllRoute(router);
@@ -104,7 +112,11 @@ export const usePermissionStore = defineStore('permission', {
       this.permissions = [];
       this.routesLoaded = false;
       this.registeredRouteNames = [];
+      this.activeRootMenuKey = '';
       removeStorageItem(appSettings.cache.menuCacheKey);
+    },
+    setActiveRootMenuKey(key: string) {
+      this.activeRootMenuKey = key;
     },
   },
 });

@@ -1,5 +1,8 @@
+import type { ApiId, CommonStatus, Nullable } from '@/api/types';
+import type { MenuItem } from '@/api/menu';
 import { envConfig } from '@/config';
-import type { ApiId } from '@/api/types';
+import { mockGetUserInfo, mockLogin, mockLogout } from '@/mock/auth';
+import { resolveMockResponse } from '@/mock/core';
 import { http } from '@/utils/http';
 
 export interface LoginParams {
@@ -18,6 +21,13 @@ export interface LoginResult {
   token: string;
   roles: string[];
   permissions: string[];
+  email?: Nullable<string>;
+  mobile?: Nullable<string>;
+  deptId?: Nullable<ApiId>;
+  deptName?: Nullable<string>;
+  status?: CommonStatus;
+  jobNo?: string;
+  menus?: MenuItem[];
 }
 
 export type UserInfo = LoginResult;
@@ -31,22 +41,18 @@ interface LoginVO {
   tokenPrefix?: string;
   roles?: string[];
   permissions?: string[];
+  email?: Nullable<string>;
+  mobile?: Nullable<string>;
+  deptId?: Nullable<ApiId>;
+  deptName?: Nullable<string>;
+  status?: CommonStatus;
+  jobNo?: string;
+  menus?: MenuItem[];
 }
 
 export async function loginApi(params: LoginParams): Promise<LoginResult> {
   if (envConfig.useMock) {
-    await mockLatency();
-
-    return normalizeLoginVO({
-      userId: 1,
-      username: params.username,
-      nickname: '系统管理员',
-      tokenName: 'Authorization',
-      tokenValue: `mock-token-${params.username}-${Date.now()}`,
-      tokenPrefix: 'Bearer',
-      roles: ['admin'],
-      permissions: ['*', '*:*:*'],
-    });
+    return resolveMockResponse(mockLogin(params));
   }
 
   const data = await http.post<LoginVO, LoginVO>('/auth/login', params);
@@ -55,7 +61,7 @@ export async function loginApi(params: LoginParams): Promise<LoginResult> {
 
 export async function logoutApi(): Promise<void> {
   if (envConfig.useMock) {
-    await mockLatency(120);
+    await resolveMockResponse(mockLogout(), 120);
     return;
   }
 
@@ -64,18 +70,7 @@ export async function logoutApi(): Promise<void> {
 
 export async function getUserInfoApi(): Promise<UserInfo> {
   if (envConfig.useMock) {
-    await mockLatency();
-
-    return normalizeLoginVO({
-      userId: 1,
-      username: 'admin',
-      nickname: '系统管理员',
-      tokenName: 'Authorization',
-      tokenValue: '',
-      tokenPrefix: 'Bearer',
-      roles: ['admin'],
-      permissions: ['*', '*:*:*'],
-    });
+    return resolveMockResponse(mockGetUserInfo());
   }
 
   const data = await http.get<LoginVO, LoginVO>('/auth/me');
@@ -94,11 +89,12 @@ function normalizeLoginVO(data: LoginVO): LoginResult {
     token: data.tokenValue || '',
     roles: data.roles ?? [],
     permissions: data.permissions ?? [],
+    email: data.email ?? null,
+    mobile: data.mobile ?? null,
+    deptId: data.deptId ?? null,
+    deptName: data.deptName ?? null,
+    status: data.status,
+    jobNo: data.jobNo,
+    menus: data.menus,
   };
-}
-
-function mockLatency(delay = 240) {
-  return new Promise((resolve) => {
-    window.setTimeout(resolve, delay);
-  });
 }

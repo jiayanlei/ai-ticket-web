@@ -17,6 +17,20 @@ function readBoolean(key: string, defaultValue = false) {
   return ['true', '1', 'yes', 'on'].includes(value.toLowerCase());
 }
 
+function readBooleanFromKeys(keys: string[], defaultValue = false) {
+  for (const key of keys) {
+    const value = readEnv(key);
+
+    if (!value) {
+      continue;
+    }
+
+    return ['true', '1', 'yes', 'on'].includes(value.toLowerCase());
+  }
+
+  return defaultValue;
+}
+
 function readNumber(key: string, defaultValue: number) {
   const value = Number(readEnv(key));
   return Number.isFinite(value) ? value : defaultValue;
@@ -50,7 +64,7 @@ export const envConfig = Object.freeze({
   sourcemap: readBoolean('VITE_APP_SOURCEMAP', false),
   gzip: readBoolean('VITE_APP_GZIP', false),
   buildCompress: readEnv('VITE_APP_BUILD_COMPRESS', 'none') as BuildCompress,
-  useMock: readBoolean('VITE_APP_USE_MOCK', false),
+  useMock: readBooleanFromKeys(['VITE_USE_MOCK', 'VITE_APP_USE_MOCK'], false),
 
   publicPath: readEnv('VITE_APP_PUBLIC_PATH', '/'),
   routerHistory: readRouterHistory('VITE_APP_ROUTER_HISTORY', 'history'),

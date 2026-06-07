@@ -1,4 +1,12 @@
 import { cleanPayload } from '@/api/types';
+import { envConfig } from '@/config';
+import {
+  mockConfirmAiAgentAction,
+  mockGetAiAgentProjectStatus,
+  mockGetAiAgentRecentLogs,
+  mockSendAiAgentMessage,
+} from '@/mock/chat';
+import { resolveMockResponse } from '@/mock/core';
 import { http } from '@/utils/http';
 
 export type AiAgentTaskType =
@@ -84,17 +92,33 @@ export interface AiAgentConfirmResult {
 }
 
 export function sendAiAgentMessage(data: AiAgentChatPayload): Promise<AiAgentChatResult> {
+  if (envConfig.useMock) {
+    return resolveMockResponse(mockSendAiAgentMessage(data), 260);
+  }
+
   return http.post<AiAgentChatResult, AiAgentChatResult>('/ai-agent/chat', cleanPayload(data));
 }
 
 export function getAiAgentProjectStatus(): Promise<AiAgentProjectStatus> {
+  if (envConfig.useMock) {
+    return resolveMockResponse(mockGetAiAgentProjectStatus(), 120);
+  }
+
   return http.get<AiAgentProjectStatus, AiAgentProjectStatus>('/ai-agent/project/status');
 }
 
 export function getAiAgentRecentLogs(): Promise<AiAgentLog[]> {
+  if (envConfig.useMock) {
+    return resolveMockResponse(mockGetAiAgentRecentLogs(), 120);
+  }
+
   return http.get<AiAgentLog[], AiAgentLog[]>('/ai-agent/logs/recent');
 }
 
 export function confirmAiAgentAction(data: AiAgentConfirmPayload): Promise<AiAgentConfirmResult> {
+  if (envConfig.useMock) {
+    return resolveMockResponse(mockConfirmAiAgentAction(data), 200);
+  }
+
   return http.post<AiAgentConfirmResult, AiAgentConfirmResult>('/ai-agent/action/confirm', cleanPayload(data));
 }

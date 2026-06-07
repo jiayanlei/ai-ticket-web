@@ -4,6 +4,7 @@ export {};
 
 declare global {
   interface ImportMetaEnv {
+    readonly VITE_USE_MOCK: string;
     readonly VITE_APP_ENV: string;
     readonly VITE_APP_TITLE: string;
     readonly VITE_APP_API_PREFIX: string;

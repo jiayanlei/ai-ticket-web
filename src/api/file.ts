@@ -1,4 +1,7 @@
 import type { ApiId } from '@/api/types';
+import { envConfig } from '@/config';
+import { mockDownloadFile, mockUploadFile } from '@/mock/document';
+import { resolveMockResponse } from '@/mock/core';
 import { http } from '@/utils/http';
 
 export interface UploadFileResult {
@@ -17,6 +20,10 @@ export interface UploadFileOptions {
 }
 
 export function uploadFileApi(file: File, options: UploadFileOptions = {}): Promise<UploadFileResult> {
+  if (envConfig.useMock) {
+    return resolveMockResponse(mockUploadFile(file), 320);
+  }
+
   const formData = new FormData();
   formData.append(options.fieldName || 'file', file);
 
@@ -32,6 +39,10 @@ export function uploadFileApi(file: File, options: UploadFileOptions = {}): Prom
 }
 
 export function downloadFileApi(url: string): Promise<Blob> {
+  if (envConfig.useMock) {
+    return Promise.resolve(mockDownloadFile(url));
+  }
+
   return http.get<Blob, Blob>(url, {
     responseType: 'blob',
   });

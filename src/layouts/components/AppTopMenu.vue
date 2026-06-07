@@ -1,6 +1,6 @@
 <template>
   <div class="app-top-menu">
-    <AppMenu mode="horizontal" :theme="appStore.layout.theme" />
+    <AppMenu mode="horizontal" scope="top" :theme="appStore.layout.theme" />
   </div>
 </template>
 
@@ -13,11 +13,31 @@ const appStore = useAppStore();
 
 <style scoped lang="scss">
 .app-top-menu {
+  display: flex;
+  flex: 1 1 auto;
   min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   :deep(.ant-menu) {
-    min-width: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    width: max-content;
+    min-width: 100%;
     border-bottom: 0;
+  }
+
+  :deep(.ant-menu-overflow) {
+    display: flex;
+    flex-wrap: nowrap;
+    width: max-content;
+    min-width: 100%;
   }
 }
 </style>
