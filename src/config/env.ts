@@ -51,7 +51,7 @@ export const envConfig = Object.freeze({
   uploadUrl: readEnv('VITE_APP_UPLOAD_URL', '/file/upload'),
   fileBaseUrl: readEnv('VITE_APP_FILE_BASE_URL', ''),
 
-  port: readNumber('VITE_APP_PORT', 5173),
+  port: readNumber('VITE_APP_PORT', 5170),
   host: readEnv('VITE_APP_HOST', '0.0.0.0'),
   open: readBoolean('VITE_APP_OPEN', false),
 

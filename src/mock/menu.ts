@@ -79,11 +79,22 @@ const menuSeeds: MenuItem[] = [
     parentId: 'm-analytics',
     menuName: '首页大屏',
     menuType: 'MENU',
+    path: '/dashboard/screen',
+    component: 'dashboard/screen/index',
+    perms: 'analytics:cockpit:view',
+    icon: 'dashboard',
+    sortOrder: 1,
+  }),
+  createMenuItem({
+    id: 'm-analytics-report',
+    parentId: 'm-analytics',
+    menuName: '数据报表',
+    menuType: 'MENU',
     path: '/analytics/cockpit',
     component: 'analytics/cockpit/index',
     perms: 'analytics:cockpit:view',
     icon: 'bar-chart',
-    sortOrder: 1,
+    sortOrder: 2,
   }),
 
   createMenuItem({

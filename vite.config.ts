@@ -46,7 +46,7 @@ function readNumber(env: Record<string, string>, key: string, defaultValue: numb
 function parseViteEnv(env: Record<string, string>): ViteAppEnv {
   return {
     apiPrefix: readString(env, 'VITE_APP_API_PREFIX', '/api'),
-    port: readNumber(env, 'VITE_APP_PORT', 5174),
+    port: readNumber(env, 'VITE_APP_PORT', 5170),
     host: readString(env, 'VITE_APP_HOST', '0.0.0.0'),
     open: readBoolean(env, 'VITE_APP_OPEN', false),
     useProxy: readBoolean(env, 'VITE_APP_USE_PROXY', false),

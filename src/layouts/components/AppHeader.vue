@@ -33,6 +33,14 @@
         </a-button>
       </a-tooltip>
 
+      <a-tooltip title="进入数据大屏">
+        <a-button type="text" @click="openDataScreen">
+          <template #icon>
+            <DashboardOutlined />
+          </template>
+        </a-button>
+      </a-tooltip>
+
       <a-tooltip v-if="appSettings.app.showFullscreenButton" title="全屏">
         <a-button type="text" @click="toggleFullscreen">
           <template #icon>
@@ -70,6 +78,7 @@
 
 <script setup lang="ts">
 import {
+  DashboardOutlined,
   FullscreenOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -103,6 +112,10 @@ function handleSearch() {
 
 function handleRefresh() {
   router.go(0);
+}
+
+function openDataScreen() {
+  router.push('/dashboard/screen');
 }
 
 async function toggleFullscreen() {
