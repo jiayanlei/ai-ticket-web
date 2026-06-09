@@ -180,12 +180,40 @@
             </span>
           </div>
 
-          <div class="situation-grid">
-            <article v-for="item in mockDashboardData.situation.metrics" :key="item.key" class="situation-card">
-              <span>{{ item.label }}</span>
-              <strong :class="{ 'is-changing': moduleRefreshing.liveSituation }">{{ item.value }}</strong>
-              <em>{{ item.unit }}</em>
-            </article>
+          <div class="situation-stage">
+            <div class="situation-orbit">
+              <div class="orbit-ring orbit-ring--outer" />
+              <div class="orbit-ring orbit-ring--middle" />
+              <div class="orbit-ring orbit-ring--inner" />
+              <div class="situation-core" :class="{ 'is-changing': moduleRefreshing.liveSituation }">
+                <span>压力指数</span>
+                <strong>{{ pressureScore }}</strong>
+                <em>{{ pressureLabel }}</em>
+              </div>
+              <article
+                v-for="node in mockDashboardData.opsConstellation"
+                :key="node.key"
+                class="constellation-node"
+                :class="`constellation-node--${node.level}`"
+                :style="{
+                  '--node-x': `${node.x}%`,
+                  '--node-y': `${node.y}%`,
+                  '--node-color': node.color,
+                  '--pulse-duration': `${node.pulse}s`,
+                }"
+              >
+                <strong>{{ node.value }}</strong>
+                <span>{{ node.label }}</span>
+              </article>
+            </div>
+
+            <div class="situation-grid">
+              <article v-for="item in mockDashboardData.situation.metrics" :key="item.key" class="situation-card">
+                <span>{{ item.label }}</span>
+                <strong :class="{ 'is-changing': moduleRefreshing.liveSituation }">{{ item.value }}</strong>
+                <em>{{ item.unit }}</em>
+              </article>
+            </div>
           </div>
         </section>
 
@@ -248,7 +276,7 @@
           </div>
 
           <div class="queue-distribution">
-            <div v-for="queue in mockDashboardData.queueDistribution" :key="queue.name" class="queue-bar-row">
+            <div v-for="queue in queueDistributionPreview" :key="queue.name" class="queue-bar-row">
               <div class="queue-bar-row__label">
                 <span>{{ queue.name }}</span>
                 <strong>{{ queue.count }}人</strong>
@@ -313,6 +341,37 @@
               </article>
             </div>
           </div>
+
+          <div class="insight-strip">
+            <div class="intent-radar">
+              <div class="sub-heading">意图热力</div>
+              <div class="intent-radar__grid">
+                <article
+                  v-for="intent in mockDashboardData.intentHotspots"
+                  :key="intent.key"
+                  class="intent-chip"
+                  :style="{ '--heat': `${intent.heat}%`, '--intent-color': intent.color }"
+                >
+                  <span>{{ intent.label }}</span>
+                  <strong>{{ intent.count }}</strong>
+                </article>
+              </div>
+            </div>
+
+            <div class="sla-lanes">
+              <div class="sub-heading">SLA 航道</div>
+              <article v-for="lane in mockDashboardData.slaLanes" :key="lane.key" class="sla-lane" :class="`sla-lane--${lane.status}`">
+                <div>
+                  <strong>{{ lane.label }}</strong>
+                  <span>{{ lane.owner }}</span>
+                </div>
+                <div class="sla-lane__bar">
+                  <i :style="{ width: `${lane.percent}%` }" />
+                </div>
+                <em>{{ lane.remaining }}</em>
+              </article>
+            </div>
+          </div>
         </section>
 
         <section v-if="showDepartmentRanking" class="screen-panel ranking-panel">
@@ -352,11 +411,15 @@
 import { ArrowLeftOutlined, FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons-vue';
 import * as echarts from 'echarts';
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+
+import { WORKBENCH_PATH } from '@/router/constants';
 
 type TrendType = 'up' | 'down' | 'flat';
 type QueueStatus = 'waiting' | 'answered' | 'ticketed';
 type RiskLevel = 'high' | 'urgent' | 'timeout' | 'abnormal';
+type ConstellationLevel = 'stable' | 'watch' | 'hot';
+type SlaStatus = 'safe' | 'watch' | 'danger';
 
 const CLOCK_REFRESH_INTERVAL_MS = 1000;
 const OVERVIEW_REFRESH_INTERVAL_MS = 5000;
@@ -366,7 +429,6 @@ const TREND_REFRESH_INTERVAL_MS = 6000;
 const TICKET_FLOW_REFRESH_INTERVAL_MS = 5000;
 const AI_ANALYSIS_REFRESH_INTERVAL_MS = 8000;
 const RISK_WARNING_REFRESH_INTERVAL_MS = 4000;
-const AUTO_FULLSCREEN_MIN_WIDTH = 1440;
 const EXTENDED_SIDE_PANEL_MIN_WIDTH = 1280;
 const STACKED_LAYOUT_MAX_WIDTH = 1180;
 const COMPACT_HEIGHT_MAX = 760;
@@ -402,6 +464,17 @@ interface SituationMetric {
   label: string;
   value: string;
   unit: string;
+}
+
+interface OpsConstellationNode {
+  key: string;
+  label: string;
+  value: string;
+  level: ConstellationLevel;
+  x: number;
+  y: number;
+  color: string;
+  pulse: number;
 }
 
 interface TrendSeries {
@@ -453,6 +526,23 @@ interface RiskAlertLoop extends RiskAlert {
   loopKey: string;
 }
 
+interface IntentHotspot {
+  key: string;
+  label: string;
+  count: number;
+  heat: number;
+  color: string;
+}
+
+interface SlaLane {
+  key: string;
+  label: string;
+  owner: string;
+  percent: number;
+  remaining: string;
+  status: SlaStatus;
+}
+
 const mockDashboardData = reactive({
   header: {
     onlineAgents: 128,
@@ -473,7 +563,9 @@ const mockDashboardData = reactive({
     { name: '企业微信', value: 548, color: '#6c5cff' },
     { name: '邮件', value: 316, color: '#29d98f' },
     { name: '人工录入', value: 278, color: '#ffb020' },
-    { name: '其他渠道', value: 154, color: '#ff5c93' },
+    { name: '移动端', value: 236, color: '#ff5c93' },
+    { name: '自助终端', value: 184, color: '#9dff6a' },
+    { name: '智能外呼', value: 126, color: '#ff7b54' },
   ] satisfies SourceDistributionItem[],
   aiOverview: {
     stats: [
@@ -530,6 +622,14 @@ const mockDashboardData = reactive({
       { key: 'avgDuration', label: '平均处理时长', value: '18.7', unit: '分钟' },
     ] satisfies SituationMetric[],
   },
+  opsConstellation: [
+    { key: 'voice', label: '语音识别', value: '92%', level: 'stable', x: 18, y: 24, color: '#2ff8ff', pulse: 4.8 },
+    { key: 'vip', label: 'VIP呼入', value: '9', level: 'hot', x: 75, y: 22, color: '#ffb020', pulse: 3.2 },
+    { key: 'robot', label: '机器人接管', value: '1.8k', level: 'stable', x: 82, y: 62, color: '#29d98f', pulse: 5.2 },
+    { key: 'dispatch', label: '智能分派', value: '87%', level: 'watch', x: 24, y: 70, color: '#6c5cff', pulse: 4.1 },
+    { key: 'sentiment', label: '负向情绪', value: '31', level: 'hot', x: 52, y: 15, color: '#ff5c93', pulse: 3.6 },
+    { key: 'knowledge', label: '知识命中', value: '94%', level: 'stable', x: 50, y: 82, color: '#9dff6a', pulse: 5.6 },
+  ] satisfies OpsConstellationNode[],
   trend: {
     labels: ['15:50', '15:55', '16:00', '16:05', '16:10', '16:15', '16:20', '16:25', '16:30', '16:35', '16:40', '16:45'],
     inbound: [188, 204, 196, 238, 242, 286, 301, 318, 336, 356, 382, 398],
@@ -559,6 +659,8 @@ const mockDashboardData = reactive({
     { name: '技术支持队列', count: 27, percent: 63 },
     { name: 'VIP队列', count: 9, percent: 48 },
     { name: '售后队列', count: 12, percent: 56 },
+    { name: '华东区域队列', count: 18, percent: 58 },
+    { name: 'AI复核队列', count: 7, percent: 32 },
   ] satisfies QueueDistributionItem[],
   queueEntries: [
     { id: 'q-001', incomingAt: '16:45:02', phone: '138****0921', queueName: 'VIP队列', waitingSeconds: 156, status: 'waiting' },
@@ -569,6 +671,10 @@ const mockDashboardData = reactive({
     { id: 'q-006', incomingAt: '16:45:59', phone: '189****2236', queueName: '技术支持队列', waitingSeconds: 39, status: 'ticketed' },
     { id: 'q-007', incomingAt: '16:46:11', phone: '133****5109', queueName: 'VIP队列', waitingSeconds: 34, status: 'waiting' },
     { id: 'q-008', incomingAt: '16:46:23', phone: '158****7490', queueName: '一级队列', waitingSeconds: 26, status: 'waiting' },
+    { id: 'q-009', incomingAt: '16:46:35', phone: '195****3088', queueName: '华东区域队列', waitingSeconds: 22, status: 'waiting' },
+    { id: 'q-010', incomingAt: '16:46:42', phone: '137****6192', queueName: 'AI复核队列', waitingSeconds: 18, status: 'answered' },
+    { id: 'q-011', incomingAt: '16:46:53', phone: '152****7741', queueName: '售后队列', waitingSeconds: 12, status: 'waiting' },
+    { id: 'q-012', incomingAt: '16:47:04', phone: '188****4316', queueName: '技术支持队列', waitingSeconds: 8, status: 'waiting' },
   ] satisfies QueueEntry[],
   riskAlerts: [
     { id: 'r-001', title: '核心系统无法登录且多次回拨未接通', ticketNo: 'WO202605120381', level: 'urgent', department: '平台运维部', createdAt: '16:42' },
@@ -576,7 +682,23 @@ const mockDashboardData = reactive({
     { id: 'r-003', title: '超时未处理：录音文件缺失影响质检', ticketNo: 'WO202605120329', level: 'timeout', department: '呼叫中心', createdAt: '16:21' },
     { id: 'r-004', title: 'AI识别异常：同号码重复生成工单', ticketNo: 'WO202605120288', level: 'abnormal', department: 'AI中台', createdAt: '16:08' },
     { id: 'r-005', title: '售后退款链路失败出现重复投诉', ticketNo: 'WO202605120251', level: 'high', department: '售后服务部', createdAt: '15:58' },
+    { id: 'r-006', title: '知识库命中低：新政策问题集中涌入', ticketNo: 'WO202605120244', level: 'abnormal', department: '知识运营组', createdAt: '15:47' },
+    { id: 'r-007', title: '区域网络波动导致工单重复提交', ticketNo: 'WO202605120219', level: 'high', department: '区域运维组', createdAt: '15:34' },
   ] satisfies RiskAlert[],
+  intentHotspots: [
+    { key: 'login', label: '登录异常', count: 326, heat: 94, color: '#ff5c93' },
+    { key: 'invoice', label: '发票同步', count: 218, heat: 76, color: '#ffb020' },
+    { key: 'refund', label: '退款进度', count: 184, heat: 62, color: '#2ff8ff' },
+    { key: 'permission', label: '权限开通', count: 151, heat: 54, color: '#6c5cff' },
+    { key: 'device', label: '设备故障', count: 128, heat: 48, color: '#29d98f' },
+    { key: 'policy', label: '政策咨询', count: 96, heat: 35, color: '#9dff6a' },
+  ] satisfies IntentHotspot[],
+  slaLanes: [
+    { key: 'vip', label: 'VIP专线', owner: '客户成功部', percent: 86, remaining: '14m', status: 'danger' },
+    { key: 'payment', label: '支付链路', owner: '财务系统组', percent: 68, remaining: '31m', status: 'watch' },
+    { key: 'ops', label: '平台故障', owner: '平台运维部', percent: 58, remaining: '46m', status: 'watch' },
+    { key: 'routine', label: '常规咨询', owner: '呼叫中心', percent: 32, remaining: '2h', status: 'safe' },
+  ] satisfies SlaLane[],
   departmentRanking: [
     { name: '平台运维部', owner: '待办压力高', todoCount: 86, percent: 94, trend: '+12', trendType: 'up' },
     { name: '呼叫中心', owner: '通话量峰值', todoCount: 74, percent: 82, trend: '+8', trendType: 'up' },
@@ -586,6 +708,7 @@ const mockDashboardData = reactive({
   ],
 });
 
+const route = useRoute();
 const router = useRouter();
 const currentTime = ref(new Date());
 const refreshStatus = ref('自动刷新中');
@@ -613,6 +736,7 @@ const newestQueueEntryId = ref(queueEntries.value[0]?.id ?? '');
 const screenRef = ref<HTMLDivElement>();
 const sourceChartRef = ref<HTMLDivElement>();
 const trendChartRef = ref<HTMLDivElement>();
+const isFullscreenEntry = computed(() => route.query.fullscreen === '1');
 let sourceChart: echarts.ECharts | undefined;
 let trendChart: echarts.ECharts | undefined;
 const timerMap: {
@@ -660,6 +784,20 @@ const currentDateText = computed(() => {
   return `${dateText} ${weekText}`;
 });
 const fullscreenButtonTitle = computed(() => (isScreenFullscreen.value ? '退出全屏' : '全屏展示'));
+const pressureScore = computed(() => mockDashboardData.situation.pressureIndex.split('/')[0].trim());
+const pressureLabel = computed(() => {
+  const score = Number(pressureScore.value);
+  if (score >= 85) {
+    return '红色预警';
+  }
+  if (score >= 72) {
+    return '高压运行';
+  }
+  if (score >= 60) {
+    return '繁忙稳定';
+  }
+  return '平稳运行';
+});
 const isCompactLayout = computed(
   () => !isScreenFullscreen.value || viewportWidth.value < EXTENDED_SIDE_PANEL_MIN_WIDTH || viewportHeight.value < COMPACT_HEIGHT_MAX,
 );
@@ -668,7 +806,8 @@ const showExtendedSidePanels = computed(
   () => isScreenFullscreen.value && viewportWidth.value >= EXTENDED_SIDE_PANEL_MIN_WIDTH && viewportHeight.value >= COMPACT_HEIGHT_MAX,
 );
 const showDepartmentRanking = false;
-const sourceDistributionPreview = computed(() => mockDashboardData.sourceDistribution.slice(0, 3));
+const sourceDistributionPreview = computed(() => mockDashboardData.sourceDistribution.slice(0, showExtendedSidePanels.value ? 4 : 3));
+const queueDistributionPreview = computed(() => mockDashboardData.queueDistribution.slice(0, isCompactLayout.value ? 3 : 5));
 
 const queueSummaryList = computed(() => [
   { key: 'queued', label: '当前排队数', value: mockDashboardData.queueSummary.queued, unit: '通', level: 'is-hot' },
@@ -707,6 +846,7 @@ const riskScrollRows = computed<RiskAlertLoop[]>(() =>
 
 onMounted(() => {
   syncViewportSize();
+  isScreenFullscreen.value = Boolean(document.fullscreenElement);
   initCharts();
   startModuleRefreshTimers();
   window.addEventListener('resize', handleWindowResize);
@@ -717,6 +857,9 @@ onMounted(() => {
     screenResizeObserver.observe(screenRef.value);
   }
   scheduleResizeCharts();
+  if (shouldEnterFullscreen()) {
+    void enterFullscreen();
+  }
 });
 
 onBeforeUnmount(() => {
@@ -735,6 +878,11 @@ onBeforeUnmount(() => {
 
 async function toggleFullscreen() {
   if (isScreenFullscreen.value) {
+    if (isFullscreenEntry.value) {
+      await exitFullscreenToWorkbench();
+      return;
+    }
+
     if (document.fullscreenElement) {
       await document.exitFullscreen().catch(() => undefined);
     }
@@ -743,17 +891,45 @@ async function toggleFullscreen() {
     return;
   }
 
+  await enterFullscreen();
+}
+
+async function enterFullscreen() {
   isScreenFullscreen.value = true;
   scheduleResizeCharts();
   await screenRef.value?.requestFullscreen?.().catch(() => undefined);
 }
 
-function returnWorkbench() {
-  router.push('/dashboard/workbench');
+async function returnWorkbench() {
+  if (document.fullscreenElement) {
+    await document.exitFullscreen().catch(() => undefined);
+  }
+
+  router.push(WORKBENCH_PATH);
+}
+
+async function exitFullscreenToWorkbench() {
+  if (document.fullscreenElement) {
+    await document.exitFullscreen().catch(() => undefined);
+  }
+  isScreenFullscreen.value = false;
+  scheduleResizeCharts();
+  router.push(WORKBENCH_PATH);
+}
+
+function shouldEnterFullscreen() {
+  return isFullscreenEntry.value;
 }
 
 function handleFullscreenChange() {
-  isScreenFullscreen.value = document.fullscreenElement === screenRef.value;
+  isScreenFullscreen.value = isFullscreenEntry.value
+    ? Boolean(document.fullscreenElement)
+    : document.fullscreenElement === screenRef.value;
+  if (!isScreenFullscreen.value && isFullscreenEntry.value) {
+    void router.push(WORKBENCH_PATH);
+    return;
+  }
+
   scheduleResizeCharts();
 }
 
@@ -772,6 +948,11 @@ function handleFullscreenShortcut(event: KeyboardEvent) {
       isScreenFullscreen.value = false;
       scheduleResizeCharts();
     });
+    return;
+  }
+
+  if (isFullscreenEntry.value) {
+    void router.push(WORKBENCH_PATH);
     return;
   }
 
@@ -942,6 +1123,7 @@ function refreshOverviewData() {
 function refreshLiveSituationData() {
   flashModuleRefresh('liveSituation');
   updateSituationSnapshot();
+  updateConstellationSnapshot();
 }
 
 function refreshPhoneQueueData() {
@@ -977,6 +1159,7 @@ function refreshAiAnalysisData() {
 function refreshRiskWarningData() {
   flashModuleRefresh('riskWarning');
   updateRiskAlerts();
+  updateInsightSnapshot();
 }
 
 function flashModuleRefresh(module: keyof typeof moduleRefreshing) {
@@ -1055,6 +1238,49 @@ function updateSituationSnapshot() {
   updateSituationMetric('avgDuration', (18 + Math.random() * 2.6).toFixed(1));
 }
 
+function updateConstellationSnapshot() {
+  mockDashboardData.opsConstellation.forEach((node) => {
+    if (node.key === 'voice') {
+      const value = clamp(parseInt(node.value, 10) + randomInt(-1, 1), 88, 97);
+      node.value = `${value}%`;
+      node.level = value < 90 ? 'watch' : 'stable';
+      return;
+    }
+
+    if (node.key === 'vip') {
+      const value = clamp(Number(node.value) + randomInt(-1, 2), 6, 16);
+      node.value = String(value);
+      node.level = value >= 12 ? 'hot' : 'watch';
+      return;
+    }
+
+    if (node.key === 'robot') {
+      const value = clamp(Math.round(Number(node.value.replace('k', '')) * 10 + randomInt(-1, 2)), 15, 23);
+      node.value = `${(value / 10).toFixed(1)}k`;
+      node.level = 'stable';
+      return;
+    }
+
+    if (node.key === 'dispatch') {
+      const value = clamp(parseInt(node.value, 10) + randomInt(-2, 2), 80, 94);
+      node.value = `${value}%`;
+      node.level = value < 84 ? 'watch' : 'stable';
+      return;
+    }
+
+    if (node.key === 'sentiment') {
+      const value = clamp(Number(node.value) + randomInt(-3, 4), 20, 45);
+      node.value = String(value);
+      node.level = value >= 34 ? 'hot' : 'watch';
+      return;
+    }
+
+    const value = clamp(parseInt(node.value, 10) + randomInt(-1, 1), 88, 98);
+    node.value = `${value}%`;
+    node.level = value < 91 ? 'watch' : 'stable';
+  });
+}
+
 function updateFlowSnapshot() {
   const inbound = trendData.value.inbound[trendData.value.inbound.length - 1] ?? 398;
   const generated = trendData.value.generated[trendData.value.generated.length - 1] ?? 361;
@@ -1105,7 +1331,7 @@ function updateAiAnalysisSnapshot() {
 function updateRiskAlerts() {
   if (Math.random() < 0.55) {
     mockDashboardData.riskAlerts.unshift(createRiskAlert());
-    mockDashboardData.riskAlerts.splice(5);
+    mockDashboardData.riskAlerts.splice(7);
     return;
   }
 
@@ -1115,16 +1341,33 @@ function updateRiskAlerts() {
   }
 }
 
+function updateInsightSnapshot() {
+  mockDashboardData.intentHotspots.forEach((intent) => {
+    intent.count = clamp(intent.count + randomInt(-8, 14), 42, 380);
+    intent.heat = clamp(Math.round(intent.count / 3.6) + randomInt(-3, 4), 24, 100);
+  });
+
+  mockDashboardData.slaLanes.forEach((lane) => {
+    lane.percent = clamp(lane.percent + randomInt(-4, 7), 18, 96);
+    lane.status = lane.percent >= 82 ? 'danger' : lane.percent >= 58 ? 'watch' : 'safe';
+    lane.remaining = formatSlaRemaining(lane.status, lane.percent);
+  });
+}
+
 function buildQueueDistribution(queued: number) {
   const vipCount = clamp(Math.round(queued * 0.11) + randomInt(-1, 2), 6, 16);
   const techCount = clamp(Math.round(queued * 0.32) + randomInt(-2, 3), 20, 42);
   const afterSaleCount = clamp(Math.round(queued * 0.15) + randomInt(-1, 2), 9, 22);
-  const primaryCount = Math.max(queued - vipCount - techCount - afterSaleCount, 24);
+  const eastCount = clamp(Math.round(queued * 0.18) + randomInt(-2, 2), 10, 26);
+  const aiReviewCount = clamp(Math.round(queued * 0.08) + randomInt(-1, 2), 4, 14);
+  const primaryCount = Math.max(queued - vipCount - techCount - afterSaleCount - eastCount - aiReviewCount, 20);
   const rows = [
     { name: '一级队列', count: primaryCount },
     { name: '技术支持队列', count: techCount },
     { name: 'VIP队列', count: vipCount },
     { name: '售后队列', count: afterSaleCount },
+    { name: '华东区域队列', count: eastCount },
+    { name: 'AI复核队列', count: aiReviewCount },
   ];
 
   return rows.map((item) => ({
@@ -1135,8 +1378,8 @@ function buildQueueDistribution(queued: number) {
 
 function createQueueEntry(): QueueEntry {
   queueSequence += 1;
-  const queues = ['一级队列', '技术支持队列', 'VIP队列', '售后队列'];
-  const prefixes = ['138', '139', '151', '158', '177', '186', '189', '133'];
+  const queues = ['一级队列', '技术支持队列', 'VIP队列', '售后队列', '华东区域队列', 'AI复核队列'];
+  const prefixes = ['138', '139', '151', '158', '177', '186', '189', '133', '195', '137', '152', '188'];
 
   return {
     id: `q-live-${Date.now()}-${queueSequence}`,
@@ -1269,6 +1512,18 @@ function formatWaiting(seconds: number) {
   return `${minutes}m${String(rest).padStart(2, '0')}s`;
 }
 
+function formatSlaRemaining(status: SlaStatus, percent: number) {
+  if (status === 'danger') {
+    return `${clamp(100 - percent + randomInt(2, 8), 6, 22)}m`;
+  }
+
+  if (status === 'watch') {
+    return `${clamp(100 - percent + randomInt(8, 22), 24, 58)}m`;
+  }
+
+  return `${clamp(Math.round((100 - percent) / 18), 1, 4)}h`;
+}
+
 function getQueueRowClass(waitingSeconds: number) {
   return {
     'queue-row--warning': waitingSeconds > 60 && waitingSeconds <= 120,
@@ -1282,7 +1537,7 @@ function syncViewportSize() {
 }
 
 function getViewportWidth() {
-  return typeof window === 'undefined' ? AUTO_FULLSCREEN_MIN_WIDTH : window.innerWidth;
+  return typeof window === 'undefined' ? 1440 : window.innerWidth;
 }
 
 function getViewportHeight() {
@@ -1300,9 +1555,8 @@ function getViewportHeight() {
   overflow: hidden;
   color: #d8f7ff;
   background:
-    radial-gradient(circle at 50% 0%, rgb(22 119 255 / 24%), transparent 34%),
-    radial-gradient(circle at 10% 18%, rgb(47 248 255 / 15%), transparent 28%),
-    radial-gradient(circle at 88% 20%, rgb(108 92 255 / 18%), transparent 28%),
+    linear-gradient(115deg, rgb(7 13 30 / 88%) 0%, transparent 38%, rgb(14 38 59 / 58%) 68%, transparent 100%),
+    linear-gradient(155deg, rgb(8 42 61 / 42%) 0%, transparent 28%, rgb(73 29 62 / 22%) 62%, transparent 100%),
     linear-gradient(135deg, #040b18 0%, #08182f 48%, #030814 100%);
   isolation: isolate;
 }
@@ -1580,11 +1834,11 @@ function getViewportHeight() {
 }
 
 .screen-column--center {
-  grid-template-rows: minmax(128px, 0.68fr) minmax(210px, 1.42fr) minmax(146px, 0.74fr);
+  grid-template-rows: minmax(204px, 0.95fr) minmax(190px, 1.2fr) minmax(140px, 0.72fr);
 }
 
 .screen-column--right {
-  grid-template-rows: minmax(300px, 1.26fr) minmax(0, 0.74fr);
+  grid-template-rows: minmax(270px, 1fr) minmax(282px, 1fr);
 }
 
 .screen-panel {
@@ -1797,7 +2051,7 @@ function getViewportHeight() {
   font-weight: 950;
   font-variant-numeric: tabular-nums;
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   text-shadow:
     0 0 14px rgb(47 248 255 / 42%),
     0 0 26px rgb(22 119 255 / 28%);
@@ -2208,13 +2462,157 @@ function getViewportHeight() {
   box-shadow: 0 0 12px rgb(47 248 255 / 45%);
 }
 
+.situation-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.situation-stage {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(190px, 0.95fr) minmax(260px, 1.05fr);
+  gap: 10px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.situation-orbit {
+  position: relative;
+  min-width: 0;
+  min-height: 132px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgb(47 248 255 / 10%), transparent 64%),
+    rgb(7 24 49 / 54%);
+  border: 1px solid rgb(47 248 255 / 18%);
+  border-radius: 8px;
+}
+
+.orbit-ring {
+  position: absolute;
+  inset: 50%;
+  border: 1px solid rgb(126 222 255 / 16%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.orbit-ring--outer {
+  width: 86%;
+  aspect-ratio: 1;
+  border-style: dashed;
+  animation: orbitRotate 26s linear infinite;
+}
+
+.orbit-ring--middle {
+  width: 62%;
+  aspect-ratio: 1;
+  border-color: rgb(47 248 255 / 26%);
+  animation: orbitRotate 18s linear infinite reverse;
+}
+
+.orbit-ring--inner {
+  width: 38%;
+  aspect-ratio: 1;
+  border-color: rgb(255 176 32 / 22%);
+}
+
+.situation-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 34%, rgb(47 248 255 / 32%), transparent 54%),
+    linear-gradient(180deg, rgb(14 48 84 / 88%), rgb(6 19 41 / 92%));
+  border: 1px solid rgb(47 248 255 / 38%);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 24px rgb(47 248 255 / 16%),
+    0 0 30px rgb(47 248 255 / 18%);
+  transform: translate(-50%, -50%);
+}
+
+.situation-core span,
+.situation-core em {
+  color: #8fc8df;
+  font-size: 11px;
+  font-style: normal;
+  line-height: 1;
+}
+
+.situation-core strong {
+  color: #ffffff;
+  font-size: 36px;
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-shadow:
+    0 0 16px rgb(47 248 255 / 58%),
+    0 0 28px rgb(255 176 32 / 18%);
+}
+
+.constellation-node {
+  position: absolute;
+  top: var(--node-y);
+  left: var(--node-x);
+  display: grid;
+  min-width: 60px;
+  padding: 5px 7px;
+  color: #effdff;
+  background: rgb(6 20 43 / 78%);
+  border: 1px solid color-mix(in srgb, var(--node-color) 44%, transparent);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 0 14px color-mix(in srgb, var(--node-color) 11%, transparent),
+    0 0 16px color-mix(in srgb, var(--node-color) 22%, transparent);
+  transform: translate(-50%, -50%);
+  animation: nodePulse var(--pulse-duration) ease-in-out infinite;
+}
+
+.constellation-node::before {
+  position: absolute;
+  top: 50%;
+  left: -18px;
+  width: 18px;
+  height: 1px;
+  content: '';
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--node-color) 72%, transparent));
+}
+
+.constellation-node strong {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.constellation-node span {
+  margin-top: 3px;
+  color: color-mix(in srgb, var(--node-color) 72%, #d9f8ff 28%);
+  font-size: 10px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.constellation-node--hot {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--node-color) 20%, transparent), transparent),
+    rgb(34 18 35 / 84%);
+}
+
 .situation-grid {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  height: calc(100% - 36px);
+  min-height: 0;
 }
 
 .situation-card {
@@ -2541,7 +2939,7 @@ function getViewportHeight() {
 .alert-scroll {
   position: relative;
   z-index: 1;
-  flex: 1 1 auto;
+  flex: 1 1 112px;
   height: auto;
   min-height: 0;
   overflow: hidden;
@@ -2613,6 +3011,137 @@ function getViewportHeight() {
 .risk-item--timeout .risk-item__right strong,
 .risk-item--urgent .risk-item__right strong {
   color: #ff6b6b;
+}
+
+.insight-strip {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  flex: 0 0 auto;
+  min-height: 132px;
+  margin-top: 10px;
+}
+
+.intent-radar,
+.sla-lanes {
+  min-width: 0;
+  padding: 9px;
+  background: rgb(8 28 56 / 56%);
+  border: 1px solid rgb(91 200 255 / 14%);
+  border-radius: 7px;
+}
+
+.intent-radar__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.intent-chip {
+  --intent-color: #2ff8ff;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  min-width: 0;
+  height: 27px;
+  padding: 0 7px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--intent-color) var(--heat), transparent), transparent 82%),
+    rgb(5 18 38 / 72%);
+  border: 1px solid color-mix(in srgb, var(--intent-color) 28%, transparent);
+  border-radius: 5px;
+}
+
+.intent-chip span {
+  min-width: 0;
+  overflow: hidden;
+  color: #d7f4ff;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.intent-chip strong {
+  flex: 0 0 auto;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.sla-lanes {
+  display: grid;
+  gap: 6px;
+}
+
+.sla-lane {
+  display: grid;
+  grid-template-columns: minmax(76px, 1fr) minmax(44px, 0.8fr) 34px;
+  gap: 7px;
+  align-items: center;
+  min-width: 0;
+}
+
+.sla-lane strong,
+.sla-lane span,
+.sla-lane em {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sla-lane strong {
+  color: #effdff;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.sla-lane span {
+  margin-top: 2px;
+  color: #85b1ce;
+  font-size: 10px;
+}
+
+.sla-lane em {
+  color: #b6eaff;
+  font-size: 11px;
+  font-style: normal;
+  text-align: right;
+}
+
+.sla-lane__bar {
+  height: 7px;
+  overflow: hidden;
+  background: rgb(126 185 255 / 12%);
+  border-radius: 999px;
+}
+
+.sla-lane__bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #29d98f, #2ff8ff);
+  border-radius: inherit;
+  box-shadow: 0 0 10px rgb(47 248 255 / 35%);
+}
+
+.sla-lane--watch .sla-lane__bar i {
+  background: linear-gradient(90deg, #ffb020, #2ff8ff);
+}
+
+.sla-lane--danger .sla-lane__bar i {
+  background: linear-gradient(90deg, #ff5c93, #ffb020);
+}
+
+.sla-lane--danger em {
+  color: #ff9a91;
 }
 
 .ranking-list {
@@ -2724,10 +3253,11 @@ function getViewportHeight() {
 }
 
 .command-screen--embedded .metric-card {
-  grid-template-columns: minmax(0, 1fr) 84px;
-  gap: 8px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+  align-content: center;
   min-height: 58px;
-  padding: 7px 8px 7px 10px;
+  padding: 7px 8px;
 }
 
 .command-screen--embedded .metric-title {
@@ -2736,13 +3266,15 @@ function getViewportHeight() {
 }
 
 .command-screen--embedded .metric-value-row {
-  width: 84px;
-  min-width: 78px;
-  min-height: 34px;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  min-height: 28px;
+  text-align: left;
 }
 
 .command-screen--embedded .metric-value {
-  font-size: 26px;
+  font-size: 24px;
   line-height: 1;
 }
 
@@ -2754,6 +3286,31 @@ function getViewportHeight() {
   margin-top: 2px;
   font-size: 10px;
   line-height: 15px;
+}
+
+.command-screen--compact .metric-grid {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: repeat(8, minmax(34px, 1fr));
+  gap: 6px;
+}
+
+.command-screen--compact .metric-card {
+  grid-template-columns: minmax(0, 1fr) minmax(88px, auto);
+  gap: 8px;
+  min-height: 34px;
+  padding: 6px 8px;
+}
+
+.command-screen--compact .metric-value-row {
+  justify-content: flex-end;
+  width: auto;
+  min-width: 88px;
+  min-height: 28px;
+  text-align: right;
+}
+
+.command-screen--compact .metric-value {
+  font-size: 24px;
 }
 
 .command-screen--embedded .ai-analysis-list {
@@ -2974,12 +3531,12 @@ function getViewportHeight() {
 
 .command-screen--fullscreen .screen-column--center,
 .command-screen:fullscreen .screen-column--center {
-  grid-template-rows: minmax(170px, 0.75fr) minmax(240px, 1.35fr) minmax(180px, 0.8fr);
+  grid-template-rows: minmax(230px, 0.95fr) minmax(230px, 1.18fr) minmax(174px, 0.72fr);
 }
 
 .command-screen--fullscreen .screen-column--right,
 .command-screen:fullscreen .screen-column--right {
-  grid-template-rows: minmax(430px, 1.45fr) minmax(0, 0.55fr);
+  grid-template-rows: minmax(390px, 1fr) minmax(250px, 0.78fr);
 }
 
 .command-screen--fullscreen .screen-panel,
@@ -3060,13 +3617,13 @@ function getViewportHeight() {
 
 .command-screen--fullscreen .situation-card,
 .command-screen:fullscreen .situation-card {
-  padding: 16px 10px;
+  padding: 14px 10px;
 }
 
 .command-screen--fullscreen .situation-card strong,
 .command-screen:fullscreen .situation-card strong {
-  margin-top: 10px;
-  font-size: 36px;
+  margin-top: 8px;
+  font-size: 30px;
 }
 
 .command-screen--fullscreen .flow-chain,
@@ -3276,16 +3833,40 @@ function getViewportHeight() {
   }
 }
 
+@keyframes orbitRotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes nodePulse {
+  0%,
+  100% {
+    filter: brightness(1);
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  50% {
+    filter: brightness(1.18);
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+}
+
 @media (max-height: 920px) {
   .screen-panel {
     padding: 10px;
   }
 
-  .metric-card {
-    grid-template-columns: minmax(0, 1fr) 82px;
-    gap: 8px;
+  .command-screen:not(.command-screen--compact) .metric-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 5px;
+    align-content: center;
     min-height: 56px;
-    padding: 6px 8px 6px 10px;
+    padding: 6px 8px;
   }
 
   .metric-title {
@@ -3293,13 +3874,15 @@ function getViewportHeight() {
     line-height: 15px;
   }
 
-  .metric-value-row {
-    width: 82px;
-    min-width: 76px;
-    min-height: 32px;
+  .command-screen:not(.command-screen--compact) .metric-value-row {
+    justify-content: flex-start;
+    width: 100%;
+    min-width: 0;
+    min-height: 28px;
+    text-align: left;
   }
 
-  .metric-value {
+  .command-screen:not(.command-screen--compact) .metric-value {
     font-size: 24px;
     line-height: 1;
   }
@@ -3312,6 +3895,43 @@ function getViewportHeight() {
 
   .situation-card strong {
     font-size: 24px;
+  }
+
+  .situation-stage {
+    grid-template-columns: minmax(170px, 0.92fr) minmax(240px, 1.08fr);
+  }
+
+  .situation-core {
+    width: 86px;
+    height: 86px;
+  }
+
+  .situation-core strong {
+    font-size: 30px;
+  }
+
+  .constellation-node {
+    min-width: 54px;
+    padding: 4px 6px;
+  }
+
+  .constellation-node strong {
+    font-size: 14px;
+  }
+
+  .insight-strip {
+    min-height: 116px;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .intent-radar,
+  .sla-lanes {
+    padding: 7px;
+  }
+
+  .intent-chip {
+    height: 24px;
   }
 
   .ai-analysis-item {
@@ -3342,12 +3962,12 @@ function getViewportHeight() {
 
   .command-screen--fullscreen .screen-column--center,
   .command-screen:fullscreen .screen-column--center {
-    grid-template-rows: minmax(154px, 0.75fr) minmax(222px, 1.35fr) minmax(162px, 0.8fr);
+    grid-template-rows: minmax(204px, 0.95fr) minmax(210px, 1.16fr) minmax(154px, 0.72fr);
   }
 
   .command-screen--fullscreen .screen-column--right,
   .command-screen:fullscreen .screen-column--right {
-    grid-template-rows: minmax(390px, 1.42fr) minmax(0, 0.58fr);
+    grid-template-rows: minmax(350px, 1fr) minmax(226px, 0.78fr);
   }
 }
 
@@ -3371,12 +3991,12 @@ function getViewportHeight() {
 
   .command-screen--fullscreen .screen-column--center,
   .command-screen:fullscreen .screen-column--center {
-    grid-template-rows: minmax(132px, 0.75fr) minmax(198px, 1.35fr) minmax(140px, 0.8fr);
+    grid-template-rows: minmax(178px, 0.95fr) minmax(188px, 1.16fr) minmax(132px, 0.72fr);
   }
 
   .command-screen--fullscreen .screen-column--right,
   .command-screen:fullscreen .screen-column--right {
-    grid-template-rows: minmax(340px, 1.35fr) minmax(0, 0.65fr);
+    grid-template-rows: minmax(310px, 1fr) minmax(202px, 0.78fr);
   }
 }
 
@@ -3385,11 +4005,50 @@ function getViewportHeight() {
 }
 
 .command-screen--fullscreen.command-screen--compact .screen-column--right {
-  grid-template-rows: minmax(320px, 1.28fr) minmax(0, 0.72fr);
+  grid-template-rows: minmax(310px, 1fr) minmax(220px, 0.82fr);
 }
 
 .command-screen--fullscreen.command-screen--compact .screen-grid {
   grid-template-columns: minmax(240px, 24fr) minmax(480px, 52fr) minmax(260px, 24fr);
+}
+
+.command-screen--fullscreen.command-screen--compact .metric-grid {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: repeat(8, minmax(28px, 1fr));
+  gap: 5px;
+  flex: 1 1 0;
+  height: auto;
+}
+
+.command-screen--fullscreen.command-screen--compact .metric-card {
+  grid-template-columns: minmax(0, 1fr) minmax(84px, auto);
+  gap: 8px;
+  min-height: 28px;
+  padding: 4px 8px;
+  overflow: hidden;
+}
+
+.command-screen--fullscreen.command-screen--compact .metric-title {
+  font-size: 10px;
+  line-height: 13px;
+}
+
+.command-screen--fullscreen.command-screen--compact .metric-trend {
+  margin-top: 1px;
+  font-size: 10px;
+  line-height: 12px;
+}
+
+.command-screen--fullscreen.command-screen--compact .metric-value-row {
+  justify-content: flex-end;
+  width: auto;
+  min-width: 84px;
+  min-height: 26px;
+  text-align: right;
+}
+
+.command-screen--fullscreen.command-screen--compact .metric-value {
+  font-size: 22px;
 }
 
 .command-screen--stacked {
@@ -3471,8 +4130,8 @@ function getViewportHeight() {
 
 .command-screen--stacked .screen-column--center {
   order: 1;
-  grid-template-rows: minmax(128px, 0.72fr) minmax(240px, 1.55fr) minmax(150px, 0.78fr);
-  min-height: 520px;
+  grid-template-rows: minmax(330px, 0.95fr) minmax(240px, 1.2fr) minmax(150px, 0.72fr);
+  min-height: 730px;
 }
 
 .command-screen--stacked .screen-column--left {
@@ -3483,12 +4142,22 @@ function getViewportHeight() {
 
 .command-screen--stacked .screen-column--right {
   order: 3;
-  grid-template-rows: minmax(320px, 1.15fr) minmax(220px, 0.85fr);
-  min-height: 550px;
+  grid-template-rows: minmax(360px, 1fr) minmax(280px, 0.85fr);
+  min-height: 660px;
+}
+
+.command-screen--stacked .situation-stage {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(170px, 1fr) auto;
 }
 
 .command-screen--stacked .situation-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.command-screen--stacked .insight-strip {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 240px;
 }
 
 .command-screen--stacked .flow-chain {

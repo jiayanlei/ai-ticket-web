@@ -1,5 +1,8 @@
 <template>
-  <a-layout-header class="app-header" :class="{ 'app-header--fixed': appStore.layout.fixedHeader }">
+  <a-layout-header
+    class="app-header"
+    :class="[`app-header--${appStore.layout.menuMode}`, { 'app-header--fixed': appStore.layout.fixedHeader }]"
+  >
     <div class="app-header__left">
       <a-button v-if="showSiderControl" type="text" class="app-header__trigger" @click="appStore.toggleSidebar">
         <template #icon>
@@ -103,7 +106,7 @@ const router = useRouter();
 const settingsOpen = ref(false);
 const showTopMenu = computed(() => ['top', 'mixed'].includes(appStore.layout.menuMode));
 const showSiderControl = computed(() => ['side', 'mixed'].includes(appStore.layout.menuMode));
-const showHeaderBrand = computed(() => ['top', 'mixed'].includes(appStore.layout.menuMode));
+const showHeaderBrand = computed(() => appStore.layout.menuMode === 'top');
 const userInitial = computed(() => userStore.displayName.slice(0, 1));
 
 function handleSearch() {
@@ -114,8 +117,15 @@ function handleRefresh() {
   router.go(0);
 }
 
-function openDataScreen() {
-  router.push('/dashboard/screen');
+async function openDataScreen() {
+  if (!document.fullscreenElement) {
+    await document.documentElement.requestFullscreen().catch(() => undefined);
+  }
+
+  router.push({
+    path: '/dashboard/screen',
+    query: { fullscreen: '1' },
+  });
 }
 
 async function toggleFullscreen() {
@@ -167,8 +177,12 @@ async function handleLogout() {
     flex: 0 0 auto;
   }
 
+  &--top &__left {
+    flex-basis: 188px;
+  }
+
   :deep(.app-top-menu) {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     min-width: 0;
   }
 
@@ -206,6 +220,7 @@ async function handleLogout() {
   &__title {
     overflow: hidden;
     color: var(--app-text);
+    font-family: cursive;
     font-size: 16px;
     font-weight: 650;
     text-overflow: ellipsis;
@@ -240,15 +255,11 @@ async function handleLogout() {
 @media (max-width: 760px) {
   .app-header {
     &__left {
-      flex: 1 1 auto;
+      flex: 0 0 auto;
     }
 
     &__right {
       flex: 0 0 auto;
-    }
-
-    :deep(.app-top-menu) {
-      display: none;
     }
   }
 }

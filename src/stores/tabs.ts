@@ -21,12 +21,16 @@ function getInitialTabsCache(): TabsCache {
     };
   }
 
-  return (
-    getStorageItem<TabsCache>(appSettings.cache.tabsCacheKey, undefined, 'local') ?? {
-      tabs: [],
-      activePath: '',
-    }
-  );
+  const cache = getStorageItem<TabsCache>(appSettings.cache.tabsCacheKey, undefined, 'local') ?? {
+    tabs: [],
+    activePath: '',
+  };
+  const tabs = cache.tabs.filter((item) => !item.path.startsWith('/dashboard/screen'));
+
+  return {
+    tabs,
+    activePath: cache.activePath.startsWith('/dashboard/screen') ? '' : cache.activePath,
+  };
 }
 
 const initialTabsCache = getInitialTabsCache();

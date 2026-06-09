@@ -33,6 +33,10 @@ const tabsStyle = computed(() => ({
 watch(
   () => route.fullPath,
   () => {
+    if (route.path === '/dashboard/screen' && route.query.fullscreen === '1') {
+      return;
+    }
+
     if (route.meta.public || route.meta.hidden || !route.meta.title) {
       return;
     }

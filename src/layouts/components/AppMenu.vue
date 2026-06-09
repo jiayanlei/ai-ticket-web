@@ -4,6 +4,7 @@
     :selected-keys="selectedKeys"
     :theme="theme"
     :mode="mode"
+    :disabled-overflow="isTopScope"
     :trigger-sub-menu-action="isTopScope ? 'click' : undefined"
     @open-change="handleOpenChange"
   >

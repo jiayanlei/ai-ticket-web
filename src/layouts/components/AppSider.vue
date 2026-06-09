@@ -27,7 +27,7 @@ import { useAppStore } from '@/stores/app';
 
 const appStore = useAppStore();
 const showSiderBrand = computed(
-  () => appStore.layout.menuMode === 'side' && (appStore.layout.showLogo || !appStore.layout.sidebarCollapsed),
+  () => ['side', 'mixed'].includes(appStore.layout.menuMode) && (appStore.layout.showLogo || !appStore.layout.sidebarCollapsed),
 );
 const menuWrapOffset = computed(() => (showSiderBrand.value ? `${56}px` : '0px'));
 </script>
@@ -76,6 +76,7 @@ const menuWrapOffset = computed(() => (showSiderBrand.value ? `${56}px` : '0px')
   &__title {
     overflow: hidden;
     color: var(--app-text);
+    font-family: cursive;
     font-size: 16px;
     font-weight: 650;
     text-overflow: ellipsis;

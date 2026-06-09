@@ -785,23 +785,25 @@ function clone<T>(data: T): T {
   --knowledge-shadow: 0 10px 28px rgb(22 119 255 / 9%);
 
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
-  gap: 16px;
+  grid-template-columns: 258px minmax(0, 1fr);
+  gap: 14px;
+  min-width: 0;
   min-height: calc(100vh - 116px);
-  padding: 16px;
+  padding: 10px;
   color: var(--knowledge-text);
   background: var(--knowledge-bg);
   border: 1px solid var(--knowledge-border);
-  border-radius: 12px;
+  border-radius: 14px;
 }
 
 .knowledge-sidebar,
 .knowledge-canvas {
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
   background: var(--knowledge-surface);
   border: 1px solid var(--knowledge-border);
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: var(--knowledge-shadow);
 }
 
@@ -1243,7 +1245,7 @@ function clone<T>(data: T): T {
 
 @media (max-width: 1180px) {
   .knowledge-base-page {
-    grid-template-columns: 260px minmax(0, 1fr);
+    grid-template-columns: 240px minmax(0, 1fr);
   }
 
   .canvas-toolbar {

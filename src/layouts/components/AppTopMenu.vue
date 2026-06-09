@@ -39,5 +39,46 @@ const appStore = useAppStore();
     width: max-content;
     min-width: 100%;
   }
+
+  :deep(.ant-menu-horizontal) {
+    flex: 0 0 auto;
+    line-height: $app-header-height;
+  }
+
+  :deep(.ant-menu-horizontal > .ant-menu-item),
+  :deep(.ant-menu-horizontal > .ant-menu-submenu) {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    height: $app-header-height;
+    padding-inline: 14px;
+    white-space: nowrap;
+  }
+
+  :deep(.ant-menu-horizontal > .ant-menu-item .ant-menu-title-content),
+  :deep(.ant-menu-horizontal > .ant-menu-submenu .ant-menu-submenu-title) {
+    display: inline-flex;
+    align-items: center;
+    min-width: max-content;
+    white-space: nowrap;
+  }
+
+  :deep(.ant-menu-horizontal .ant-menu-item-icon),
+  :deep(.ant-menu-horizontal .ant-menu-submenu-title .anticon) {
+    flex: 0 0 auto;
+    margin-inline-end: 6px;
+    font-size: 16px;
+  }
+
+  :deep(.ant-menu-horizontal .ant-menu-title-content),
+  :deep(.ant-menu-horizontal .app-menu-node__title),
+  :deep(.ant-menu-horizontal .app-menu-node__title-text) {
+    display: inline-flex;
+    align-items: center;
+    min-width: max-content;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
+  }
 }
 </style>

@@ -76,7 +76,7 @@ async function loadAssets() {
   try {
     assets.value = await getTeamAssetListApi();
   } catch (error) {
-    message.error(getErrorMessage(error, '团队资产库加载失败'));
+    message.error(getErrorMessage(error, '文档中心加载失败'));
   } finally {
     loading.value = false;
   }

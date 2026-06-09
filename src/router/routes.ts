@@ -33,6 +33,15 @@ export const constantRoutes: RouteRecordRaw[] = [
           hidden: true,
         },
       },
+      {
+        path: 'dashboard/screen',
+        name: 'DashboardScreen',
+        component: () => import('@/views/dashboard/screen/index.vue'),
+        meta: {
+          title: '数据大屏',
+          hidden: true,
+        },
+      },
     ],
   },
   {

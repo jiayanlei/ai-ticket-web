@@ -1777,6 +1777,13 @@ function clone<T>(data: T): T {
   background-size: 24px 24px;
 }
 
+.canvas-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
 .canvas-inner {
   position: relative;
   min-width: 100%;

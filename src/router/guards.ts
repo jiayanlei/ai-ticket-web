@@ -24,10 +24,7 @@ export function setupRouterGuards(router: Router) {
     }
 
     if (userStore.isLoggedIn && to.path === LOGIN_PATH) {
-      return {
-        path: HOME_PATH,
-        replace: true,
-      };
+      return toHomeRoute();
     }
 
     if (isPublicRoute) {
@@ -65,10 +62,7 @@ export function setupRouterGuards(router: Router) {
         await permissionStore.ensureDynamicRoutes(router);
 
         if (isRootRoute) {
-          return {
-            path: HOME_PATH,
-            replace: true,
-          };
+          return toHomeRoute();
         }
 
         return {
@@ -91,10 +85,7 @@ export function setupRouterGuards(router: Router) {
     }
 
     if (isRootRoute) {
-      return {
-        path: HOME_PATH,
-        replace: true,
-      };
+      return toHomeRoute();
     }
 
     const requiredRoles = to.meta.roles;
@@ -121,4 +112,11 @@ export function setupRouterGuards(router: Router) {
 
     return true;
   });
+}
+
+function toHomeRoute() {
+  return {
+    path: HOME_PATH,
+    replace: true,
+  };
 }
