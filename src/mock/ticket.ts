@@ -1,4 +1,4 @@
-import type { ApiId, PageQuery } from '@/api/types';
+import type { ApiId } from '@/api/types';
 import type {
   LifecycleTicketDetail,
   LifecycleTicketPayload,

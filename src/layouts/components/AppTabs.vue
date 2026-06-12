@@ -107,12 +107,33 @@ function handleEdit(targetKey: string | MouseEvent | KeyboardEvent, action: 'add
     border-bottom-color: var(--app-surface);
   }
 
+  :deep(.ant-tabs-tab-active .ant-tabs-tab-btn) {
+    color: var(--app-text);
+  }
+
   :deep(.ant-tabs-tab-btn) {
     max-width: 160px;
     overflow: hidden;
+    color: inherit;
     font-size: 13px;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  :deep(.ant-tabs-tab-remove) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    margin-left: 8px;
+    color: var(--app-text-secondary) !important;
+    border-radius: 4px;
+  }
+
+  :deep(.ant-tabs-tab-remove:hover) {
+    color: var(--app-text) !important;
+    background: var(--app-surface-muted);
   }
 
   :deep(.ant-tabs-nav-operations) {
@@ -122,7 +143,13 @@ function handleEdit(targetKey: string | MouseEvent | KeyboardEvent, action: 'add
   :deep(.ant-tabs-nav-more) {
     width: 30px;
     height: 30px;
+    color: var(--app-text-secondary);
     border-radius: 6px;
+  }
+
+  :deep(.ant-tabs-nav-more:hover) {
+    color: var(--app-text);
+    background: var(--app-surface-muted);
   }
 }
 </style>

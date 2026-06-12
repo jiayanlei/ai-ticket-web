@@ -5,8 +5,8 @@
         <a-tag color="processing">Console Ready</a-tag>
         <a-tag color="success">{{ authModeText }}</a-tag>
       </div>
-      <h2>面向工单运营团队的 AI 分析管理端</h2>
-      <p>认证接口、token、用户状态和路由守卫均通过统一配置接入。</p>
+      <h2>Enterprise AI Customer Service Operating System</h2>
+      <p>Operate tickets, calls, omnichannel conversations, AI agents, SLA risk, and enterprise service intelligence from one command center.</p>
     </aside>
 
     <section class="login-page__panel">
@@ -14,21 +14,21 @@
         <span v-if="appSettings.app.showLogo" class="login-page__logo">AI</span>
         <div>
           <h1>{{ envConfig.appTitle }}</h1>
-          <p>统一工单处理、AI 分析和知识库运营入口</p>
+          <p>Future Enterprise SaaS for AI-native service operations</p>
         </div>
       </div>
 
       <a-form class="login-page__form" :model="formState" :rules="rules" layout="vertical" @finish="handleLogin">
-        <a-form-item label="账号" name="username">
-          <a-input v-model:value="formState.username" autocomplete="username" placeholder="请输入账号">
+        <a-form-item label="Account" name="username">
+          <a-input v-model:value="formState.username" autocomplete="username" placeholder="Enter account">
             <template #prefix>
               <UserOutlined />
             </template>
           </a-input>
         </a-form-item>
 
-        <a-form-item label="密码" name="password">
-          <a-input-password v-model:value="formState.password" autocomplete="current-password" placeholder="请输入密码">
+        <a-form-item label="Password" name="password">
+          <a-input-password v-model:value="formState.password" autocomplete="current-password" placeholder="Enter password">
             <template #prefix>
               <LockOutlined />
             </template>
@@ -36,11 +36,11 @@
         </a-form-item>
 
         <div class="login-page__options">
-          <a-checkbox v-model:checked="remember">记住登录状态</a-checkbox>
-          <a>忘记密码</a>
+          <a-checkbox v-model:checked="remember">Remember this workspace</a-checkbox>
+          <a>Forgot password</a>
         </div>
 
-        <a-button block type="primary" html-type="submit" :loading="loading">登录</a-button>
+        <a-button block type="primary" html-type="submit" :loading="loading">Sign In</a-button>
       </a-form>
     </section>
   </main>
@@ -78,19 +78,19 @@ const rules: Record<string, Rule[]> = {
   username: [
     {
       required: true,
-      message: '请输入账号',
+      message: 'Please enter account',
       trigger: 'blur',
     },
   ],
   password: [
     {
       required: true,
-      message: '请输入密码',
+      message: 'Please enter password',
       trigger: 'blur',
     },
     {
       min: 6,
-      message: '密码至少 6 位',
+      message: 'Password must contain at least 6 characters',
       trigger: 'blur',
     },
   ],
@@ -105,10 +105,10 @@ async function handleLogin() {
 
   try {
     await userStore.login(formState, remember.value, router);
-    message.success('登录成功');
+    message.success('Signed in');
     await router.replace(redirectPath.value);
   } catch (error) {
-    message.error(getErrorMessage(error, '登录失败，请稍后重试'));
+    message.error(getErrorMessage(error, 'Sign in failed. Please try again.'));
   } finally {
     loading.value = false;
   }
@@ -120,14 +120,19 @@ async function handleLogin() {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
   min-height: 100vh;
-  background: #0f172a;
+  background:
+    radial-gradient(circle at 16% 12%, rgba(79, 123, 255, 0.24), transparent 30%),
+    radial-gradient(circle at 78% 18%, rgba(0, 229, 255, 0.16), transparent 28%),
+    #070b14;
 
   &__panel {
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 48px 56px;
-    background: #ffffff;
+    background: rgba(15, 23, 42, 0.86);
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(22px);
   }
 
   &__brand {
@@ -138,7 +143,7 @@ async function handleLogin() {
 
     h1 {
       margin: 0;
-      color: #111827;
+      color: #f8fafc;
       font-size: 24px;
       font-weight: 700;
       line-height: 1.3;
@@ -146,7 +151,7 @@ async function handleLogin() {
 
     p {
       margin: 6px 0 0;
-      color: #6b7280;
+      color: #94a3b8;
       font-size: 14px;
     }
   }
@@ -160,12 +165,23 @@ async function handleLogin() {
     color: #ffffff;
     font-size: 16px;
     font-weight: 800;
-    background: #1677ff;
+    background: linear-gradient(135deg, #4f7bff, #00e5ff);
     border-radius: 8px;
   }
 
   &__form {
     width: 100%;
+
+    :deep(.ant-form-item-label > label) {
+      color: #cbd5e1;
+    }
+
+    :deep(.ant-input-affix-wrapper) {
+      color: #f8fafc;
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+    }
   }
 
   &__options {
@@ -173,7 +189,7 @@ async function handleLogin() {
     align-items: center;
     justify-content: space-between;
     margin: -4px 0 20px;
-    color: #6b7280;
+    color: #94a3b8;
     font-size: 14px;
   }
 
@@ -186,7 +202,7 @@ async function handleLogin() {
     overflow: hidden;
     color: #ffffff;
     background:
-      linear-gradient(135deg, rgb(22 119 255 / 82%), rgb(15 23 42 / 94%)),
+      linear-gradient(135deg, rgb(79 123 255 / 72%), rgb(7 11 20 / 94%)),
       url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80') center/cover;
 
     h2 {

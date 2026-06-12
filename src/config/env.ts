@@ -43,7 +43,7 @@ function readRouterHistory(key: string, defaultValue: RouterHistoryMode): Router
 
 export const envConfig = Object.freeze({
   appEnv: readEnv('VITE_APP_ENV', import.meta.env.MODE) as AppEnv,
-  appTitle: readEnv('VITE_APP_TITLE', 'AI智能工单分析系统'),
+  appTitle: readEnv('VITE_APP_TITLE', 'AI Ticket OS'),
 
   apiPrefix: readEnv('VITE_APP_API_PREFIX', '/api'),
   baseApi: readEnv('VITE_APP_BASE_API', ''),

@@ -15,20 +15,96 @@
         <span v-if="appStore.layout.showLogo" class="app-header__logo">AI</span>
         <span class="app-header__title">{{ envConfig.appTitle }}</span>
       </div>
+
+      <a-select v-model:value="tenant" class="app-header__select" popup-class-name="app-header-dropdown">
+        <a-select-option value="global">Global Enterprise</a-select-option>
+        <a-select-option value="apac">APAC Support Hub</a-select-option>
+        <a-select-option value="emea">EMEA Success Ops</a-select-option>
+      </a-select>
+
+      <a-select v-model:value="organization" class="app-header__select app-header__select--wide" popup-class-name="app-header-dropdown">
+        <a-select-option value="cx">Customer Experience</a-select-option>
+        <a-select-option value="call">Call Center North</a-select-option>
+        <a-select-option value="after-sales">After Sales Group</a-select-option>
+      </a-select>
     </div>
 
     <AppTopMenu v-if="showTopMenu" />
 
     <div class="app-header__right">
-      <a-tooltip v-if="appSettings.app.showSearch" title="全局搜索">
-        <a-button type="text" @click="handleSearch">
+      <a-input v-if="appSettings.app.showSearch" class="app-header__search" placeholder="Search tickets, customers, agents, workflows...">
+        <template #prefix>
+          <SearchOutlined />
+        </template>
+      </a-input>
+
+      <a-tooltip title="AI Copilot">
+        <a-button class="app-header__ai" type="text" @click="handleCopilot">
           <template #icon>
-            <SearchOutlined />
+            <RobotOutlined />
+          </template>
+          <span>Copilot</span>
+        </a-button>
+      </a-tooltip>
+
+      <a-tooltip title="Task Center">
+        <a-badge count="12" size="small">
+          <a-button type="text" @click="handleSearch">
+            <template #icon>
+              <CheckSquareOutlined />
+            </template>
+          </a-button>
+        </a-badge>
+      </a-tooltip>
+
+      <a-tooltip title="Message Center">
+        <a-badge dot>
+          <a-button type="text" @click="handleSearch">
+            <template #icon>
+              <MessageOutlined />
+            </template>
+          </a-button>
+        </a-badge>
+      </a-tooltip>
+
+      <a-tooltip title="Notification Center">
+        <a-badge count="7" size="small">
+          <a-button type="text" @click="handleSearch">
+            <template #icon>
+              <BellOutlined />
+            </template>
+          </a-button>
+        </a-badge>
+      </a-tooltip>
+
+      <a-tooltip title="System Alerts">
+        <a-badge count="3" size="small">
+          <a-button type="text" danger @click="handleSearch">
+            <template #icon>
+              <AlertOutlined />
+            </template>
+          </a-button>
+        </a-badge>
+      </a-tooltip>
+
+      <a-tooltip title="Language">
+        <a-button type="text" @click="handleLanguage">
+          <template #icon>
+            <GlobalOutlined />
+          </template>
+          <span class="app-header__compact-text">EN</span>
+        </a-button>
+      </a-tooltip>
+
+      <a-tooltip title="Theme">
+        <a-button type="text" @click="toggleTheme">
+          <template #icon>
+            <BulbOutlined />
           </template>
         </a-button>
       </a-tooltip>
 
-      <a-tooltip v-if="appSettings.app.showRefreshButton" title="刷新当前页">
+      <a-tooltip v-if="appSettings.app.showRefreshButton" title="Refresh">
         <a-button type="text" @click="handleRefresh">
           <template #icon>
             <ReloadOutlined />
@@ -36,7 +112,7 @@
         </a-button>
       </a-tooltip>
 
-      <a-tooltip title="进入数据大屏">
+      <a-tooltip title="Open Command Screen">
         <a-button type="text" @click="openDataScreen">
           <template #icon>
             <DashboardOutlined />
@@ -44,7 +120,7 @@
         </a-button>
       </a-tooltip>
 
-      <a-tooltip v-if="appSettings.app.showFullscreenButton" title="全屏">
+      <a-tooltip v-if="appSettings.app.showFullscreenButton" title="Fullscreen">
         <a-button type="text" @click="toggleFullscreen">
           <template #icon>
             <FullscreenOutlined />
@@ -52,7 +128,7 @@
         </a-button>
       </a-tooltip>
 
-      <a-tooltip title="布局设置预留">
+      <a-tooltip title="Layout Settings">
         <a-button type="text" @click="settingsOpen = true">
           <template #icon>
             <SettingOutlined />
@@ -67,9 +143,10 @@
         </button>
         <template #overlay>
           <a-menu>
-            <a-menu-item key="profile" disabled>用户信息预留</a-menu-item>
+            <a-menu-item key="profile" disabled>User Center</a-menu-item>
+            <a-menu-item key="tenant" disabled>Tenant: Global Enterprise</a-menu-item>
             <a-menu-divider />
-            <a-menu-item key="logout" @click="handleLogout">退出登录</a-menu-item>
+            <a-menu-item key="logout" @click="handleLogout">Logout</a-menu-item>
           </a-menu>
         </template>
       </a-dropdown>
@@ -81,11 +158,18 @@
 
 <script setup lang="ts">
 import {
+  AlertOutlined,
+  BellOutlined,
+  BulbOutlined,
+  CheckSquareOutlined,
   DashboardOutlined,
   FullscreenOutlined,
+  GlobalOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  MessageOutlined,
   ReloadOutlined,
+  RobotOutlined,
   SearchOutlined,
   SettingOutlined,
 } from '@ant-design/icons-vue';
@@ -104,17 +188,31 @@ const appStore = useAppStore();
 const userStore = useUserStore();
 const router = useRouter();
 const settingsOpen = ref(false);
+const tenant = ref('global');
+const organization = ref('cx');
 const showTopMenu = computed(() => ['top', 'mixed'].includes(appStore.layout.menuMode));
 const showSiderControl = computed(() => ['side', 'mixed'].includes(appStore.layout.menuMode));
 const showHeaderBrand = computed(() => appStore.layout.menuMode === 'top');
 const userInitial = computed(() => userStore.displayName.slice(0, 1));
 
 function handleSearch() {
-  message.info('全局搜索能力已通过配置预留');
+  message.info('Global command center entry is ready');
+}
+
+function handleCopilot() {
+  message.info('AI Copilot is monitoring service risk, SLA pressure, and agent capacity');
+}
+
+function handleLanguage() {
+  message.info('English workspace is active');
 }
 
 function handleRefresh() {
   router.go(0);
+}
+
+function toggleTheme() {
+  appStore.setTheme(appStore.layout.theme === 'dark' ? 'light' : 'dark');
 }
 
 async function openDataScreen() {
@@ -139,7 +237,7 @@ async function toggleFullscreen() {
 
 async function handleLogout() {
   await userStore.logout(router);
-  message.success('已退出登录');
+  message.success('Logged out');
   router.replace(LOGIN_PATH);
 }
 </script>
@@ -152,12 +250,13 @@ async function handleLogout() {
   flex-wrap: nowrap;
   gap: 12px;
   height: $app-header-height;
-  padding: 0 12px;
+  padding: 0 16px;
   line-height: normal;
   overflow: hidden;
-  background: #ffffff;
-  background: var(--app-surface);
+  background: var(--app-header-bg);
+  backdrop-filter: blur(22px);
   border-bottom: 1px solid var(--app-border);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
 
   &--fixed {
     position: sticky;
@@ -192,6 +291,15 @@ async function handleLogout() {
     margin-left: auto;
   }
 
+  :deep(.ant-btn-text) {
+    color: var(--app-text-secondary);
+  }
+
+  :deep(.ant-btn-text:hover) {
+    color: var(--app-text);
+    background: var(--app-surface-muted);
+  }
+
   &__trigger {
     width: 36px;
     height: 36px;
@@ -213,18 +321,60 @@ async function handleLogout() {
     color: #ffffff;
     font-size: 12px;
     font-weight: 700;
-    background: #1677ff;
-    border-radius: 6px;
+    background: linear-gradient(135deg, var(--app-primary), var(--app-accent));
+    border-radius: 8px;
   }
 
   &__title {
     overflow: hidden;
     color: var(--app-text);
-    font-family: cursive;
     font-size: 16px;
-    font-weight: 650;
+    font-weight: 750;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  &__select {
+    width: 148px;
+
+    &--wide {
+      width: 176px;
+    }
+
+    :deep(.ant-select-selector) {
+      color: var(--app-text);
+      background: var(--app-surface-muted) !important;
+      border-color: var(--app-border) !important;
+      border-radius: 8px;
+    }
+  }
+
+  &__search {
+    width: min(34vw, 520px);
+
+    :deep(.ant-input-affix-wrapper),
+    :deep(&.ant-input-affix-wrapper) {
+      color: var(--app-text);
+      background: var(--app-surface-muted);
+      border-color: var(--app-border);
+      border-radius: 999px;
+    }
+  }
+
+  &__ai {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #dbeafe !important;
+    background: linear-gradient(135deg, rgba(79, 123, 255, 0.22), rgba(0, 229, 255, 0.1)) !important;
+    border: 1px solid rgba(79, 123, 255, 0.3);
+    border-radius: 999px;
+  }
+
+  &__compact-text {
+    margin-left: 4px;
+    font-size: 12px;
+    font-weight: 700;
   }
 
   &__user {
@@ -237,7 +387,7 @@ async function handleLogout() {
     cursor: pointer;
     background: transparent;
     border: 0;
-    border-radius: 6px;
+    border-radius: 999px;
 
     &:hover {
       background: var(--app-surface-muted);
@@ -254,6 +404,14 @@ async function handleLogout() {
 
 @media (max-width: 760px) {
   .app-header {
+    &__select,
+    &__select--wide,
+    &__search,
+    &__ai span,
+    &__compact-text {
+      display: none;
+    }
+
     &__left {
       flex: 0 0 auto;
     }

@@ -6,7 +6,6 @@ import type {
   KnowledgeDocumentItem,
   KnowledgeDocumentPayload,
   KnowledgeDocumentQueryParams,
-  KnowledgeDocumentStatus,
 } from '@/api/knowledge';
 import { cloneMock, createMockId, createMockResponse, matchesKeyword, nowText, paginateMock, sortByTimeDesc } from '@/mock/core';
 

@@ -30,6 +30,8 @@ const appStore = useAppStore();
     flex-wrap: nowrap;
     width: max-content;
     min-width: 100%;
+    color: var(--app-text-secondary);
+    background: transparent;
     border-bottom: 0;
   }
 
@@ -55,6 +57,13 @@ const appStore = useAppStore();
     white-space: nowrap;
   }
 
+  :deep(.ant-menu-horizontal > .ant-menu-item:hover),
+  :deep(.ant-menu-horizontal > .ant-menu-submenu:hover),
+  :deep(.ant-menu-horizontal > .ant-menu-item-selected),
+  :deep(.ant-menu-horizontal > .ant-menu-submenu-selected) {
+    color: var(--app-text);
+  }
+
   :deep(.ant-menu-horizontal > .ant-menu-item .ant-menu-title-content),
   :deep(.ant-menu-horizontal > .ant-menu-submenu .ant-menu-submenu-title) {
     display: inline-flex;
@@ -67,6 +76,7 @@ const appStore = useAppStore();
   :deep(.ant-menu-horizontal .ant-menu-submenu-title .anticon) {
     flex: 0 0 auto;
     margin-inline-end: 6px;
+    color: currentColor;
     font-size: 16px;
   }
 

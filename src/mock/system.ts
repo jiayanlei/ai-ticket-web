@@ -58,10 +58,10 @@ const departmentsSeed: DeptItem[] = [
 
 const rolesSeed: MockRoleRecord[] = [
   { id: 'role-admin', roleName: '系统管理员', roleCode: 'admin', sortOrder: 1, status: 'ENABLED', remark: '拥有全量菜单和按钮权限', permissions: ['*', '*:*:*', ...getMockPermissionCodes()], createTime: '2025-01-12 09:00:00', updateTime: '2026-05-31 17:00:00' },
-  { id: 'role-ops-manager', roleName: '运维主管', roleCode: 'ops_manager', sortOrder: 2, status: 'ENABLED', remark: '负责工单统筹、升级和调度', permissions: ['ticket:order:list', 'ticket:order:update', 'ticket:order:detail', 'ticket:order:export', 'dashboard:workbench:view', 'dashboard:todo:view', 'analytics:cockpit:view', 'ai:overview:view', 'ai:conversation:list', 'system:user:list', 'system:role:list', 'system:dept:list'], createTime: '2025-01-13 09:00:00', updateTime: '2026-05-30 18:00:00' },
-  { id: 'role-knowledge-admin', roleName: '知识库管理员', roleCode: 'knowledge_admin', sortOrder: 3, status: 'ENABLED', remark: '维护知识文档、图谱与文档中心', permissions: ['knowledge:base:view', 'knowledge:document:list', 'knowledge:document:create', 'knowledge:document:update', 'knowledge:document:publish', 'knowledge:document:offline', 'knowledge:document:import', 'knowledge:document:export', 'knowledge:graph:view', 'knowledge:asset:list', 'culture:article:view'], createTime: '2025-01-14 09:00:00', updateTime: '2026-05-29 18:00:00' },
-  { id: 'role-agent', roleName: '客服坐席', roleCode: 'agent', sortOrder: 4, status: 'ENABLED', remark: '处理待办工单和知识检索', permissions: ['dashboard:todo:view', 'ticket:order:list', 'ticket:order:create', 'ticket:order:detail', 'knowledge:base:view', 'knowledge:document:center', 'ai:assistant:chat'], createTime: '2025-01-15 09:00:00', updateTime: '2026-05-28 17:00:00' },
-  { id: 'role-auditor', roleName: '审计访客', roleCode: 'auditor', sortOrder: 5, status: 'DISABLED', remark: '只读审计账号', permissions: ['dashboard:workbench:view', 'analytics:cockpit:view', 'ticket:order:list', 'knowledge:base:view', 'ai:conversation:list'], createTime: '2025-01-16 09:00:00', updateTime: '2026-04-22 10:00:00' },
+  { id: 'role-ops-manager', roleName: '运维主管', roleCode: 'ops_manager', sortOrder: 2, status: 'ENABLED', remark: '负责工单统筹、升级和调度', permissions: getMockPermissionCodes().filter((permission) => !permission.startsWith('system:audit')), createTime: '2025-01-13 09:00:00', updateTime: '2026-05-30 18:00:00' },
+  { id: 'role-knowledge-admin', roleName: '知识库管理员', roleCode: 'knowledge_admin', sortOrder: 3, status: 'ENABLED', remark: '维护知识文档、图谱与文档中心', permissions: getMockPermissionCodes().filter((permission) => permission.startsWith('knowledge') || permission.startsWith('ai:prompt') || permission === 'dashboard:workbench:view'), createTime: '2025-01-14 09:00:00', updateTime: '2026-05-29 18:00:00' },
+  { id: 'role-agent', roleName: '客服坐席', roleCode: 'agent', sortOrder: 4, status: 'ENABLED', remark: '处理待办工单和知识检索', permissions: ['dashboard:workbench:view', 'service:ticket:view', 'service:ticket:create', 'service:chat:view', 'omnichannel:inbox:view', 'customer:360:view', 'knowledge:base:view'], createTime: '2025-01-15 09:00:00', updateTime: '2026-05-28 17:00:00' },
+  { id: 'role-auditor', roleName: '审计访客', roleCode: 'auditor', sortOrder: 5, status: 'DISABLED', remark: '只读审计账号', permissions: ['dashboard:workbench:view', 'analytics:cockpit:view', 'analytics:operations:view', 'system:audit:view'], createTime: '2025-01-16 09:00:00', updateTime: '2026-04-22 10:00:00' },
 ];
 
 const usersSeed: MockUserRecord[] = [
@@ -102,8 +102,8 @@ let mockDepartments = cloneMock(departmentsSeed);
 let mockRoles = cloneMock(rolesSeed);
 let mockUsers = cloneMock(usersSeed);
 let mockSettings = cloneMock(settingsSeed);
-let mockTeamAssets = cloneMock(teamAssetsSeed);
-let mockCultureArticles = cloneMock(cultureSeed);
+const mockTeamAssets = cloneMock(teamAssetsSeed);
+const mockCultureArticles = cloneMock(cultureSeed);
 
 export function getMockDeptList(params: DeptQueryParams = {}) {
   const filtered = sortByTimeDesc(

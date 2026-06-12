@@ -18,7 +18,7 @@ const appStore = useAppStore();
 
 const contentStyle = computed(() => {
   const occupiedHeight =
-    56 + (appStore.layout.showTabs ? 40 : 0) + (appStore.layout.showBreadcrumb ? 44 : 0);
+    72 + (appStore.layout.showTabs ? 40 : 0) + (appStore.layout.showBreadcrumb ? 44 : 0);
 
   return {
     height: `calc(100vh - ${occupiedHeight}px)`,

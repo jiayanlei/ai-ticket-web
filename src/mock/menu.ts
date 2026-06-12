@@ -2,21 +2,23 @@ import type { CommonStatus } from '@/api/types';
 import type { MenuItem, MenuPayload, MenuQueryParams, MenuType } from '@/api/menu';
 import { cloneMock, createMockId, createMockResponse, nowText } from '@/mock/core';
 
-const menuTime = '2026-06-07 09:00:00';
+const menuTime = '2026-06-12 09:00:00';
 
-function createMenuItem(input: {
+interface MenuSeedInput {
   id: string;
   parentId: string | number;
   menuName: string;
   menuType: MenuType;
+  sortOrder: number;
   path?: string;
   component?: string;
   perms?: string;
   icon?: string;
-  sortOrder: number;
   visible?: boolean;
   status?: CommonStatus;
-}): MenuItem {
+}
+
+function createMenuItem(input: MenuSeedInput): MenuItem {
   return {
     id: input.id,
     parentId: input.parentId,
@@ -34,412 +36,86 @@ function createMenuItem(input: {
   };
 }
 
-const menuSeeds: MenuItem[] = [
-  createMenuItem({
-    id: 'm-dashboard',
-    parentId: 0,
-    menuName: '首页工作台',
-    menuType: 'DIR',
-    sortOrder: 1,
-    icon: 'dashboard',
-  }),
-  createMenuItem({
-    id: 'm-dashboard-workbench',
-    parentId: 'm-dashboard',
-    menuName: '工作台',
-    menuType: 'MENU',
-    path: '/dashboard/workbench',
-    component: 'dashboard/workbench/index',
-    perms: 'dashboard:workbench:view',
-    icon: 'home',
-    sortOrder: 1,
-  }),
-  createMenuItem({
-    id: 'm-dashboard-todo',
-    parentId: 'm-dashboard',
-    menuName: '我的待办',
-    menuType: 'MENU',
-    path: '/dashboard/todo',
-    component: 'dashboard/todo/index',
-    perms: 'dashboard:todo:view',
-    icon: 'schedule',
-    sortOrder: 2,
-  }),
+const pageComponent = 'ai-ticket-os/index';
 
-  createMenuItem({
-    id: 'm-analytics',
-    parentId: 0,
-    menuName: '运营大屏',
-    menuType: 'DIR',
-    sortOrder: 2,
-    icon: 'area-chart',
-  }),
-  createMenuItem({
-    id: 'm-analytics-report',
-    parentId: 'm-analytics',
-    menuName: '数据报表',
-    menuType: 'MENU',
-    path: '/analytics/cockpit',
-    component: 'analytics/cockpit/index',
-    perms: 'analytics:cockpit:view',
-    icon: 'bar-chart',
-    sortOrder: 1,
-  }),
-
-  createMenuItem({
-    id: 'm-ticket',
-    parentId: 0,
-    menuName: '工单管理',
-    menuType: 'DIR',
-    sortOrder: 3,
-    icon: 'ticket',
-  }),
-  createMenuItem({
-    id: 'm-ticket-list',
-    parentId: 'm-ticket',
-    menuName: '工单列表',
-    menuType: 'MENU',
-    path: '/ticket/list',
-    component: 'ticket/list/index',
-    perms: 'ticket:order:list',
-    icon: 'unordered-list',
-    sortOrder: 1,
-  }),
-  createMenuItem({
-    id: 'm-ticket-create',
-    parentId: 'm-ticket',
-    menuName: '新建工单',
-    menuType: 'MENU',
-    path: '/ticket/create',
-    component: 'ticket/create/index',
-    perms: 'ticket:order:create',
-    icon: 'plus-circle',
-    sortOrder: 2,
-  }),
-  createMenuItem({
-    id: 'm-ticket-trash',
-    parentId: 'm-ticket',
-    menuName: '工单回收站',
-    menuType: 'MENU',
-    path: '/ticket/trash',
-    component: 'ticket/trash/index',
-    perms: 'ticket:order:trash',
-    icon: 'delete',
-    sortOrder: 3,
-  }),
-
-  createMenuItem({
-    id: 'm-knowledge',
-    parentId: 0,
-    menuName: '知识中心',
-    menuType: 'DIR',
-    sortOrder: 4,
-    icon: 'book',
-  }),
-  createMenuItem({
-    id: 'm-knowledge-base',
-    parentId: 'm-knowledge',
-    menuName: '知识库',
-    menuType: 'MENU',
-    path: '/knowledge',
-    component: 'knowledge/base/index',
-    perms: 'knowledge:base:view',
-    icon: 'read',
-    sortOrder: 1,
-  }),
-  createMenuItem({
-    id: 'm-knowledge-manage',
-    parentId: 'm-knowledge',
-    menuName: '知识库管理',
-    menuType: 'MENU',
-    path: '/knowledge/manage',
-    component: 'knowledge/manage/index',
-    perms: 'knowledge:document:list',
-    icon: 'book',
-    sortOrder: 2,
-  }),
-  createMenuItem({
-    id: 'm-knowledge-team-assets',
-    parentId: 'm-knowledge',
-    menuName: '文档中心',
-    menuType: 'MENU',
-    path: '/knowledge/team-assets',
-    component: 'assets/team/index',
-    perms: 'knowledge:asset:list',
-    icon: 'team',
-    sortOrder: 3,
-  }),
-
-  createMenuItem({
-    id: 'm-ai',
-    parentId: 0,
-    menuName: 'AI 应用',
-    menuType: 'DIR',
-    sortOrder: 5,
-    icon: 'robot',
-  }),
-  createMenuItem({
-    id: 'm-ai-chat',
-    parentId: 'm-ai',
-    menuName: 'AI 问答',
-    menuType: 'MENU',
-    path: '/ai/chat',
-    component: 'console/codex/index',
-    perms: 'ai:assistant:chat',
-    icon: 'robot',
-    sortOrder: 1,
-  }),
-  createMenuItem({
-    id: 'm-ai-overview',
-    parentId: 'm-ai',
-    menuName: 'AI 分析概览',
-    menuType: 'MENU',
-    path: '/ai/overview',
-    component: 'ai/overview/index',
-    perms: 'ai:overview:view',
-    icon: 'bar-chart',
-    sortOrder: 2,
-  }),
-  createMenuItem({
-    id: 'm-ai-conversation',
-    parentId: 'm-ai',
-    menuName: '对话记录',
-    menuType: 'MENU',
-    path: '/ai/conversation',
-    component: 'conversation/records/index',
-    perms: 'ai:conversation:list',
-    icon: 'profile',
-    sortOrder: 3,
-  }),
-
-  createMenuItem({
-    id: 'm-system',
-    parentId: 0,
-    menuName: '系统设置',
-    menuType: 'DIR',
-    sortOrder: 6,
-    icon: 'setting',
-  }),
-  createMenuItem({
-    id: 'm-system-settings',
-    parentId: 'm-system',
-    menuName: '系统配置',
-    menuType: 'MENU',
-    path: '/system/settings',
-    component: 'system/settings/index',
-    perms: 'system:settings:view',
-    icon: 'setting',
-    sortOrder: 1,
-  }),
-  createMenuItem({
-    id: 'm-system-users',
-    parentId: 'm-system',
-    menuName: '用户管理',
-    menuType: 'MENU',
-    path: '/system/users',
-    component: 'system/users/index',
-    perms: 'system:user:list',
-    icon: 'user',
-    sortOrder: 2,
-  }),
-  createMenuItem({
-    id: 'm-system-roles',
-    parentId: 'm-system',
-    menuName: '角色管理',
-    menuType: 'MENU',
-    path: '/system/roles',
-    component: 'system/roles/index',
-    perms: 'system:role:list',
-    icon: 'team',
-    sortOrder: 3,
-  }),
-  createMenuItem({
-    id: 'm-system-depts',
-    parentId: 'm-system',
-    menuName: '部门管理',
-    menuType: 'MENU',
-    path: '/system/depts',
-    component: 'system/depts/index',
-    perms: 'system:dept:list',
-    icon: 'apartment',
-    sortOrder: 4,
-  }),
-  createMenuItem({
-    id: 'm-system-menus',
-    parentId: 'm-system',
-    menuName: '菜单管理',
-    menuType: 'MENU',
-    path: '/system/menus',
-    component: 'system/menus/index',
-    perms: 'system:menu:list',
-    icon: 'menu',
-    sortOrder: 5,
-  }),
-  createMenuItem({
-    id: 'm-system-permission',
-    parentId: 'm-system',
-    menuName: '用户权限',
-    menuType: 'MENU',
-    path: '/system/permission',
-    component: 'system/permission/index',
-    perms: 'system:permission:view',
-    icon: 'shield',
-    sortOrder: 6,
-  }),
-
-  createMenuItem({
-    id: 'btn-ticket-create',
-    parentId: 'm-ticket-list',
-    menuName: '工单新增',
-    menuType: 'BUTTON',
-    perms: 'ticket:order:create',
-    sortOrder: 1,
-  }),
-  createMenuItem({
-    id: 'btn-ticket-update',
-    parentId: 'm-ticket-list',
-    menuName: '工单编辑',
-    menuType: 'BUTTON',
-    perms: 'ticket:order:update',
-    sortOrder: 2,
-  }),
-  createMenuItem({
-    id: 'btn-ticket-delete',
-    parentId: 'm-ticket-list',
-    menuName: '工单删除',
-    menuType: 'BUTTON',
-    perms: 'ticket:order:delete',
-    sortOrder: 3,
-  }),
-  createMenuItem({
-    id: 'btn-ticket-detail',
-    parentId: 'm-ticket-list',
-    menuName: '查看详情',
-    menuType: 'BUTTON',
-    perms: 'ticket:order:detail',
-    sortOrder: 4,
-  }),
-  createMenuItem({
-    id: 'btn-ticket-export',
-    parentId: 'm-ticket-list',
-    menuName: '工单导出',
-    menuType: 'BUTTON',
-    perms: 'ticket:order:export',
-    sortOrder: 5,
-  }),
-  createMenuItem({
-    id: 'btn-knowledge-create',
-    parentId: 'm-knowledge-manage',
-    menuName: '知识新增',
-    menuType: 'BUTTON',
-    perms: 'knowledge:document:create',
-    sortOrder: 1,
-  }),
-  createMenuItem({
-    id: 'btn-knowledge-update',
-    parentId: 'm-knowledge-manage',
-    menuName: '知识编辑',
-    menuType: 'BUTTON',
-    perms: 'knowledge:document:update',
-    sortOrder: 2,
-  }),
-  createMenuItem({
-    id: 'btn-knowledge-delete',
-    parentId: 'm-knowledge-manage',
-    menuName: '知识删除',
-    menuType: 'BUTTON',
-    perms: 'knowledge:document:delete',
-    sortOrder: 3,
-  }),
-  createMenuItem({
-    id: 'btn-knowledge-publish',
-    parentId: 'm-knowledge-manage',
-    menuName: '知识发布',
-    menuType: 'BUTTON',
-    perms: 'knowledge:document:publish',
-    sortOrder: 4,
-  }),
-  createMenuItem({
-    id: 'btn-knowledge-offline',
-    parentId: 'm-knowledge-manage',
-    menuName: '知识下架',
-    menuType: 'BUTTON',
-    perms: 'knowledge:document:offline',
-    sortOrder: 5,
-  }),
-  createMenuItem({
-    id: 'btn-knowledge-import',
-    parentId: 'm-knowledge-document',
-    menuName: '文档导入',
-    menuType: 'BUTTON',
-    perms: 'knowledge:document:import',
-    sortOrder: 1,
-  }),
-  createMenuItem({
-    id: 'btn-knowledge-export',
-    parentId: 'm-knowledge-document',
-    menuName: '文档导出',
-    menuType: 'BUTTON',
-    perms: 'knowledge:document:export',
-    sortOrder: 2,
-  }),
-  createMenuItem({
-    id: 'btn-user-create',
-    parentId: 'm-system-users',
-    menuName: '用户新增',
-    menuType: 'BUTTON',
-    perms: 'system:user:create',
-    sortOrder: 1,
-  }),
-  createMenuItem({
-    id: 'btn-user-update',
-    parentId: 'm-system-users',
-    menuName: '用户编辑',
-    menuType: 'BUTTON',
-    perms: 'system:user:update',
-    sortOrder: 2,
-  }),
-  createMenuItem({
-    id: 'btn-user-delete',
-    parentId: 'm-system-users',
-    menuName: '用户删除',
-    menuType: 'BUTTON',
-    perms: 'system:user:delete',
-    sortOrder: 3,
-  }),
-  createMenuItem({
-    id: 'btn-role-assign',
-    parentId: 'm-system-roles',
-    menuName: '角色授权',
-    menuType: 'BUTTON',
-    perms: 'system:role:assign',
-    sortOrder: 1,
-  }),
-  createMenuItem({
-    id: 'btn-role-update',
-    parentId: 'm-system-roles',
-    menuName: '角色编辑',
-    menuType: 'BUTTON',
-    perms: 'system:role:update',
-    sortOrder: 2,
-  }),
-  createMenuItem({
-    id: 'btn-menu-update',
-    parentId: 'm-system-menus',
-    menuName: '菜单编辑',
-    menuType: 'BUTTON',
-    perms: 'system:menu:update',
-    sortOrder: 1,
-  }),
-  createMenuItem({
-    id: 'btn-settings-update',
-    parentId: 'm-system-settings',
-    menuName: '系统设置保存',
-    menuType: 'BUTTON',
-    perms: 'system:settings:update',
-    sortOrder: 1,
-  }),
+const domainSeeds: MenuSeedInput[] = [
+  { id: 'm-smart-workspace', parentId: 0, menuName: 'Smart Workspace', menuType: 'DIR', sortOrder: 1, icon: 'dashboard' },
+  { id: 'm-service-center', parentId: 0, menuName: 'Service Center', menuType: 'DIR', sortOrder: 2, icon: 'customer-service' },
+  { id: 'm-omnichannel-center', parentId: 0, menuName: 'Omnichannel Center', menuType: 'DIR', sortOrder: 3, icon: 'inbox' },
+  { id: 'm-agent-operations', parentId: 0, menuName: 'Agent Operations', menuType: 'DIR', sortOrder: 4, icon: 'team' },
+  { id: 'm-ai-capability', parentId: 0, menuName: 'AI Capability Center', menuType: 'DIR', sortOrder: 5, icon: 'robot' },
+  { id: 'm-customer-center', parentId: 0, menuName: 'Customer Center', menuType: 'DIR', sortOrder: 6, icon: 'user' },
+  { id: 'm-knowledge-center', parentId: 0, menuName: 'Knowledge Center', menuType: 'DIR', sortOrder: 7, icon: 'book' },
+  { id: 'm-analytics', parentId: 0, menuName: 'Analytics', menuType: 'DIR', sortOrder: 8, icon: 'bar-chart' },
+  { id: 'm-system-management', parentId: 0, menuName: 'System Management', menuType: 'DIR', sortOrder: 9, icon: 'setting' },
 ];
+
+const pageSeedInputs: MenuSeedInput[] = [
+  { id: 'm-dashboard-workbench', parentId: 'm-smart-workspace', menuName: 'Dashboard', path: '/dashboard/workbench', perms: 'dashboard:workbench:view', icon: 'dashboard', sortOrder: 1, menuType: 'MENU' },
+
+  { id: 'm-service-tickets', parentId: 'm-service-center', menuName: 'Ticket Center', path: '/service/tickets', perms: 'service:ticket:view', icon: 'ticket', sortOrder: 1, menuType: 'MENU' },
+  { id: 'm-service-calls', parentId: 'm-service-center', menuName: 'Call Center', path: '/service/calls', perms: 'service:call:view', icon: 'phone', sortOrder: 2, menuType: 'MENU' },
+  { id: 'm-service-live-chat', parentId: 'm-service-center', menuName: 'Live Chat Center', path: '/service/live-chat', perms: 'service:chat:view', icon: 'message', sortOrder: 3, menuType: 'MENU' },
+
+  { id: 'm-omni-email', parentId: 'm-omnichannel-center', menuName: 'Email Center', path: '/omnichannel/email', perms: 'omnichannel:email:view', icon: 'mail', sortOrder: 1, menuType: 'MENU' },
+  { id: 'm-omni-sms', parentId: 'm-omnichannel-center', menuName: 'SMS Center', path: '/omnichannel/sms', perms: 'omnichannel:sms:view', icon: 'mobile', sortOrder: 2, menuType: 'MENU' },
+  { id: 'm-omni-inbox', parentId: 'm-omnichannel-center', menuName: 'Unified Inbox', path: '/omnichannel/inbox', perms: 'omnichannel:inbox:view', icon: 'inbox', sortOrder: 3, menuType: 'MENU' },
+
+  { id: 'm-ops-agents', parentId: 'm-agent-operations', menuName: 'Agent Center', path: '/operations/agents', perms: 'operations:agent:view', icon: 'team', sortOrder: 1, menuType: 'MENU' },
+  { id: 'm-ops-scheduling', parentId: 'm-agent-operations', menuName: 'Workforce Scheduling', path: '/operations/scheduling', perms: 'operations:schedule:view', icon: 'schedule', sortOrder: 2, menuType: 'MENU' },
+  { id: 'm-ops-performance', parentId: 'm-agent-operations', menuName: 'Performance Center', path: '/operations/performance', perms: 'operations:performance:view', icon: 'trophy', sortOrder: 3, menuType: 'MENU' },
+  { id: 'm-ops-quality', parentId: 'm-agent-operations', menuName: 'AI Quality Inspection', path: '/operations/quality', perms: 'operations:quality:view', icon: 'safety', sortOrder: 4, menuType: 'MENU' },
+  { id: 'm-ops-training', parentId: 'm-agent-operations', menuName: 'Training Center', path: '/operations/training', perms: 'operations:training:view', icon: 'read', sortOrder: 5, menuType: 'MENU' },
+
+  { id: 'm-ai-agents', parentId: 'm-ai-capability', menuName: 'AI Agent Center', path: '/ai/agents', perms: 'ai:agent:view', icon: 'robot', sortOrder: 1, menuType: 'MENU' },
+  { id: 'm-ai-workflows', parentId: 'm-ai-capability', menuName: 'AI Workflow Center', path: '/ai/workflows', perms: 'ai:workflow:view', icon: 'branches', sortOrder: 2, menuType: 'MENU' },
+  { id: 'm-ai-prompts', parentId: 'm-ai-capability', menuName: 'AI Prompt Center', path: '/ai/prompts', perms: 'ai:prompt:view', icon: 'code', sortOrder: 3, menuType: 'MENU' },
+  { id: 'm-ai-models', parentId: 'm-ai-capability', menuName: 'AI Model Center', path: '/ai/models', perms: 'ai:model:view', icon: 'experiment', sortOrder: 4, menuType: 'MENU' },
+
+  { id: 'm-customer-360', parentId: 'm-customer-center', menuName: 'Customer 360', path: '/customers/360', perms: 'customer:360:view', icon: 'user', sortOrder: 1, menuType: 'MENU' },
+  { id: 'm-customer-journey', parentId: 'm-customer-center', menuName: 'Customer Journey', path: '/customers/journey', perms: 'customer:journey:view', icon: 'deployment-unit', sortOrder: 2, menuType: 'MENU' },
+
+  { id: 'm-knowledge-base', parentId: 'm-knowledge-center', menuName: 'Knowledge Base', path: '/knowledge/base', perms: 'knowledge:base:view', icon: 'book', sortOrder: 1, menuType: 'MENU' },
+
+  { id: 'm-analytics-operations', parentId: 'm-analytics', menuName: 'Operations Analytics', path: '/analytics/operations', perms: 'analytics:operations:view', icon: 'line-chart', sortOrder: 1, menuType: 'MENU' },
+  { id: 'm-analytics-bi', parentId: 'm-analytics', menuName: 'BI Reports', path: '/analytics/bi', perms: 'analytics:bi:view', icon: 'bar-chart', sortOrder: 2, menuType: 'MENU' },
+  { id: 'm-analytics-cockpit', parentId: 'm-analytics', menuName: 'Data Cockpit', path: '/analytics/cockpit', perms: 'analytics:cockpit:view', icon: 'dashboard', sortOrder: 3, menuType: 'MENU' },
+  { id: 'm-analytics-sla', parentId: 'm-analytics', menuName: 'SLA Management', path: '/analytics/sla', perms: 'analytics:sla:view', icon: 'clock', sortOrder: 4, menuType: 'MENU' },
+  { id: 'm-analytics-risk', parentId: 'm-analytics', menuName: 'Risk Warning', path: '/analytics/risk', perms: 'analytics:risk:view', icon: 'warning', sortOrder: 5, menuType: 'MENU' },
+  { id: 'm-analytics-monitoring', parentId: 'm-analytics', menuName: 'System Monitoring', path: '/analytics/monitoring', perms: 'analytics:monitoring:view', icon: 'monitor', sortOrder: 6, menuType: 'MENU' },
+  { id: 'm-analytics-alerts', parentId: 'm-analytics', menuName: 'Alert Center', path: '/analytics/alerts', perms: 'analytics:alert:view', icon: 'alert', sortOrder: 7, menuType: 'MENU' },
+
+  { id: 'm-system-permissions', parentId: 'm-system-management', menuName: 'Permission Center', path: '/system/permissions', perms: 'system:permission:view', icon: 'shield', sortOrder: 1, menuType: 'MENU' },
+  { id: 'm-system-audit', parentId: 'm-system-management', menuName: 'Audit Center', path: '/system/audit', perms: 'system:audit:view', icon: 'file-search', sortOrder: 2, menuType: 'MENU' },
+  { id: 'm-system-management-page', parentId: 'm-system-management', menuName: 'System Management', path: '/system/management', perms: 'system:management:view', icon: 'setting', sortOrder: 3, menuType: 'MENU' },
+  { id: 'm-system-open-platform', parentId: 'm-system-management', menuName: 'Open Platform', path: '/system/open-platform', perms: 'system:open-platform:view', icon: 'api', sortOrder: 4, menuType: 'MENU' },
+];
+
+const pageSeeds: MenuSeedInput[] = pageSeedInputs.map((item) => ({
+  component: pageComponent,
+  ...item,
+}));
+
+const compatibilitySeeds: MenuSeedInput[] = [
+  { id: 'm-ticket-list-legacy', parentId: 'm-service-center', menuName: 'Legacy Ticket List', path: '/ticket/list', component: 'ticket/list/index', perms: 'service:ticket:view', icon: 'unordered-list', sortOrder: 90, menuType: 'MENU', visible: false },
+  { id: 'm-ticket-create-legacy', parentId: 'm-service-center', menuName: 'Legacy Ticket Create', path: '/ticket/create', component: 'ticket/create/index', perms: 'service:ticket:create', icon: 'plus-circle', sortOrder: 91, menuType: 'MENU', visible: false },
+  { id: 'm-ticket-trash-legacy', parentId: 'm-service-center', menuName: 'Legacy Ticket Trash', path: '/ticket/trash', component: 'ticket/trash/index', perms: 'service:ticket:delete', icon: 'delete', sortOrder: 92, menuType: 'MENU', visible: false },
+];
+
+const actionSeeds: MenuSeedInput[] = [
+  { id: 'btn-ticket-create', parentId: 'm-service-tickets', menuName: 'Create Ticket', menuType: 'BUTTON', perms: 'service:ticket:create', sortOrder: 1 },
+  { id: 'btn-ticket-update', parentId: 'm-service-tickets', menuName: 'Update Ticket', menuType: 'BUTTON', perms: 'service:ticket:update', sortOrder: 2 },
+  { id: 'btn-ticket-approve', parentId: 'm-service-tickets', menuName: 'Approve Ticket', menuType: 'BUTTON', perms: 'service:ticket:approve', sortOrder: 3 },
+  { id: 'btn-ticket-export', parentId: 'm-service-tickets', menuName: 'Export Tickets', menuType: 'BUTTON', perms: 'service:ticket:export', sortOrder: 4 },
+  { id: 'btn-call-monitor', parentId: 'm-service-calls', menuName: 'Monitor Call', menuType: 'BUTTON', perms: 'service:call:monitor', sortOrder: 1 },
+  { id: 'btn-call-barge', parentId: 'm-service-calls', menuName: 'Barge In', menuType: 'BUTTON', perms: 'service:call:barge', sortOrder: 2 },
+  { id: 'btn-call-disconnect', parentId: 'm-service-calls', menuName: 'Force Disconnect', menuType: 'BUTTON', perms: 'service:call:disconnect', sortOrder: 3 },
+  { id: 'btn-ai-workflow-publish', parentId: 'm-ai-workflows', menuName: 'Publish Workflow', menuType: 'BUTTON', perms: 'ai:workflow:publish', sortOrder: 1 },
+  { id: 'btn-ai-model-route', parentId: 'm-ai-models', menuName: 'Update Model Route', menuType: 'BUTTON', perms: 'ai:model:route', sortOrder: 1 },
+  { id: 'btn-audit-export', parentId: 'm-system-audit', menuName: 'Export Audit Logs', menuType: 'BUTTON', perms: 'system:audit:export', sortOrder: 1 },
+];
+
+const menuSeeds: MenuItem[] = [...domainSeeds, ...pageSeeds, ...compatibilitySeeds, ...actionSeeds].map(createMenuItem);
 
 let mockMenus = cloneMock(menuSeeds);
 
@@ -529,7 +205,7 @@ export function getMockMenus() {
 export function getMockPermissionCodes() {
   return cloneMock(
     mockMenus
-      .filter((item) => item.menuType === 'BUTTON' && item.perms)
+      .filter((item) => item.perms)
       .map((item) => item.perms as string),
   );
 }

@@ -24,6 +24,7 @@ const initialLayout: LayoutSettings = {
   ...readLayoutCache(),
   theme: initialTheme,
 };
+initialLayout.menuMode = initialLayout.layoutMode;
 
 export const useAppStore = defineStore('app', {
   state: () => ({

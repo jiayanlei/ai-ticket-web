@@ -19,8 +19,9 @@ interface DynamicRouteBuildResult {
 type ResolvedRouteComponent = NonNullable<RouteRecordRaw['component']>;
 
 const viewModules = import.meta.glob('../views/**/*.vue');
-const placeholderView: ResolvedRouteComponent = () => import('@/views/common/page-placeholder/index.vue');
+const placeholderView: ResolvedRouteComponent = () => import('@/views/ai-ticket-os/index.vue');
 const componentAliasMap: Record<string, string> = {
+  'ai-ticket-os': 'ai-ticket-os/index',
   'system/user/index': 'system/users/index',
   'system/role/index': 'system/roles/index',
   'system/dept/index': 'system/depts/index',
