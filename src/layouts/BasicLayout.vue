@@ -29,17 +29,22 @@ const layoutClass = computed(() => `basic-layout--${appStore.layout.layoutMode}`
 
 <style scoped lang="scss">
 .basic-layout {
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
   background: var(--app-bg);
 
   &__main {
+    display: flex;
+    flex-direction: column;
     min-width: 0;
+    min-height: 0;
+    overflow: hidden;
     background: var(--app-bg);
   }
 }
 
 :global(.basic-layout:has(.ai-ticket-page)) {
-  height: 100vh;
   overflow: hidden;
 }
 </style>

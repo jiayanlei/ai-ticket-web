@@ -7,8 +7,19 @@ import type { AppLocale } from '@/locales';
 import type { LanguageMode, LayoutMode, LayoutSettings, MenuMode, ThemeMode } from '@/types/layout';
 import { getStorageItem, setStorageItem } from '@/utils/storage';
 
+const LEGACY_SIDEBAR_WIDTH = 280;
+
 function readLayoutCache() {
-  return getStorageItem<Partial<LayoutSettings>>(appSettings.cache.layoutCacheKey, {}, 'local') ?? {};
+  const cache = getStorageItem<Partial<LayoutSettings>>(appSettings.cache.layoutCacheKey, {}, 'local') ?? {};
+
+  if (cache.sidebarWidth === LEGACY_SIDEBAR_WIDTH) {
+    return {
+      ...cache,
+      sidebarWidth: appSettings.layout.sidebarWidth,
+    };
+  }
+
+  return cache;
 }
 
 function readThemeCache() {
@@ -38,6 +49,7 @@ export const useAppStore = defineStore('app', {
     layout: initialLayout,
     language: initialLanguage,
     keepAliveVersion: 0,
+    routeRefreshKeys: {} as Record<string, number>,
     initialized: false,
   }),
   getters: {
@@ -107,6 +119,9 @@ export const useAppStore = defineStore('app', {
     },
     resetKeepAlive() {
       this.keepAliveVersion += 1;
+    },
+    refreshRoute(path: string) {
+      this.routeRefreshKeys[path] = (this.routeRefreshKeys[path] ?? 0) + 1;
     },
     persistLayout() {
       setStorageItem(appSettings.cache.layoutCacheKey, this.layout, 'local');

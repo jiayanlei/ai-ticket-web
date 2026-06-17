@@ -82,6 +82,15 @@ export default {
     fixed: '固定',
     scroll: '滚动',
   },
+  tabs: {
+    refresh: '重新刷新',
+    fullscreen: '全屏切换',
+    closeCurrent: '关闭当前',
+    closeOther: '关闭其它',
+    closeLeft: '关闭左侧',
+    closeRight: '关闭右侧',
+    closeAll: '关闭所有',
+  },
   menu: {
     smartWorkspace: '智能工作台',
     serviceCenter: '服务中心',

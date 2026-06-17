@@ -26,7 +26,7 @@ export const appSettings = Object.freeze({
     menuMode: 'side' as MenuMode,
     fixedHeader: true,
     sidebarCollapsed: false,
-    sidebarWidth: 280,
+    sidebarWidth: 224,
     sidebarCollapsedWidth: 62,
     contentPadding: 16,
     theme: 'light' as ThemeMode,

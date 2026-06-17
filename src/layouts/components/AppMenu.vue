@@ -1,10 +1,14 @@
 <template>
   <a-menu
+    class="app-menu"
+    :class="{ 'app-menu--side': isSideScope }"
     :open-keys="menuOpenKeys"
     :selected-keys="selectedKeys"
     :theme="theme"
     :mode="mode"
     :disabled-overflow="isTopScope"
+    :inline-indent="isSideScope ? 18 : 24"
+    :motion="menuMotion"
     :trigger-sub-menu-action="isTopScope ? 'click' : undefined"
     @open-change="handleOpenChange"
   >
@@ -72,6 +76,7 @@ const displayedMenus = computed(() => {
 });
 
 const renderChildrenAsSubmenu = computed(() => !(isTopScope.value && isMixedMenuMode.value));
+const menuMotion = computed(() => (isSideScope.value ? { css: false } : undefined));
 const selectedKeys = computed(() => {
   if (isTopScope.value) {
     const topKey = isMixedMenuMode.value
@@ -96,7 +101,7 @@ watch(
       permissionStore.setActiveRootMenuKey(matchedRoot.key);
     }
   },
-  { immediate: true, deep: true },
+  { immediate: true },
 );
 
 watch(
@@ -107,13 +112,13 @@ watch(
     }
 
     if (isSideScope.value) {
-      openKeys.value = findAncestorKeys(displayedMenus.value, route.path);
+      setOpenKeys(findAncestorKeys(displayedMenus.value, route.path));
       return;
     }
 
-    openKeys.value = [];
+    setOpenKeys([]);
   },
-  { immediate: true, deep: true },
+  { immediate: true },
 );
 
 function findSelectedMenuItem(menus: AppMenuItem[], path: string): AppMenuItem | undefined {
@@ -185,7 +190,7 @@ function handleOpenChange(keys: (string | number)[]) {
     return;
   }
 
-  openKeys.value = keys.map(String);
+  setOpenKeys(keys.map(String));
 }
 
 function handleToggle(item: AppMenuItem) {
@@ -209,7 +214,19 @@ function handleToggle(item: AppMenuItem) {
     currentKeys.add(item.key);
   }
 
-  openKeys.value = [...currentKeys];
+  setOpenKeys([...currentKeys]);
+}
+
+function setOpenKeys(keys: string[]) {
+  if (isSameKeys(openKeys.value, keys)) {
+    return;
+  }
+
+  openKeys.value = keys;
+}
+
+function isSameKeys(currentKeys: string[], nextKeys: string[]) {
+  return currentKeys.length === nextKeys.length && currentKeys.every((key, index) => key === nextKeys[index]);
 }
 
 function findRootMenuByPath(menus: AppMenuItem[], path: string): AppMenuItem | undefined {
@@ -224,3 +241,48 @@ function containsPath(item: AppMenuItem, path: string): boolean {
   return Boolean(item.children?.some((child) => containsPath(child, path)));
 }
 </script>
+
+<style scoped lang="scss">
+.app-menu--side {
+  :deep(.ant-menu-item),
+  :deep(.ant-menu-submenu-title) {
+    transition:
+      background-color 0.24s ease,
+      color 0.24s ease,
+      transform 0.24s ease;
+  }
+
+  :deep(.ant-menu-item:active),
+  :deep(.ant-menu-submenu-title:active) {
+    transform: translateX(2px);
+  }
+
+  :deep(.ant-menu-item-selected),
+  :deep(.ant-menu-submenu-open > .ant-menu-submenu-title) {
+    animation: menu-echo 0.48s ease-out;
+  }
+}
+
+@keyframes menu-echo {
+  0% {
+    box-shadow:
+      inset 3px 0 0 var(--app-primary),
+      0 0 0 0 rgba(79, 123, 255, 0.24);
+    transform: translateX(0);
+  }
+
+  42% {
+    box-shadow:
+      inset 3px 0 0 var(--app-primary),
+      0 0 0 6px rgba(79, 123, 255, 0);
+    transform: translateX(3px);
+  }
+
+  100% {
+    box-shadow:
+      inset 3px 0 0 var(--app-primary),
+      0 0 0 0 rgba(79, 123, 255, 0);
+    transform: translateX(0);
+  }
+}
+</style>

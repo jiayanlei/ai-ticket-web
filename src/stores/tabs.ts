@@ -75,6 +75,52 @@ export const useTabsStore = defineStore('tabs', {
       this.persist();
       return this.activePath || appSettings.app.defaultHomePath;
     },
+    closeOtherTabs(path: string) {
+      const targetTab = this.tabs.find((item) => item.path === path);
+
+      if (!targetTab) {
+        return this.activePath || appSettings.app.defaultHomePath;
+      }
+
+      this.tabs = [targetTab];
+      this.activePath = path;
+      this.persist();
+      return path;
+    },
+    closeLeftTabs(path: string) {
+      const index = this.tabs.findIndex((item) => item.path === path);
+
+      if (index <= 0) {
+        return this.activePath || appSettings.app.defaultHomePath;
+      }
+
+      const removedTabs = this.tabs.slice(0, index);
+      this.tabs = this.tabs.slice(index);
+
+      if (removedTabs.some((item) => item.path === this.activePath)) {
+        this.activePath = path;
+      }
+
+      this.persist();
+      return this.activePath || appSettings.app.defaultHomePath;
+    },
+    closeRightTabs(path: string) {
+      const index = this.tabs.findIndex((item) => item.path === path);
+
+      if (index < 0 || index >= this.tabs.length - 1) {
+        return this.activePath || appSettings.app.defaultHomePath;
+      }
+
+      const removedTabs = this.tabs.slice(index + 1);
+      this.tabs = this.tabs.slice(0, index + 1);
+
+      if (removedTabs.some((item) => item.path === this.activePath)) {
+        this.activePath = path;
+      }
+
+      this.persist();
+      return this.activePath || appSettings.app.defaultHomePath;
+    },
     clearTabs() {
       this.tabs = [];
       this.activePath = '';

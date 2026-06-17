@@ -189,26 +189,23 @@
       </section>
     </main>
 
-    <a-drawer v-model:open="detailOpen" title="节点详情" width="520">
+    <a-drawer v-model:open="detailOpen" width="520">
+      <template #title>
+        <div v-if="detailNode" class="node-detail-title">
+          <strong>{{ getDetailTitle(detailNode) }}</strong>
+          <span>更新时间 {{ detailNode.updatedAt || '-' }}</span>
+        </div>
+        <span v-else>节点详情</span>
+      </template>
       <a-empty v-if="!detailNode" description="暂无节点详情" />
       <div v-else class="node-detail">
-        <a-descriptions :column="1" bordered size="small">
-          <a-descriptions-item label="节点名称">{{ detailNode.title }}</a-descriptions-item>
-          <a-descriptions-item label="节点类型">{{ getNodeTypeLabel(detailNode.type) }}</a-descriptions-item>
-          <a-descriptions-item label="状态">{{ detailNode.processStatusLabel || '发布' }}</a-descriptions-item>
-          <a-descriptions-item label="更新时间">{{ detailNode.updatedAt || '-' }}</a-descriptions-item>
-          <a-descriptions-item label="维护人">{{ detailNode.updatedBy || '-' }}</a-descriptions-item>
-          <a-descriptions-item label="标签">
-            <a-space :size="4" wrap>
-              <a-tag v-for="tag in detailNode.tags" :key="tag">{{ tag }}</a-tag>
-            </a-space>
-          </a-descriptions-item>
-          <a-descriptions-item label="说明">{{ detailNode.summary }}</a-descriptions-item>
-        </a-descriptions>
-        <div class="node-detail__content">{{ detailNode.content }}</div>
-        <a v-if="detailNode.links[0]" :href="detailNode.links[0].url" target="_blank" rel="noreferrer">
-          {{ detailNode.links[0].name }}
-        </a>
+        <div class="node-detail__content rich-text-content" v-html="formatRichText(detailNode.content)"></div>
+        <section v-if="detailNode.links.length" class="node-detail__links">
+          <strong>关联制度文档</strong>
+          <a v-for="link in detailNode.links" :key="link.url" :href="link.url" target="_blank" rel="noreferrer">
+            {{ link.name }}
+          </a>
+        </section>
       </div>
     </a-drawer>
 
@@ -227,15 +224,24 @@
       v-model:open="nodeModalOpen"
       :title="nodeFormMode === 'add' ? '新增节点' : '编辑节点'"
       destroy-on-close
-      width="560px"
+      width="720px"
       @ok="submitNodeForm"
     >
       <a-form layout="vertical">
         <a-form-item label="节点名称" required>
           <a-input v-model:value="nodeForm.title" placeholder="请输入节点名称" />
         </a-form-item>
-        <a-form-item label="节点备注">
-          <a-textarea v-model:value="nodeForm.content" :rows="5" placeholder="请输入节点备注" />
+        <a-form-item>
+          <div class="rich-editor">
+            <Toolbar class="rich-editor__toolbar" :editor="editorRef" :default-config="toolbarConfig" mode="simple" />
+            <Editor
+              v-model="nodeForm.content"
+              class="rich-editor__body"
+              :default-config="editorConfig"
+              mode="simple"
+              @on-created="handleEditorCreated"
+            />
+          </div>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -273,6 +279,9 @@
 import type { CSSProperties } from 'vue';
 import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { message, Modal } from 'ant-design-vue';
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
+import type { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor';
+import '@wangeditor/editor/dist/css/style.css';
 import {
   AimOutlined,
   BookOutlined,
@@ -378,9 +387,9 @@ interface NodeLocation {
   index: number;
 }
 
-const NODE_WIDTH = 240;
+const NODE_WIDTH = 260;
 const NODE_HEIGHT = 58;
-const ROOT_WIDTH = 194;
+const ROOT_WIDTH = 248;
 const ROOT_HEIGHT = 62;
 const HORIZONTAL_GAP = 74;
 const VERTICAL_GAP = 14;
@@ -407,6 +416,7 @@ const nodeFormParentId = ref('');
 const editingNodeId = ref('');
 const moveTargetParentId = ref<string>();
 const detailNode = ref<KnowledgeCanvasNode>();
+const editorRef = ref<IDomEditor>();
 const selectedNodeIds = ref<string[]>([]);
 const undoStack = ref<HistoryRecord[]>([]);
 const redoStack = ref<HistoryRecord[]>([]);
@@ -425,6 +435,17 @@ const nodeForm = reactive({
   title: '',
   content: '',
 });
+const toolbarConfig: Partial<IToolbarConfig> = {
+  excludeKeys: ['group-video', 'insertImage', 'uploadImage', 'insertTable', 'codeBlock', 'fullScreen'],
+};
+const editorConfig: Partial<IEditorConfig> = {
+  placeholder: '请输入节点备注，支持标题、列表、加粗和链接',
+  MENU_CONF: {
+    uploadImage: {
+      disabled: true,
+    },
+  },
+};
 const linkForm = reactive({
   name: '',
   url: '',
@@ -523,6 +544,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   stopCanvasDrag();
+  destroyEditor();
 });
 
 watch(keyword, (value) => {
@@ -683,6 +705,7 @@ function openEditNode(node?: KnowledgeCanvasNode) {
 
 function submitNodeForm() {
   const title = nodeForm.title.trim();
+  const content = normalizeRichText(nodeForm.content);
   if (!title) {
     message.warning('请输入节点名称');
     return;
@@ -694,7 +717,7 @@ function submitNodeForm() {
       if (!parent) {
         return;
       }
-      const node = createLocalNode(title, parent.id, nodeForm.content);
+      const node = createLocalNode(title, parent.id, content);
       parent.children = [...(parent.children ?? []), node];
       activeNodeId.value = String(node.id);
       collapsedCanvasKeys.value = collapsedCanvasKeys.value.filter((id) => id !== String(parent.id));
@@ -708,7 +731,7 @@ function submitNodeForm() {
       }
       node.title = title;
       node.summary = `${title}知识节点。`;
-      node.content = nodeForm.content.trim() || node.content;
+      node.content = content || node.content;
       node.updatedAt = nowText();
       node.updatedBy = '当前用户';
       node.versions = [createVersion('编辑节点'), ...node.versions];
@@ -1097,7 +1120,7 @@ function canStartCanvasDrag(event: MouseEvent) {
     return false;
   }
 
-  return !target.closest('.canvas-node, .right-panel, .zoom-bar, .canvas-badge, button, a, input, textarea, [role="button"]');
+  return !target.closest('.canvas-node, .right-panel, .zoom-bar, .canvas-badge, .rich-editor, button, a, input, textarea, [role="button"]');
 }
 
 function handleCanvasDrag(event: MouseEvent) {
@@ -1430,7 +1453,7 @@ function createLocalNode(title: string, parentId: ApiId, content: string): Knowl
     processStatus: 'draft',
     processStatusLabel: '暂存',
     summary: `${title}知识节点。`,
-    content: content.trim() || `当前节点：${title}`,
+    content: content || `<p>当前节点：${escapeHtml(title)}</p>`,
     script: `当前节点：${title}。`,
     tip: '本地新增节点',
     help: '迁移阶段本地 mock 节点。',
@@ -1443,6 +1466,57 @@ function createLocalNode(title: string, parentId: ApiId, content: string): Knowl
     children: [],
     summaryGroups: [],
   };
+}
+
+function handleEditorCreated(editor: IDomEditor) {
+  editorRef.value = editor;
+}
+
+function destroyEditor() {
+  const editor = editorRef.value;
+  if (!editor) {
+    return;
+  }
+
+  editor.destroy();
+  editorRef.value = undefined;
+}
+
+function normalizeRichText(value: string) {
+  const text = stripHtml(value).trim();
+  return text ? value.trim() : '';
+}
+
+function formatRichText(value: string) {
+  if (!value.trim()) {
+    return '<p>暂无备注</p>';
+  }
+
+  if (/<[a-z][\s\S]*>/i.test(value)) {
+    return value;
+  }
+
+  return value
+    .split(/\n+/)
+    .map((line) => `<p>${escapeHtml(line)}</p>`)
+    .join('');
+}
+
+function getDetailTitle(node: KnowledgeCanvasNode) {
+  return `${node.title}详情 - ${node.processStatusLabel || '发布'}`;
+}
+
+function stripHtml(value: string) {
+  return value.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function createVersion(remark: string) {
@@ -1465,16 +1539,6 @@ function normalizeLink(url: string) {
 
 function nowText() {
   return new Date().toISOString().slice(0, 19).replace('T', ' ');
-}
-
-function getNodeTypeLabel(type: KnowledgeCanvasNodeType) {
-  const labelMap: Record<KnowledgeCanvasNodeType, string> = {
-    category: '流程',
-    topic: '主题',
-    question: '节点',
-    summary: '概要',
-  };
-  return labelMap[type] ?? '节点';
 }
 
 function clone<T>(data: T): T {
@@ -1867,7 +1931,7 @@ function clone<T>(data: T): T {
 
   &__title {
     flex: 1;
-    min-width: 0;
+    min-width: 6em;
     overflow: hidden;
     font-weight: 600;
     color: inherit;
@@ -2043,6 +2107,31 @@ function clone<T>(data: T): T {
   }
 }
 
+.node-detail-title {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-width: 0;
+
+  strong {
+    min-width: 0;
+    overflow: hidden;
+    font-size: 16px;
+    color: var(--knowledge-text);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  span {
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--knowledge-text-muted);
+  }
+}
+
 .node-detail {
   display: flex;
   flex-direction: column;
@@ -2051,10 +2140,71 @@ function clone<T>(data: T): T {
   &__content {
     padding: 14px;
     line-height: 1.8;
-    white-space: pre-wrap;
     background: var(--app-surface-muted);
     border: 1px solid var(--app-border);
     border-radius: 8px;
+  }
+
+  &__links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 2px;
+
+    strong {
+      font-size: 13px;
+      color: var(--knowledge-text);
+    }
+
+    a {
+      color: var(--knowledge-primary);
+    }
+  }
+}
+
+.rich-editor {
+  overflow: hidden;
+  background: var(--knowledge-surface-solid);
+  border: 1px solid var(--knowledge-border);
+  border-radius: 10px;
+
+  &__toolbar {
+    border-bottom: 1px solid var(--knowledge-border);
+  }
+
+  &__body {
+    min-height: 220px;
+
+    :deep(.w-e-text-container) {
+      min-height: 220px;
+    }
+  }
+}
+
+.rich-text-content {
+  :deep(p) {
+    margin: 0 0 8px;
+  }
+
+  :deep(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  :deep(ul),
+  :deep(ol) {
+    padding-left: 20px;
+    margin: 8px 0;
+  }
+
+  :deep(h1),
+  :deep(h2),
+  :deep(h3) {
+    margin: 10px 0 8px;
+    color: var(--knowledge-text);
+  }
+
+  :deep(a) {
+    color: var(--knowledge-primary);
   }
 }
 

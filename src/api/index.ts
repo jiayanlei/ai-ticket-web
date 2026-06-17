@@ -1,6 +1,7 @@
 export * from '@/utils/http';
 export * from '@/api/aiAgent';
 export * from '@/api/auth';
+export * from '@/api/business';
 export * from '@/api/dept';
 export * from '@/api/file';
 export * from '@/api/knowledge';

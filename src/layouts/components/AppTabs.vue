@@ -1,5 +1,5 @@
 <template>
-  <div class="app-tabs" :style="tabsStyle">
+  <div class="app-tabs" :class="{ 'app-tabs--limited': limitTabsWidth }" :style="tabsStyle">
     <div class="app-tabs__scroll">
       <a-tabs
         :active-key="tabsStore.activePath"
@@ -9,7 +9,46 @@
         @edit="handleEdit"
         @change="handleChange"
       >
-        <a-tab-pane v-for="tab in tabsStore.tabs" :key="tab.path" :tab="tab.title" />
+        <a-tab-pane v-for="(tab, index) in tabsStore.tabs" :key="tab.path">
+          <template #tab>
+            <a-dropdown trigger="contextmenu">
+              <span class="app-tabs__title">{{ tab.title }}</span>
+              <template #overlay>
+                <a-menu @click="handleContextMenuClick($event, tab)">
+                  <a-menu-item key="refresh">
+                    <template #icon><ReloadOutlined /></template>
+                    {{ t('tabs.refresh') }}
+                  </a-menu-item>
+                  <a-menu-item key="fullscreen">
+                    <template #icon><FullscreenExitOutlined v-if="isFullscreen" /><FullscreenOutlined v-else /></template>
+                    {{ t('tabs.fullscreen') }}
+                  </a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="closeCurrent">
+                    <template #icon><CloseOutlined /></template>
+                    {{ t('tabs.closeCurrent') }}
+                  </a-menu-item>
+                  <a-menu-item key="closeOther" :disabled="tabsStore.tabs.length <= 1">
+                    <template #icon><CloseCircleOutlined /></template>
+                    {{ t('tabs.closeOther') }}
+                  </a-menu-item>
+                  <a-menu-item key="closeLeft" :disabled="index === 0">
+                    <template #icon><VerticalRightOutlined /></template>
+                    {{ t('tabs.closeLeft') }}
+                  </a-menu-item>
+                  <a-menu-item key="closeRight" :disabled="index === tabsStore.tabs.length - 1">
+                    <template #icon><VerticalLeftOutlined /></template>
+                    {{ t('tabs.closeRight') }}
+                  </a-menu-item>
+                  <a-menu-item key="closeAll">
+                    <template #icon><MinusCircleOutlined /></template>
+                    {{ t('tabs.closeAll') }}
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
+          </template>
+        </a-tab-pane>
       </a-tabs>
     </div>
 
@@ -18,13 +57,25 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import {
+  CloseCircleOutlined,
+  CloseOutlined,
+  FullscreenExitOutlined,
+  FullscreenOutlined,
+  MinusCircleOutlined,
+  ReloadOutlined,
+  VerticalLeftOutlined,
+  VerticalRightOutlined,
+} from '@ant-design/icons-vue';
+import type { MenuInfo } from 'ant-design-vue/es/menu/src/interface';
 
 import { appSettings } from '@/config';
 import AppTenantSelector from '@/layouts/components/AppTenantSelector.vue';
 import { useAppStore } from '@/stores/app';
+import type { AppTab } from '@/stores/tabs';
 import { useTabsStore } from '@/stores/tabs';
 
 const route = useRoute();
@@ -36,7 +87,9 @@ const tabsStyle = computed(() => ({
   paddingLeft: `${appStore.layout.contentPadding}px`,
   paddingRight: `${appStore.layout.contentPadding}px`,
 }));
+const limitTabsWidth = computed(() => ['top', 'mixed'].includes(appStore.layout.layoutMode));
 const showTabsTenantSelector = computed(() => ['top', 'mixed'].includes(appStore.layout.menuMode));
+const isFullscreen = ref(Boolean(document.fullscreenElement));
 
 watch(
   () => route.fullPath,
@@ -67,6 +120,14 @@ watch(locale, () => {
   });
 });
 
+onMounted(() => {
+  document.addEventListener('fullscreenchange', syncFullscreenState);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('fullscreenchange', syncFullscreenState);
+});
+
 function getRouteTitle() {
   const i18nKey = route.meta.i18nKey as string | undefined;
   if (i18nKey && te(i18nKey)) {
@@ -87,6 +148,68 @@ function handleEdit(targetKey: string | MouseEvent | KeyboardEvent, action: 'add
     router.push(nextPath || appSettings.app.defaultHomePath);
   }
 }
+
+async function handleContextMenuClick(info: MenuInfo, tab: AppTab) {
+  const key = String(info.key);
+
+  if (key === 'refresh') {
+    await refreshTab(tab.path);
+    return;
+  }
+
+  if (key === 'fullscreen') {
+    await toggleFullscreen();
+    return;
+  }
+
+  if (key === 'closeCurrent') {
+    await router.push(tabsStore.removeTab(tab.path) || appSettings.app.defaultHomePath);
+    return;
+  }
+
+  if (key === 'closeOther') {
+    await router.push(tabsStore.closeOtherTabs(tab.path));
+    return;
+  }
+
+  if (key === 'closeLeft') {
+    await router.push(tabsStore.closeLeftTabs(tab.path));
+    return;
+  }
+
+  if (key === 'closeRight') {
+    await router.push(tabsStore.closeRightTabs(tab.path));
+    return;
+  }
+
+  if (key === 'closeAll') {
+    tabsStore.clearTabs();
+    await router.push(appSettings.app.defaultHomePath);
+  }
+}
+
+async function refreshTab(path: string) {
+  if (route.fullPath !== path) {
+    await router.push(path);
+  }
+
+  appStore.refreshRoute(path);
+}
+
+async function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    await document.documentElement.requestFullscreen().catch(() => undefined);
+    syncFullscreenState();
+    return;
+  }
+
+  await document.exitFullscreen().catch(() => undefined);
+  syncFullscreenState();
+}
+
+function syncFullscreenState() {
+  isFullscreen.value = Boolean(document.fullscreenElement);
+}
 </script>
 
 <style scoped lang="scss">
@@ -94,7 +217,7 @@ function handleEdit(targetKey: string | MouseEvent | KeyboardEvent, action: 'add
   display: flex;
   align-items: center;
   gap: 12px;
-  height: $app-tabs-height;
+  height: calc($app-tabs-height + 7px);
   min-width: 0;
   padding-top: 5px;
   padding-bottom: 4px;
@@ -103,16 +226,51 @@ function handleEdit(targetKey: string | MouseEvent | KeyboardEvent, action: 'add
   border-bottom: 1px solid var(--app-border);
 
   &__scroll {
-    flex: 0 1 min(72vw, 1320px);
-    width: min(72vw, 1320px);
+    flex: 1 1 auto;
+    width: auto;
+    height: 37px;
     min-width: 0;
     overflow-x: auto;
     overflow-y: hidden;
+    scrollbar-color: rgb(148 163 184 / 55%) rgb(226 232 240 / 68%);
+    scrollbar-width: thin;
+  }
+
+  &__scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &__scroll::-webkit-scrollbar-track {
+    background: rgb(226 232 240 / 68%);
+    border-radius: 999px;
+  }
+
+  &__scroll::-webkit-scrollbar-thumb {
+    background: rgb(148 163 184 / 55%);
+    border-radius: 999px;
+  }
+
+  &__scroll:hover::-webkit-scrollbar-thumb {
+    background: rgb(100 116 139 / 72%);
+  }
+
+  &--limited &__scroll {
+    flex: 0 1 min(72vw, 1320px);
+    width: min(72vw, 1320px);
   }
 
   &__tenant {
     flex: 0 0 auto;
     margin-left: auto;
+  }
+
+  &__title {
+    display: inline-block;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+    white-space: nowrap;
   }
 
   &__scroll :deep(.ant-tabs) {

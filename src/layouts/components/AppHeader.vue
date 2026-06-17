@@ -22,20 +22,22 @@
     <AppTopMenu v-if="showTopMenu" />
 
     <div class="app-header__right">
-      <a-input v-if="appSettings.app.showSearch" class="app-header__search" :placeholder="t('header.searchPlaceholder')">
-        <template #prefix>
-          <SearchOutlined />
-        </template>
-      </a-input>
-
-      <a-tooltip :title="t('header.copilot')">
-        <a-button class="app-header__ai" type="text" @click="handleCopilot">
-          <template #icon>
-            <RobotOutlined />
+      <div class="app-header__command">
+        <a-input v-if="appSettings.app.showSearch" class="app-header__search" :placeholder="t('header.searchPlaceholder')">
+          <template #prefix>
+            <SearchOutlined />
           </template>
-          <span>{{ t('header.copilot') }}</span>
-        </a-button>
-      </a-tooltip>
+        </a-input>
+
+        <a-tooltip :title="t('header.copilot')">
+          <a-button class="app-header__ai" type="text" @click="handleCopilot">
+            <template #icon>
+              <RobotOutlined />
+            </template>
+            <span>{{ t('header.copilot') }}</span>
+          </a-button>
+        </a-tooltip>
+      </div>
 
       <a-dropdown trigger="click" overlay-class-name="app-header-service-menu">
         <a-tooltip :title="t('header.serviceHub')">
@@ -228,6 +230,13 @@ async function handleLogout() {
     margin-left: auto;
   }
 
+  &__command {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
   :deep(.ant-btn-text) {
     color: var(--app-text-secondary);
   }
@@ -414,6 +423,20 @@ async function handleLogout() {
 
     &__right {
       flex: 0 0 auto;
+    }
+  }
+}
+
+@media (min-width: 1600px) {
+  .app-header {
+    &--side &__right {
+      flex: 1 1 0;
+      margin-left: 0;
+    }
+
+    &--side &__command {
+      margin-right: auto;
+      margin-left: 216px;
     }
   }
 }

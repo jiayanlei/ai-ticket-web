@@ -5,7 +5,7 @@
     :collapsed-width="appStore.layout.sidebarCollapsedWidth"
     :theme="appStore.layout.theme"
     :trigger="null"
-    :width="appStore.layout.sidebarWidth"
+    :width="sidebarWidth"
   >
     <div v-if="showSiderBrand" class="app-sider__brand">
       <span v-if="appStore.layout.showLogo" class="app-sider__logo">AI</span>
@@ -25,7 +25,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { envConfig } from '@/config';
+import { appSettings, envConfig } from '@/config';
 import AppMenu from '@/layouts/components/AppMenu.vue';
 import { useAppStore } from '@/stores/app';
 
@@ -35,6 +35,9 @@ const showSiderBrand = computed(
   () => ['side', 'mixed'].includes(appStore.layout.menuMode) && (appStore.layout.showLogo || !appStore.layout.sidebarCollapsed),
 );
 const menuWrapOffset = computed(() => (showSiderBrand.value ? `${56}px` : '0px'));
+const sidebarWidth = computed(() =>
+  appStore.layout.sidebarWidth === 280 ? appSettings.layout.sidebarWidth : appStore.layout.sidebarWidth,
+);
 </script>
 
 <style scoped lang="scss">

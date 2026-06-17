@@ -82,6 +82,15 @@ export default {
     fixed: 'Fixed',
     scroll: 'Scroll',
   },
+  tabs: {
+    refresh: 'Refresh',
+    fullscreen: 'Toggle Fullscreen',
+    closeCurrent: 'Close Current',
+    closeOther: 'Close Others',
+    closeLeft: 'Close Left',
+    closeRight: 'Close Right',
+    closeAll: 'Close All',
+  },
   menu: {
     smartWorkspace: 'Smart Workspace',
     serviceCenter: 'Service Center',
