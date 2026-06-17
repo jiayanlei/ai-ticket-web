@@ -1,6 +1,6 @@
-import type { LayoutMode, MenuMode, ThemeMode } from '@/config/settings';
+import type { LanguageMode, LayoutMode, MenuMode, ThemeMode } from '@/config/settings';
 
-export type { LayoutMode, MenuMode, ThemeMode };
+export type { LanguageMode, LayoutMode, MenuMode, ThemeMode };
 
 export interface LayoutSettings {
   layoutMode: LayoutMode;

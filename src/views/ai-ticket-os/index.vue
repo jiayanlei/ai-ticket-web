@@ -9,7 +9,7 @@
       <div class="command-hero__actions">
         <a-button>
           <template #icon><ReloadOutlined /></template>
-          Refresh
+          {{ t('common.refresh') }}
         </a-button>
         <a-button type="primary">
           <template #icon><ThunderboltOutlined /></template>
@@ -18,32 +18,32 @@
       </div>
     </section>
 
-    <section class="metric-grid" aria-label="Page metrics">
+    <section class="metric-grid" :aria-label="t('aiTicketOs.labels.pageMetrics')">
       <article v-for="metric in page.metrics" :key="metric.label" class="metric-card" :class="`metric-card--${metric.tone}`">
         <span>{{ metric.label }}</span>
         <strong>{{ metric.value }}</strong>
-        <small>{{ metric.delta }} vs last cycle</small>
+        <small>{{ metric.delta }} {{ t('aiTicketOs.labels.vsLastCycle') }}</small>
       </article>
     </section>
 
     <section class="smart-filter">
-      <a-input class="smart-filter__search" placeholder="Search customers, tickets, agents, workflows...">
+      <a-input class="smart-filter__search" :placeholder="t('aiTicketOs.labels.searchPlaceholder')">
         <template #prefix><SearchOutlined /></template>
       </a-input>
       <a-select v-model:value="filterState.channel" class="smart-filter__select">
-        <a-select-option value="all">All Channels</a-select-option>
-        <a-select-option value="voice">Voice</a-select-option>
-        <a-select-option value="chat">Live Chat</a-select-option>
-        <a-select-option value="email">Email</a-select-option>
+        <a-select-option value="all">{{ t('aiTicketOs.labels.allChannels') }}</a-select-option>
+        <a-select-option value="voice">{{ t('aiTicketOs.labels.voice') }}</a-select-option>
+        <a-select-option value="chat">{{ t('aiTicketOs.labels.liveChat') }}</a-select-option>
+        <a-select-option value="email">{{ t('aiTicketOs.labels.email') }}</a-select-option>
       </a-select>
       <a-select v-model:value="filterState.status" class="smart-filter__select">
-        <a-select-option value="active">Active</a-select-option>
-        <a-select-option value="risk">At Risk</a-select-option>
-        <a-select-option value="breached">Breached</a-select-option>
+        <a-select-option value="active">{{ t('aiTicketOs.labels.active') }}</a-select-option>
+        <a-select-option value="risk">{{ t('aiTicketOs.labels.atRisk') }}</a-select-option>
+        <a-select-option value="breached">{{ t('aiTicketOs.labels.breached') }}</a-select-option>
       </a-select>
       <a-button>
         <template #icon><FilterOutlined /></template>
-        Smart Filter
+        {{ t('aiTicketOs.actions.smartFilter') }}
       </a-button>
     </section>
 
@@ -52,10 +52,10 @@
         <section class="glass-panel command-panel">
           <div class="panel-heading">
             <div>
-              <span>AI COMMAND PANEL</span>
-              <h2>Recommended Operations</h2>
+              <span>{{ t('aiTicketOs.labels.aiCommandPanel') }}</span>
+              <h2>{{ t('aiTicketOs.labels.recommendedOperations') }}</h2>
             </div>
-            <a-tag color="processing">Live</a-tag>
+            <a-tag color="processing">{{ t('aiTicketOs.labels.live') }}</a-tag>
           </div>
           <div class="command-panel__body">
             <div class="copilot-orb">
@@ -64,14 +64,14 @@
             <div>
               <h3>{{ page.aiInsight }}</h3>
               <p>
-                Copilot reviewed SLA pressure, customer sentiment, queue load, model cost and policy risk across the current workspace.
+                {{ t('aiTicketOs.labels.copilotReviewed') }}
               </p>
             </div>
           </div>
           <div class="command-panel__actions">
-            <a-button type="primary">Apply Recommendation</a-button>
-            <a-button>Open Evidence</a-button>
-            <a-button>Assign Owner</a-button>
+            <a-button type="primary">{{ t('aiTicketOs.actions.applyRecommendation') }}</a-button>
+            <a-button>{{ t('aiTicketOs.actions.openEvidence') }}</a-button>
+            <a-button>{{ t('aiTicketOs.actions.assignOwnerButton') }}</a-button>
           </div>
         </section>
 
@@ -79,7 +79,7 @@
           <article v-for="(chart, index) in page.charts" :key="chart" class="glass-panel chart-card">
             <div class="panel-heading panel-heading--compact">
               <div>
-                <span>REAL-TIME CHART</span>
+                <span>{{ t('aiTicketOs.labels.realtimeChart') }}</span>
                 <h2>{{ chart }}</h2>
               </div>
               <a-tag :color="index === 0 ? 'blue' : index === 1 ? 'purple' : 'cyan'">ECharts</a-tag>
@@ -91,14 +91,14 @@
         <section class="glass-panel table-panel">
           <div class="panel-heading">
             <div>
-              <span>ADVANCED TABLE</span>
-              <h2>{{ page.title }} Work Queue</h2>
+              <span>{{ t('aiTicketOs.labels.advancedTable') }}</span>
+              <h2>{{ page.title }} {{ t('aiTicketOs.labels.workQueue') }}</h2>
             </div>
             <a-space>
-              <a-button size="small">Export</a-button>
+              <a-button size="small">{{ t('common.export') }}</a-button>
               <a-button size="small" type="primary">
                 <template #icon><PlusCircleOutlined /></template>
-                New
+                {{ t('common.new') }}
               </a-button>
             </a-space>
           </div>
@@ -123,8 +123,8 @@
         <section class="glass-panel side-panel">
           <div class="panel-heading panel-heading--compact">
             <div>
-              <span>LIVE STATUS</span>
-              <h2>Operational Health</h2>
+              <span>{{ t('aiTicketOs.labels.liveStatus') }}</span>
+              <h2>{{ t('aiTicketOs.labels.operationalHealth') }}</h2>
             </div>
           </div>
           <div class="health-list">
@@ -141,7 +141,7 @@
         <section class="glass-panel side-panel">
           <div class="panel-heading panel-heading--compact">
             <div>
-              <span>WORKFLOW</span>
+              <span>{{ t('aiTicketOs.labels.workflow') }}</span>
               <h2>{{ page.panels[0] }}</h2>
             </div>
           </div>
@@ -156,8 +156,8 @@
         <section class="glass-panel side-panel">
           <div class="panel-heading panel-heading--compact">
             <div>
-              <span>ACTIVITY FEED</span>
-              <h2>Realtime Events</h2>
+              <span>{{ t('aiTicketOs.labels.activityFeed') }}</span>
+              <h2>{{ t('aiTicketOs.labels.realtimeEvents') }}</h2>
             </div>
           </div>
           <div class="activity-feed">
@@ -176,6 +176,7 @@
 import type { ComponentPublicInstance } from 'vue';
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, shallowRef, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import {
   BranchesOutlined,
   CheckCircleOutlined,
@@ -201,6 +202,7 @@ import { CanvasRenderer } from 'echarts/renderers';
 import type { ECharts, EChartsCoreOption } from 'echarts/core';
 
 import { aiTicketPageMap, aiTicketPages } from '@/views/ai-ticket-os/page-config';
+import type { AiTicketPageConfig } from '@/views/ai-ticket-os/page-config';
 
 echarts.use([
   BarChart,
@@ -221,6 +223,18 @@ echarts.use([
 ]);
 
 type RiskTone = 'low' | 'medium' | 'high';
+type MetricTone = AiTicketPageConfig['metrics'][number]['tone'];
+
+interface LocalePageConfig {
+  title: string;
+  group: string;
+  objective: string;
+  primaryAction: string;
+  metrics: [string, string, string, MetricTone][];
+  panels: string[];
+  charts: string[];
+  aiInsight: string;
+}
 
 interface TableRow {
   id: string;
@@ -236,6 +250,7 @@ interface TableRow {
 }
 
 const route = useRoute();
+const { locale, rt, t, tm } = useI18n();
 const filterState = reactive({
   channel: 'all',
   status: 'active',
@@ -243,78 +258,99 @@ const filterState = reactive({
 const chartElements = shallowRef<(HTMLElement | null)[]>([]);
 const chartInstances: ECharts[] = [];
 
-const page = computed(() => aiTicketPageMap.get(route.path) ?? aiTicketPages[0]);
-const columns = [
-  { title: 'Work Item', dataIndex: 'item', key: 'item' },
-  { title: 'Owner', dataIndex: 'owner', key: 'owner', width: 150 },
-  { title: 'Channel', dataIndex: 'channel', key: 'channel', width: 130 },
-  { title: 'Status', dataIndex: 'status', key: 'status', width: 130 },
-  { title: 'SLA', dataIndex: 'sla', key: 'sla', width: 120 },
-  { title: 'Risk', dataIndex: 'risk', key: 'risk', width: 130 },
-  { title: 'AI Signal', dataIndex: 'ai', key: 'ai', width: 150 },
-];
+const pageIndexByPath = new Map(aiTicketPages.map((item, index) => [item.path, index]));
+const page = computed(() => {
+  const englishPage = aiTicketPageMap.get(route.path) ?? aiTicketPages[0];
+  const pageIndex = pageIndexByPath.get(englishPage.path) ?? 0;
+  const localePages = Object.values(tm('aiTicketOs.pages') as Record<string, LocalePageConfig>);
+  const localePage = locale.value === 'zh-CN' ? localePages[pageIndex] : undefined;
+
+  if (!localePage) {
+    return englishPage;
+  }
+
+  return {
+    ...englishPage,
+    ...localePage,
+    primaryAction: rt(localePage.primaryAction),
+    metrics: localePage.metrics.map(([label, value, delta, tone]) => ({ label, value, delta, tone })),
+  };
+});
+const columns = computed(() => [
+  { title: t('aiTicketOs.table.workItem'), dataIndex: 'item', key: 'item' },
+  { title: t('aiTicketOs.table.owner'), dataIndex: 'owner', key: 'owner', width: 150 },
+  { title: t('aiTicketOs.table.channel'), dataIndex: 'channel', key: 'channel', width: 130 },
+  { title: t('aiTicketOs.table.status'), dataIndex: 'status', key: 'status', width: 130 },
+  { title: t('aiTicketOs.table.sla'), dataIndex: 'sla', key: 'sla', width: 120 },
+  { title: t('aiTicketOs.table.risk'), dataIndex: 'risk', key: 'risk', width: 130 },
+  { title: t('aiTicketOs.table.aiSignal'), dataIndex: 'ai', key: 'ai', width: 150 },
+]);
 
 const tableRows = computed<TableRow[]>(() => {
   const title = page.value.title.replace(' Center', '');
   return [
     {
       id: 'row-1',
-      item: `${title} priority enterprise case`,
+      item: `${title} ${t('aiTicketOs.table.priorityCase')}`,
       owner: 'Avery Chen',
-      channel: 'Voice',
-      status: 'In Progress',
+      channel: t('aiTicketOs.labels.voice'),
+      status: t('aiTicketOs.table.inProgress'),
       statusColor: 'processing',
-      sla: '42m left',
-      risk: 'Medium',
+      sla: t('aiTicketOs.table.minutesLeft42'),
+      risk: t('aiTicketOs.table.medium'),
       riskTone: 'medium',
-      ai: '92% confidence',
+      ai: t('aiTicketOs.table.confidence'),
     },
     {
       id: 'row-2',
-      item: `${title} escalation workflow`,
+      item: `${title} ${t('aiTicketOs.table.escalationWorkflow')}`,
       owner: 'Maya Lin',
-      channel: 'Live Chat',
-      status: 'At Risk',
+      channel: t('aiTicketOs.labels.liveChat'),
+      status: t('aiTicketOs.labels.atRisk'),
       statusColor: 'warning',
-      sla: '18m left',
-      risk: 'High',
+      sla: t('aiTicketOs.table.minutesLeft18'),
+      risk: t('aiTicketOs.table.high'),
       riskTone: 'high',
-      ai: 'Action advised',
+      ai: t('aiTicketOs.table.actionAdvised'),
     },
     {
       id: 'row-3',
-      item: `${title} automated resolution batch`,
+      item: `${title} ${t('aiTicketOs.table.resolutionBatch')}`,
       owner: 'AI Ops Agent',
-      channel: 'Email',
-      status: 'Resolved',
+      channel: t('aiTicketOs.labels.email'),
+      status: t('aiTicketOs.table.resolved'),
       statusColor: 'success',
-      sla: 'Met',
-      risk: 'Low',
+      sla: t('aiTicketOs.table.met'),
+      risk: t('aiTicketOs.table.low'),
       riskTone: 'low',
-      ai: 'Auto closed',
+      ai: t('aiTicketOs.table.autoClosed'),
     },
   ];
 });
 
 const healthItems = computed(() => [
-  { label: 'AI Runtime', value: 'Stable / 184ms latency', tone: 'green' },
-  { label: 'SLA Pressure', value: `${page.value.metrics[1]?.value ?? '91%'} target health`, tone: 'amber' },
-  { label: 'Queue Load', value: '1,248 active operations', tone: 'blue' },
-  { label: 'Risk Stream', value: '3 critical alerts open', tone: 'red' },
+  { label: t('aiTicketOs.health.aiRuntime'), value: t('aiTicketOs.health.aiRuntimeValue'), tone: 'green' },
+  {
+    label: t('aiTicketOs.health.slaPressure'),
+    value: t('aiTicketOs.health.slaPressureValue', { value: page.value.metrics[1]?.value ?? '91%' }),
+    tone: 'amber',
+  },
+  { label: t('aiTicketOs.health.queueLoad'), value: t('aiTicketOs.health.queueLoadValue'), tone: 'blue' },
+  { label: t('aiTicketOs.health.riskStream'), value: t('aiTicketOs.health.riskStreamValue'), tone: 'red' },
 ]);
 
 const workflowNodes = computed(() => [
-  { label: page.value.panels[0] ?? 'Intake', icon: BranchesOutlined },
-  { label: page.value.panels[1] ?? 'AI Triage', icon: RobotOutlined },
-  { label: page.value.panels[2] ?? 'Human Review', icon: ClockCircleOutlined },
-  { label: 'Closed Loop', icon: CheckCircleOutlined },
+  { label: page.value.panels[0] ?? t('aiTicketOs.workflow.intake'), icon: BranchesOutlined },
+  { label: page.value.panels[1] ?? t('aiTicketOs.workflow.aiTriage'), icon: RobotOutlined },
+  { label: page.value.panels[2] ?? t('aiTicketOs.workflow.humanReview'), icon: ClockCircleOutlined },
+  { label: t('aiTicketOs.workflow.closedLoop'), icon: CheckCircleOutlined },
 ]);
 
 const activityFeed = computed(() => [
-  { id: 'event-1', time: '09:42', text: `${page.value.title} AI recommendation was generated.` },
-  { id: 'event-2', time: '09:37', text: 'SLA guardrail detected a potential breach in premium queue.' },
-  { id: 'event-3', time: '09:31', text: 'Workflow policy updated by Operations Admin.' },
-  { id: 'event-4', time: '09:18', text: 'Customer sentiment model completed a new scoring cycle.' },
+  { id: 'event-1', time: '09:42', text: t('aiTicketOs.activity.recommendationGenerated', { title: page.value.title }) },
+  { id: 'event-2', time: '09:37', text: t('aiTicketOs.activity.slaGuardrail') },
+  { id: 'event-3', time: '09:31', text: t('aiTicketOs.activity.policyUpdated') },
+  { id: 'event-4', time: '09:18', text: t('aiTicketOs.activity.sentimentScored') },
 ]);
 
 function setChartRef(el: Element | ComponentPublicInstance | null, index: number) {
@@ -329,7 +365,7 @@ function renderCharts() {
     }
 
     const chart = echarts.init(el);
-    chart.setOption(createChartOption(page.value.charts[index] ?? 'Realtime Monitor', index));
+    chart.setOption(createChartOption(page.value.charts[index] ?? t('aiTicketOs.charts.realtimeMonitor'), index));
     chartInstances.push(chart);
   });
 }
@@ -341,23 +377,38 @@ function disposeCharts() {
 }
 
 function createChartOption(title: string, index: number): EChartsCoreOption {
+  const isDark = document.documentElement.classList.contains('dark');
+  const chartTextColor = isDark ? '#94a3b8' : '#64748b';
+  const chartLabelColor = isDark ? '#e2e8f0' : '#334155';
+  const strongLineColor = isDark ? 'rgba(255,255,255,0.16)' : 'rgba(15,23,42,0.16)';
+  const softLineColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)';
+  const radarAreaColor = isDark
+    ? ['rgba(255,255,255,0.02)', 'rgba(255,255,255,0.05)']
+    : ['rgba(79,123,255,0.04)', 'rgba(15,23,42,0.025)'];
   const common = {
     color: ['#4F7BFF', '#00E5FF', '#8B5CF6', '#22C55E', '#F59E0B', '#EF4444'],
     backgroundColor: 'transparent',
     tooltip: { trigger: 'axis' },
     grid: { left: 34, right: 16, top: 34, bottom: 28 },
-    textStyle: { color: '#94a3b8' },
+    textStyle: { color: chartTextColor },
   };
 
   if (/radar|quality|skill|emotion/i.test(title)) {
     return {
       ...common,
       radar: {
-        indicator: ['Speed', 'Quality', 'SLA', 'AI', 'Cost', 'Risk'].map((name) => ({ name, max: 100 })),
+        indicator: [
+          t('aiTicketOs.charts.speed'),
+          t('aiTicketOs.charts.quality'),
+          t('aiTicketOs.charts.sla'),
+          t('aiTicketOs.charts.ai'),
+          t('aiTicketOs.charts.cost'),
+          t('aiTicketOs.charts.risk'),
+        ].map((name) => ({ name, max: 100 })),
         radius: '62%',
-        axisName: { color: '#94a3b8' },
-        splitLine: { lineStyle: { color: 'rgba(255,255,255,0.12)' } },
-        splitArea: { areaStyle: { color: ['rgba(255,255,255,0.02)', 'rgba(255,255,255,0.05)'] } },
+        axisName: { color: chartTextColor },
+        splitLine: { lineStyle: { color: strongLineColor } },
+        splitArea: { areaStyle: { color: radarAreaColor } },
       },
       series: [{ type: 'radar', data: [{ value: [88, 93, 81, 96, 74, 68], name: title }], areaStyle: { opacity: 0.22 } }],
     };
@@ -375,10 +426,10 @@ function createChartOption(title: string, index: number): EChartsCoreOption {
           bottom: 8,
           width: '84%',
           data: [
-            { name: 'Intake', value: 100 },
-            { name: 'AI Triage', value: 82 },
-            { name: 'Assisted', value: 64 },
-            { name: 'Resolved', value: 49 },
+            { name: t('aiTicketOs.charts.intake'), value: 100 },
+            { name: t('aiTicketOs.charts.aiTriage'), value: 82 },
+            { name: t('aiTicketOs.charts.assisted'), value: 64 },
+            { name: t('aiTicketOs.charts.resolved'), value: 49 },
           ],
         },
       ],
@@ -395,20 +446,20 @@ function createChartOption(title: string, index: number): EChartsCoreOption {
           layout: /sankey|flow/i.test(title) ? undefined : 'force',
           roam: false,
           data: [
-            { name: 'Intake' },
-            { name: 'AI Triage' },
-            { name: 'Agent' },
-            { name: 'Customer' },
-            { name: 'Resolved' },
+            { name: t('aiTicketOs.charts.intake') },
+            { name: t('aiTicketOs.charts.aiTriage') },
+            { name: t('aiTicketOs.charts.agent') },
+            { name: t('aiTicketOs.charts.customer') },
+            { name: t('aiTicketOs.charts.resolved') },
           ],
           links: [
-            { source: 'Intake', target: 'AI Triage', value: 42 },
-            { source: 'AI Triage', target: 'Agent', value: 28 },
-            { source: 'Agent', target: 'Customer', value: 19 },
-            { source: 'Customer', target: 'Resolved', value: 14 },
+            { source: t('aiTicketOs.charts.intake'), target: t('aiTicketOs.charts.aiTriage'), value: 42 },
+            { source: t('aiTicketOs.charts.aiTriage'), target: t('aiTicketOs.charts.agent'), value: 28 },
+            { source: t('aiTicketOs.charts.agent'), target: t('aiTicketOs.charts.customer'), value: 19 },
+            { source: t('aiTicketOs.charts.customer'), target: t('aiTicketOs.charts.resolved'), value: 14 },
           ],
           lineStyle: { color: 'source', opacity: 0.28 },
-          label: { color: '#e2e8f0' },
+          label: { color: chartLabelColor },
         },
       ],
     };
@@ -418,17 +469,17 @@ function createChartOption(title: string, index: number): EChartsCoreOption {
     return {
       ...common,
       tooltip: { trigger: 'item' },
-      legend: { bottom: 0, textStyle: { color: '#94a3b8' } },
+      legend: { bottom: 0, textStyle: { color: chartTextColor } },
       series: [
         {
           type: 'pie',
           radius: ['48%', '72%'],
           center: ['50%', '44%'],
           data: [
-            { name: 'Healthy', value: 48 },
-            { name: 'Watch', value: 26 },
-            { name: 'At Risk', value: 16 },
-            { name: 'Critical', value: 10 },
+            { name: t('aiTicketOs.charts.healthy'), value: 48 },
+            { name: t('aiTicketOs.charts.watch'), value: 26 },
+            { name: t('aiTicketOs.labels.atRisk'), value: 16 },
+            { name: t('aiTicketOs.charts.critical'), value: 10 },
           ],
         },
       ],
@@ -440,11 +491,11 @@ function createChartOption(title: string, index: number): EChartsCoreOption {
     xAxis: {
       type: 'category',
       data: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00'],
-      axisLine: { lineStyle: { color: 'rgba(255,255,255,0.16)' } },
+      axisLine: { lineStyle: { color: strongLineColor } },
     },
     yAxis: {
       type: 'value',
-      splitLine: { lineStyle: { color: 'rgba(255,255,255,0.08)' } },
+      splitLine: { lineStyle: { color: softLineColor } },
     },
     series: [
       {
@@ -455,7 +506,7 @@ function createChartOption(title: string, index: number): EChartsCoreOption {
         data: [320, 420, 380, 520, 610, 740],
       },
       {
-        name: 'AI Assisted',
+        name: t('aiTicketOs.charts.aiAssisted'),
         type: 'line',
         smooth: true,
         data: [180, 260, 310, 390, 460, 560],
@@ -469,7 +520,7 @@ function handleResize() {
 }
 
 watch(
-  () => route.path,
+  () => [route.path, locale.value],
   async () => {
     await nextTick();
     renderCharts();
@@ -493,7 +544,9 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: 100%;
   min-width: 1180px;
+  overflow: auto;
   color: var(--app-text);
 }
 
@@ -501,10 +554,18 @@ onBeforeUnmount(() => {
 .glass-panel,
 .smart-filter,
 .metric-card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+}
+
+:global(html.dark) .command-hero,
+:global(html.dark) .glass-panel,
+:global(html.dark) .smart-filter,
+:global(html.dark) .metric-card {
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)),
     rgba(15, 23, 42, 0.72);
-  border: 1px solid var(--app-border);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
   backdrop-filter: blur(22px);
 }
@@ -626,7 +687,7 @@ onBeforeUnmount(() => {
   :deep(.ant-input-affix-wrapper),
   :deep(.ant-select-selector) {
     color: var(--app-text);
-    background: rgba(255, 255, 255, 0.055) !important;
+    background: var(--app-surface-muted) !important;
     border-color: var(--app-border) !important;
     border-radius: 8px;
   }
@@ -747,14 +808,14 @@ onBeforeUnmount(() => {
 
   :deep(.ant-table-thead > tr > th) {
     color: var(--app-text-secondary);
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--app-surface-muted);
     border-bottom-color: var(--app-border);
   }
 
   :deep(.ant-table-tbody > tr > td) {
     color: var(--app-text);
-    background: rgba(255, 255, 255, 0.018);
-    border-bottom-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.72);
+    border-bottom-color: var(--app-border);
   }
 
   :deep(.ant-table-tbody > tr:hover > td) {
@@ -775,23 +836,23 @@ onBeforeUnmount(() => {
 
 .risk-pill {
   &--low {
-    color: #bbf7d0;
+    color: #15803d;
     background: rgba(34, 197, 94, 0.14);
   }
 
   &--medium {
-    color: #fde68a;
+    color: #b45309;
     background: rgba(245, 158, 11, 0.14);
   }
 
   &--high {
-    color: #fecaca;
+    color: #b91c1c;
     background: rgba(239, 68, 68, 0.16);
   }
 }
 
 .ai-score {
-  color: #bfdbfe;
+  color: #1d4ed8;
   background: rgba(79, 123, 255, 0.16);
 }
 
@@ -807,8 +868,8 @@ onBeforeUnmount(() => {
   gap: 10px;
   align-items: center;
   padding: 10px;
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--app-surface-muted);
+  border: 1px solid var(--app-border);
   border-radius: 8px;
 
   &__dot {
@@ -869,7 +930,7 @@ onBeforeUnmount(() => {
 
 .activity-event {
   padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--app-border);
 
   span {
     color: var(--app-accent);
@@ -882,6 +943,35 @@ onBeforeUnmount(() => {
     color: var(--app-text-secondary);
     line-height: 1.5;
   }
+}
+
+:global(html.dark) .table-panel {
+  :deep(.ant-table-thead > tr > th) {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  :deep(.ant-table-tbody > tr > td) {
+    background: rgba(255, 255, 255, 0.018);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+:global(html.dark) .risk-pill {
+  &--low {
+    color: #bbf7d0;
+  }
+
+  &--medium {
+    color: #fde68a;
+  }
+
+  &--high {
+    color: #fecaca;
+  }
+}
+
+:global(html.dark) .ai-score {
+  color: #bfdbfe;
 }
 
 @media (max-width: 1360px) {

@@ -7,11 +7,19 @@ AI Ticket OS is an enterprise AI customer service operating system for large-sca
 ## Directory Map
 
 - `business/`: domain context, operating model, and role/permission discussions.
+- `modules/`: route-level feature requirements and module behavior specifications.
+- `api/`: module API requirements and permission suggestions.
 - `prompts/`: reusable design and page-generation prompts.
 - `information-architecture/`: sitemap, navigation model, route and permission matrix.
 - `design-system/`: visual language, tokens, components, charts, icons, and states.
 - `prototypes/`: static prototype images and source files.
 - `acceptance/`: implementation and visual QA checklists.
+
+## Key Documents
+
+- `modules/route-feature-requirements.md`: required functions for the 30 main routes and the Tenant Center extension route.
+- `business/tenant-management-closed-loop.md`: tenant creation, initialization, configuration, members, permissions, resources, audit, freeze, restore, disable, and archive lifecycle.
+- `api/module-api-requirements.md`: minimum API surfaces and permission suggestions by module.
 
 ## Product Direction
 

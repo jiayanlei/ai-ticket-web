@@ -6,7 +6,7 @@
 
     <template #title>
       <div class="app-menu-node__title" @click.stop="handleToggle">
-        <span class="app-menu-node__title-text">{{ item.title }}</span>
+        <span class="app-menu-node__title-text">{{ menuTitle }}</span>
       </div>
     </template>
 
@@ -24,12 +24,13 @@
     <template v-if="iconComponent" #icon>
       <component :is="iconComponent" />
     </template>
-    <span>{{ item.title }}</span>
+    <span>{{ menuTitle }}</span>
   </a-menu-item>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { getMenuIconComponent } from '@/layouts/components/app-menu-icons';
 import type { AppMenuItem } from '@/types/menu';
@@ -44,9 +45,11 @@ const emit = defineEmits<{
   toggle: [item: AppMenuItem];
 }>();
 
+const { te, t } = useI18n();
 const hasChildren = computed(() => Boolean(props.item.children?.length));
 const hasChildrenForDisplay = computed(() => hasChildren.value && props.renderChildrenAsSubmenu !== false);
 const iconComponent = computed(() => getMenuIconComponent(props.item.icon));
+const menuTitle = computed(() => (props.item.i18nKey && te(props.item.i18nKey) ? t(props.item.i18nKey) : props.item.title));
 
 function handleNavigate() {
   emit('navigate', props.item);

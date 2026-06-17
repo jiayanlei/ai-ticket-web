@@ -32,3 +32,11 @@
 | 28 | System Management | `/system/management` | System Management | `system:management:view` |
 | 29 | AI Model Center | `/ai/models` | AI Capability Center | `ai:model:view` |
 | 30 | Open Platform | `/system/open-platform` | System Management | `system:open-platform:view` |
+
+## Extension Routes
+
+These routes are planned product extensions and should not change the current 30-page sitemap count until implementation is approved.
+
+| Page | Route | Navigation Group | Permission | Notes |
+| --- | --- | --- | --- | --- |
+| Tenant Center | `/tenants` | Tenant Management | `tenant:center:view` | Independent tenant lifecycle management for creation, initialization, configuration, members, permissions, resources, audit, freeze, restore, disable, and archive. |

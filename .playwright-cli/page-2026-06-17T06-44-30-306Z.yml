@@ -1,0 +1,41 @@
+- main [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: Console Ready
+      - generic [ref=e7]: Mock Auth
+    - heading "Enterprise AI Customer Service Operating System" [level=2] [ref=e8]
+    - paragraph [ref=e9]: Operate tickets, calls, omnichannel conversations, AI agents, SLA risk, and enterprise service intelligence from one command center.
+  - generic [ref=e10]:
+    - generic [ref=e11]:
+      - generic [ref=e12]: AI
+      - generic [ref=e13]:
+        - heading "AI Ticket OS" [level=1] [ref=e14]
+        - paragraph [ref=e15]: Future Enterprise SaaS for AI-native service operations
+    - generic [ref=e16]:
+      - generic [ref=e18]:
+        - generic "Account" [ref=e20]: "* Account"
+        - generic [ref=e24]:
+          - img "user" [ref=e26]:
+            - img [ref=e27]
+          - textbox "* Account" [ref=e29]:
+            - /placeholder: Enter account
+            - text: admin
+      - generic [ref=e31]:
+        - generic "Password" [ref=e33]: "* Password"
+        - generic [ref=e37]:
+          - img "lock" [ref=e39]:
+            - img [ref=e40]
+          - textbox "* Password" [ref=e42]:
+            - /placeholder: Enter password
+            - text: admin123
+          - img "eye-invisible" [ref=e44] [cursor=pointer]:
+            - img [ref=e45]
+      - generic [ref=e48]:
+        - generic [ref=e49] [cursor=pointer]:
+          - checkbox "Remember this workspace" [checked] [ref=e51]
+          - generic [ref=e53]: Remember this workspace
+        - generic [ref=e54] [cursor=pointer]: Forgot password
+      - button "loading Sign In" [active] [ref=e57]:
+        - img "loading" [ref=e59]:
+          - img [ref=e60]
+        - generic [ref=e56]: Sign In

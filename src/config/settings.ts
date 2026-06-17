@@ -3,6 +3,7 @@ export type MenuMode = 'side' | 'top' | 'mixed';
 export type StorageType = 'local' | 'session';
 export type PermissionMode = 'frontend' | 'backend';
 export type ThemeMode = 'light' | 'dark';
+export type LanguageMode = 'zh-CN' | 'en-US';
 
 export const appSettings = Object.freeze({
   app: {
@@ -28,7 +29,7 @@ export const appSettings = Object.freeze({
     sidebarWidth: 280,
     sidebarCollapsedWidth: 62,
     contentPadding: 16,
-    theme: 'dark' as ThemeMode,
+    theme: 'light' as ThemeMode,
   },
   auth: {
     tokenKey: 'ACCESS_TOKEN',
@@ -41,18 +42,21 @@ export const appSettings = Object.freeze({
   },
   cache: {
     cachePrefix: 'AI_TICKET_',
+    versionCacheKey: 'APP_CACHE_VERSION',
+    cacheVersion: '2026-06-17-tenant-management',
     tabsCacheKey: 'TABS_CACHE',
     layoutCacheKey: 'LAYOUT_SETTINGS',
     themeCacheKey: 'THEME_MODE',
+    languageCacheKey: 'LANGUAGE_MODE',
     menuCacheKey: 'DYNAMIC_MENUS',
     enableTabsCache: true,
   },
   system: {
-    defaultTheme: 'dark' as ThemeMode,
+    defaultTheme: 'light' as ThemeMode,
     themeColor: '#4F7BFF',
-    defaultLanguage: 'en-US',
+    defaultLanguage: 'zh-CN' as LanguageMode,
     enableThemeSwitch: true,
-    enableI18n: false,
+    enableI18n: true,
     enableRouteGuard: true,
     enablePermission: true,
     enableErrorHandler: true,

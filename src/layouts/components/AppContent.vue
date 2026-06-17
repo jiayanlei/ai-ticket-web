@@ -34,7 +34,8 @@ const contentStyle = computed(() => {
   overflow: auto;
   background: var(--app-bg);
 
-  &:has(> .codex-workbench) {
+  &:has(> .codex-workbench),
+  &:has(> .ai-ticket-page) {
     overflow: hidden;
   }
 }

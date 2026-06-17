@@ -3,6 +3,7 @@ import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 
 import App from '@/App.vue';
+import { i18n } from '@/plugins/i18n';
 import router from '@/router';
 import { useAppStore } from '@/stores/app';
 import { usePermissionStore } from '@/stores/permission';
@@ -20,6 +21,7 @@ setupErrorHandler(app);
 
 app.use(pinia);
 app.use(router);
+app.use(i18n);
 app.use(Antd);
 
 useAppStore(pinia).initialize();

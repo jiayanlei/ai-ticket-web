@@ -37,4 +37,9 @@ const layoutClass = computed(() => `basic-layout--${appStore.layout.layoutMode}`
     background: var(--app-bg);
   }
 }
+
+:global(.basic-layout:has(.ai-ticket-page)) {
+  height: 100vh;
+  overflow: hidden;
+}
 </style>

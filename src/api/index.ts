@@ -7,6 +7,7 @@ export * from '@/api/knowledge';
 export * from '@/api/menu';
 export * from '@/api/role';
 export * from '@/api/ticket';
+export * from '@/api/tenant';
 export * from '@/api/types';
 export * from '@/api/user';
 export * from '@/api/workOrder';

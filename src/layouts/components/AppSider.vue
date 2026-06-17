@@ -11,7 +11,7 @@
       <span v-if="appStore.layout.showLogo" class="app-sider__logo">AI</span>
       <span v-if="!appStore.layout.sidebarCollapsed" class="app-sider__copy">
         <strong class="app-sider__title">{{ envConfig.appTitle }}</strong>
-        <small>Enterprise AI Customer Service OS</small>
+        <small>{{ t('header.brandSubtitle') }}</small>
       </span>
     </div>
 
@@ -23,12 +23,14 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { envConfig } from '@/config';
 import AppMenu from '@/layouts/components/AppMenu.vue';
 import { useAppStore } from '@/stores/app';
 
 const appStore = useAppStore();
+const { t } = useI18n();
 const showSiderBrand = computed(
   () => ['side', 'mixed'].includes(appStore.layout.menuMode) && (appStore.layout.showLogo || !appStore.layout.sidebarCollapsed),
 );
@@ -40,7 +42,7 @@ const menuWrapOffset = computed(() => (showSiderBrand.value ? `${56}px` : '0px')
   min-height: 100vh;
   background: var(--app-sider-bg);
   border-right: 1px solid var(--app-border);
-  box-shadow: 20px 0 44px rgba(0, 0, 0, 0.24);
+  box-shadow: 10px 0 28px rgba(15, 23, 42, 0.08);
 
   :deep(.ant-layout-sider-children) {
     display: flex;
@@ -132,5 +134,9 @@ const menuWrapOffset = computed(() => (showSiderBrand.value ? `${56}px` : '0px')
     overflow-y: auto;
     overflow-x: hidden;
   }
+}
+
+:global(html.dark) .app-sider {
+  box-shadow: 20px 0 44px rgba(0, 0, 0, 0.24);
 }
 </style>

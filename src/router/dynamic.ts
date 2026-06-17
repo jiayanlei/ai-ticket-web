@@ -140,6 +140,7 @@ function toAppMenuItem(node: BackendMenuNode): AppMenuItem | null {
   return {
     key: createMenuKey(node),
     title: node.menuName,
+    i18nKey: node.i18nKey ?? undefined,
     path,
     targetPath,
     icon: node.icon ?? undefined,
@@ -163,6 +164,7 @@ function toRouteRecords(node: BackendMenuNode, parentPath = '', parentTitle?: st
   const routeChildren = childNodes.flatMap((child) => toRouteRecords(child, currentPath, node.menuName));
   const meta = {
     title: node.menuName,
+    i18nKey: node.i18nKey ?? undefined,
     parentTitle,
     permission: node.perms ?? undefined,
     keepAlive: node.menuType === 'MENU',
@@ -216,6 +218,7 @@ function createIndexRoute(
     component,
     meta: {
       title: node.menuName,
+      i18nKey: node.i18nKey ?? undefined,
       parentTitle,
       permission: node.perms ?? undefined,
       keepAlive: true,

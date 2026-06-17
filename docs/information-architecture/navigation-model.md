@@ -22,6 +22,7 @@
 - Agent Operations
 - AI Capability Center
 - Customer Center
+- Tenant Management
 - Knowledge Center
 - Analytics
 - System Management

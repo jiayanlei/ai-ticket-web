@@ -1,40 +1,53 @@
 <template>
-  <a-drawer :open="open" title="布局设置" width="320" @close="emit('update:open', false)">
+  <a-drawer :open="open" :title="t('layoutSettings.title')" width="320" @close="emit('update:open', false)">
     <div class="layout-settings">
       <div class="layout-settings__group">
-        <div class="layout-settings__label">布局模式</div>
+        <div class="layout-settings__label">{{ t('layoutSettings.layoutMode') }}</div>
         <a-segmented v-model:value="layoutMode" :options="layoutModeOptions" block />
       </div>
 
       <div class="layout-settings__group">
-        <div class="layout-settings__label">主题模式</div>
+        <div class="layout-settings__label">{{ t('layoutSettings.themeMode') }}</div>
         <a-segmented v-model:value="themeMode" :options="themeModeOptions" block />
+      </div>
+
+      <div class="layout-settings__group">
+        <div class="layout-settings__label">{{ t('layoutSettings.languageMode') }}</div>
+        <a-segmented v-model:value="languageMode" :options="languageModeOptions" block />
+      </div>
+
+      <div class="layout-settings__group">
+        <div class="layout-settings__label">{{ t('layoutSettings.fullscreenMode') }}</div>
+        <a-button block @click="toggleFullscreen">
+          <template #icon><FullscreenExitOutlined v-if="isFullscreen" /><FullscreenOutlined v-else /></template>
+          {{ isFullscreen ? t('common.exitFullscreen') : t('common.enterFullscreen') }}
+        </a-button>
       </div>
 
       <a-divider />
 
       <a-space direction="vertical" class="layout-settings__switches">
-        <a-switch v-model:checked="appStore.layout.showLogo" checked-children="显示" un-checked-children="隐藏" />
-        <span>Logo</span>
+        <a-switch v-model:checked="appStore.layout.showLogo" :checked-children="t('layoutSettings.show')" :un-checked-children="t('layoutSettings.hide')" />
+        <span>{{ t('layoutSettings.logo') }}</span>
       </a-space>
 
       <a-space direction="vertical" class="layout-settings__switches">
-        <a-switch v-model:checked="appStore.layout.fixedHeader" checked-children="固定" un-checked-children="滚动" />
-        <span>固定顶部 Header</span>
+        <a-switch v-model:checked="appStore.layout.fixedHeader" :checked-children="t('layoutSettings.fixed')" :un-checked-children="t('layoutSettings.scroll')" />
+        <span>{{ t('layoutSettings.fixedHeader') }}</span>
       </a-space>
 
       <a-space direction="vertical" class="layout-settings__switches">
-        <a-switch v-model:checked="appStore.layout.showBreadcrumb" checked-children="显示" un-checked-children="隐藏" />
-        <span>面包屑区域</span>
+        <a-switch v-model:checked="appStore.layout.showBreadcrumb" :checked-children="t('layoutSettings.show')" :un-checked-children="t('layoutSettings.hide')" />
+        <span>{{ t('layoutSettings.breadcrumb') }}</span>
       </a-space>
 
       <a-space direction="vertical" class="layout-settings__switches">
-        <a-switch v-model:checked="appStore.layout.showTabs" checked-children="显示" un-checked-children="隐藏" />
-        <span>多标签页区域</span>
+        <a-switch v-model:checked="appStore.layout.showTabs" :checked-children="t('layoutSettings.show')" :un-checked-children="t('layoutSettings.hide')" />
+        <span>{{ t('layoutSettings.tabs') }}</span>
       </a-space>
 
       <div class="layout-settings__group">
-        <div class="layout-settings__label">内容区边距</div>
+        <div class="layout-settings__label">{{ t('layoutSettings.contentPadding') }}</div>
         <a-input-number v-model:value="appStore.layout.contentPadding" :min="0" :max="32" addon-after="px" />
       </div>
     </div>
@@ -42,11 +55,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons-vue';
+import { useI18n } from 'vue-i18n';
 
 import { appSettings } from '@/config';
 import { useAppStore } from '@/stores/app';
-import type { LayoutMode, ThemeMode } from '@/types/layout';
+import type { LanguageMode, LayoutMode, ThemeMode } from '@/types/layout';
 
 defineProps<{
   open: boolean;
@@ -57,15 +72,21 @@ const emit = defineEmits<{
 }>();
 
 const appStore = useAppStore();
+const { t } = useI18n();
+const isFullscreen = ref(Boolean(document.fullscreenElement));
 
-const layoutModeOptions = [
-  { label: '左侧', value: 'side' },
-  { label: '顶部', value: 'top' },
-  { label: '混合', value: 'mixed' },
-];
-const themeModeOptions = [
-  { label: '浅色', value: 'light' },
-  { label: '暗色', value: 'dark' },
+const layoutModeOptions = computed(() => [
+  { label: t('layoutSettings.side'), value: 'side' },
+  { label: t('layoutSettings.top'), value: 'top' },
+  { label: t('layoutSettings.mixed'), value: 'mixed' },
+]);
+const themeModeOptions = computed(() => [
+  { label: t('layoutSettings.light'), value: 'light' },
+  { label: t('layoutSettings.dark'), value: 'dark' },
+]);
+const languageModeOptions = [
+  { label: '中文', value: 'zh-CN' },
+  { label: 'English', value: 'en-US' },
 ];
 
 const layoutMode = computed({
@@ -82,6 +103,36 @@ const themeMode = computed({
       appStore.setTheme(theme);
     }
   },
+});
+
+const languageMode = computed({
+  get: () => appStore.language,
+  set: (language: LanguageMode) => {
+    appStore.setLanguage(language);
+  },
+});
+
+function syncFullscreenState() {
+  isFullscreen.value = Boolean(document.fullscreenElement);
+}
+
+async function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    await document.documentElement.requestFullscreen();
+    syncFullscreenState();
+    return;
+  }
+
+  await document.exitFullscreen();
+  syncFullscreenState();
+}
+
+onMounted(() => {
+  document.addEventListener('fullscreenchange', syncFullscreenState);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('fullscreenchange', syncFullscreenState);
 });
 </script>
 

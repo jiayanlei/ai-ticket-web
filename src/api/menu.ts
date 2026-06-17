@@ -23,6 +23,7 @@ export interface MenuItem {
   id: ApiId;
   parentId: ApiId;
   menuName: string;
+  i18nKey?: Nullable<string>;
   menuType: MenuType;
   path: Nullable<string>;
   component: Nullable<string>;

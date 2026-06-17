@@ -2,7 +2,9 @@ import { defineStore } from 'pinia';
 
 import { defaultLayoutSettings } from '@/config/layout';
 import { appSettings } from '@/config/settings';
-import type { LayoutMode, LayoutSettings, MenuMode, ThemeMode } from '@/types/layout';
+import { setI18nLocale } from '@/plugins/i18n';
+import type { AppLocale } from '@/locales';
+import type { LanguageMode, LayoutMode, LayoutSettings, MenuMode, ThemeMode } from '@/types/layout';
 import { getStorageItem, setStorageItem } from '@/utils/storage';
 
 function readLayoutCache() {
@@ -13,12 +15,17 @@ function readThemeCache() {
   return getStorageItem<ThemeMode>(appSettings.cache.themeCacheKey, appSettings.system.defaultTheme, 'local');
 }
 
+function readLanguageCache() {
+  return getStorageItem<LanguageMode>(appSettings.cache.languageCacheKey, appSettings.system.defaultLanguage, 'local');
+}
+
 function applyTheme(theme: ThemeMode) {
   document.documentElement.classList.toggle('dark', theme === 'dark');
   document.body.classList.toggle('app-theme-dark', theme === 'dark');
 }
 
 const initialTheme = readThemeCache() ?? appSettings.system.defaultTheme;
+const initialLanguage = readLanguageCache() ?? appSettings.system.defaultLanguage;
 const initialLayout: LayoutSettings = {
   ...defaultLayoutSettings,
   ...readLayoutCache(),
@@ -29,6 +36,7 @@ initialLayout.menuMode = initialLayout.layoutMode;
 export const useAppStore = defineStore('app', {
   state: () => ({
     layout: initialLayout,
+    language: initialLanguage,
     keepAliveVersion: 0,
     initialized: false,
   }),
@@ -36,6 +44,7 @@ export const useAppStore = defineStore('app', {
     layoutMode: (state): LayoutMode => state.layout.layoutMode,
     menuMode: (state): MenuMode => state.layout.menuMode,
     theme: (state): ThemeMode => state.layout.theme,
+    locale: (state): LanguageMode => state.language,
   },
   actions: {
     initialize() {
@@ -45,12 +54,15 @@ export const useAppStore = defineStore('app', {
 
       this.initialized = true;
       applyTheme(this.layout.theme);
+      setI18nLocale(this.language as AppLocale);
       this.persistLayout();
       this.$subscribe(
         (_mutation, state) => {
           applyTheme(state.layout.theme);
+          setI18nLocale(state.language as AppLocale);
           setStorageItem(appSettings.cache.layoutCacheKey, state.layout, 'local');
           setStorageItem(appSettings.cache.themeCacheKey, state.layout.theme, 'local');
+          setStorageItem(appSettings.cache.languageCacheKey, state.language, 'local');
         },
         { detached: true },
       );
@@ -69,6 +81,14 @@ export const useAppStore = defineStore('app', {
       applyTheme(theme);
       setStorageItem(appSettings.cache.themeCacheKey, theme, 'local');
       this.persistLayout();
+    },
+    setLanguage(language: LanguageMode) {
+      this.language = language;
+      setI18nLocale(language as AppLocale);
+      setStorageItem(appSettings.cache.languageCacheKey, language, 'local');
+    },
+    toggleLanguage() {
+      this.setLanguage(this.language === 'zh-CN' ? 'en-US' : 'zh-CN');
     },
     updateLayout(settings: Partial<LayoutSettings>) {
       const nextTheme = settings.theme ?? this.layout.theme;
