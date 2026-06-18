@@ -52,7 +52,8 @@ interface LoginVO {
 
 export async function loginApi(params: LoginParams): Promise<LoginResult> {
   if (envConfig.useMock) {
-    return resolveMockResponse(mockLogin(params));
+    const response = mockLogin(params);
+    return response instanceof Promise ? response : resolveMockResponse(response);
   }
 
   const data = await http.post<LoginVO, LoginVO>('/auth/login', params);

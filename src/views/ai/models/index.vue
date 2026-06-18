@@ -12,7 +12,7 @@ import type { BusinessRecord, BusinessRecordPayload, BusinessRecordStatus } from
 import { createBusinessRecord, getBusinessRecordList } from '@/api/business';
 
 const moduleName = 'ai-models';
-const pageTitle = 'AI 模型中心';
+const pageTitle = '模型中心';
 const pageDescription = '管理模型列表、路由策略、成本、调用量、延迟、失败率、预算和灰度发布。';
 const primaryAction = '更新路由';
 const metrics = [
@@ -47,7 +47,7 @@ const formState = reactive<BusinessRecordPayload>({
   metric: metrics[0]?.value ?? '-',
   risk: '中风险',
   description: pageDescription,
-  aiSuggestion: 'AI 模型中心已生成 AI 建议，请优先处理高风险记录。',
+  aiSuggestion: '模型中心已生成 AI 建议，请优先处理高风险记录。',
   tags: [pageTitle],
 });
 async function loadData() {
@@ -72,7 +72,7 @@ function openCreate() {
     metric: metrics[0]?.value ?? '-',
     risk: '中风险',
     description: pageDescription,
-    aiSuggestion: 'AI 模型中心已生成 AI 建议，请优先处理高风险记录。',
+    aiSuggestion: '模型中心已生成 AI 建议，请优先处理高风险记录。',
     tags: [pageTitle],
   });
   createOpen.value = true;

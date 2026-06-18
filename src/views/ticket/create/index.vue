@@ -1,28 +1,32 @@
 <template>
   <div class="page-view ticket-lifecycle">
-    <a-card class="ticket-lifecycle__steps" :bordered="false">
-      <div class="ticket-lifecycle__topbar">
-        <div>
-          <div class="ticket-lifecycle__eyebrow">工单生命周期</div>
-          <div class="ticket-lifecycle__title-row">
-            <strong>{{ ticketNo }}</strong>
-            <a-tag :color="currentStatusMeta.color">{{ currentStatusMeta.label }}</a-tag>
-          </div>
-        </div>
-        <div class="ticket-lifecycle__facts">
-          <span>处理人：{{ formState.assigneeName || '-' }}</span>
-          <span>期望完成：{{ formState.dueTime || '-' }}</span>
-          <span v-if="completedTime">完成时间：{{ completedTime }}</span>
-          <span v-if="processingDuration">处理耗时：{{ processingDuration }}</span>
-        </div>
-      </div>
-      <a-steps :current="currentStepIndex" label-placement="vertical" responsive size="small">
-        <a-step v-for="step in flowSteps" :key="step.key" :title="step.label" />
-      </a-steps>
-    </a-card>
-
     <div class="ticket-lifecycle__body">
-      <div class="ticket-lifecycle__workbench">
+      <a-card class="ticket-lifecycle__steps" :class="{ 'ticket-lifecycle__steps--expanded': !lifecycleCollapsed }" :bordered="false">
+        <div class="ticket-lifecycle__topbar">
+          <div>
+            <div class="ticket-lifecycle__eyebrow">工单生命周期</div>
+            <div class="ticket-lifecycle__title-row">
+              <strong>{{ ticketNo }}</strong>
+              <a-tag :color="currentStatusMeta.color">{{ currentStatusMeta.label }}</a-tag>
+            </div>
+          </div>
+          <div v-if="!lifecycleCollapsed" class="ticket-lifecycle__facts">
+            <span>处理人：{{ formState.assigneeName || '-' }}</span>
+            <span>期望完成：{{ formState.dueTime || '-' }}</span>
+            <span v-if="completedTime">完成时间：{{ completedTime }}</span>
+            <span v-if="processingDuration">处理耗时：{{ processingDuration }}</span>
+          </div>
+          <a-button class="collapse-toggle" type="text" size="small" @click="lifecycleCollapsed = !lifecycleCollapsed">
+            <component :is="lifecycleCollapsed ? RightOutlined : DownOutlined" />
+            {{ lifecycleCollapsed ? '展开' : '收起' }}
+          </a-button>
+        </div>
+        <a-steps v-if="!lifecycleCollapsed" :current="currentStepIndex" label-placement="vertical" responsive size="small">
+          <a-step v-for="step in flowSteps" :key="step.key" :title="step.label" />
+        </a-steps>
+      </a-card>
+
+      <div class="ticket-lifecycle__workbench" :class="{ 'ticket-lifecycle__workbench--ai-collapsed': aiPanelCollapsed }">
         <a-card class="ticket-lifecycle__form-card" :bordered="false">
           <template #title>
             <span class="section-title">
@@ -35,139 +39,248 @@
           </template>
 
           <a-form ref="formRef" :model="formState" :rules="rules" layout="vertical" :disabled="isReadOnly">
-            <a-row :gutter="[16, 6]">
-              <a-col :xs="24" :lg="12">
-                <a-form-item label="工单标题" name="title">
-                  <a-input v-model:value="formState.title" placeholder="请输入工单标题" />
-                </a-form-item>
-              </a-col>
-              <a-col :xs="24" :sm="12" :lg="6">
-                <a-form-item label="优先级" name="priority">
-                  <a-select v-model:value="formState.priority" placeholder="请选择优先级">
-                    <a-select-option v-for="item in priorityOptions" :key="item.value" :value="item.value">
-                      {{ item.label }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col :xs="24" :sm="12" :lg="6">
-                <a-form-item label="来源" name="source">
-                  <a-select v-model:value="formState.source" placeholder="请选择来源">
-                    <a-select-option v-for="item in sourceOptions" :key="item.value" :value="item.value">
-                      {{ item.label }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col :xs="24" :sm="12" :lg="8">
-                <a-form-item label="分类" name="category">
-                  <a-select v-model:value="formState.category" placeholder="请选择分类">
-                    <a-select-option v-for="item in categoryOptions" :key="item" :value="item">
-                      {{ item }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col :xs="24" :sm="12" :lg="8">
-                <a-form-item label="申请人ID" name="applicantId">
-                  <a-input v-model:value="formState.applicantId" placeholder="默认当前登录用户 ID" />
-                </a-form-item>
-              </a-col>
-              <a-col :xs="24" :sm="12" :lg="8">
-                <a-form-item label="申请人姓名" name="applicantName">
-                  <a-input v-model:value="formState.applicantName" placeholder="默认当前登录用户昵称" />
-                </a-form-item>
-              </a-col>
-              <a-col :xs="24" :sm="12" :lg="8">
-                <a-form-item label="处理人ID" name="assigneeId">
-                  <a-input v-model:value="formState.assigneeId" placeholder="请输入处理人 ID" />
-                </a-form-item>
-              </a-col>
-              <a-col :xs="24" :sm="12" :lg="8">
-                <a-form-item label="处理人姓名" name="assigneeName">
-                  <a-input v-model:value="formState.assigneeName" placeholder="请输入处理人姓名" />
-                </a-form-item>
-              </a-col>
-              <a-col :xs="24" :sm="12" :lg="8">
-                <a-form-item label="期望完成时间" name="dueTime">
-                  <a-date-picker
-                    v-model:value="formState.dueTime"
-                    show-time
-                    value-format="YYYY-MM-DD HH:mm:ss"
-                    class="full-width"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="24">
-                <a-form-item label="问题描述" name="description">
-                  <a-textarea
-                    v-model:value="formState.description"
-                    :rows="5"
-                    placeholder="请描述问题现象、影响范围、复现路径和期望结果"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="24">
-                <a-form-item label="附件上传" name="attachments">
-                  <a-upload
-                    v-model:file-list="uploadFileList"
-                    :before-upload="beforeUpload"
-                    :max-count="6"
-                    multiple
-                    @change="handleUploadChange"
-                  >
-                    <a-button>
-                      <UploadOutlined />
-                      选择附件
-                    </a-button>
-                  </a-upload>
-                </a-form-item>
-              </a-col>
-            </a-row>
+            <div class="ticket-form-section">
+              <div class="ticket-form-section__title">基础信息</div>
+              <a-row :gutter="[16, 6]">
+                <a-col :xs="24" :lg="12">
+                  <a-form-item label="工单名称" name="title">
+                    <a-input v-model:value="formState.title" placeholder="请输入工单名称" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="工单状态">
+                    <a-select v-model:value="ticketStatus" disabled placeholder="请选择工单状态">
+                      <a-select-option v-for="item in lifecycleStatusOptions" :key="item.value" :value="item.value">
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="优先级" name="priority">
+                    <a-select v-model:value="formState.priority" placeholder="请选择优先级">
+                      <a-select-option v-for="item in priorityOptions" :key="item.value" :value="item.value">
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="来电方式" name="source">
+                    <a-select v-model:value="formState.source" placeholder="请选择来电方式">
+                      <a-select-option v-for="item in sourceOptions" :key="item.value" :value="item.value">
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="问题分类" name="category">
+                    <a-select v-model:value="formState.category" placeholder="请选择问题分类">
+                      <a-select-option v-for="item in categoryOptions" :key="item" :value="item">
+                        {{ item }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="关联产品" name="serviceProduct">
+                    <a-input v-model:value="formState.serviceProduct" placeholder="请输入产品或服务" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="期望完成时间" name="dueTime">
+                    <a-date-picker
+                      v-model:value="formState.dueTime"
+                      show-time
+                      value-format="YYYY-MM-DD HH:mm:ss"
+                      class="full-width"
+                    />
+                  </a-form-item>
+                </a-col>
+              </a-row>
+            </div>
+
+            <div class="ticket-form-section">
+              <div class="ticket-form-section__title">客户与诉求</div>
+              <a-row :gutter="[16, 6]">
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="客户" name="customerName">
+                    <a-input v-model:value="formState.customerName" placeholder="请输入客户名称" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="联系人" name="applicantName">
+                    <a-input v-model:value="formState.applicantName" placeholder="请输入联系人" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="联系电话" name="customerPhone">
+                    <a-input v-model:value="formState.customerPhone" placeholder="请输入联系电话" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="客户邮箱" name="customerEmail">
+                    <a-input v-model:value="formState.customerEmail" placeholder="请输入客户邮箱" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="客户等级" name="customerLevel">
+                    <a-select v-model:value="formState.customerLevel" placeholder="请选择客户等级">
+                      <a-select-option value="普通客户">普通客户</a-select-option>
+                      <a-select-option value="重点客户">重点客户</a-select-option>
+                      <a-select-option value="VIP客户">VIP客户</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="来电时间" name="contactTime">
+                    <a-date-picker
+                      v-model:value="formState.contactTime"
+                      show-time
+                      value-format="YYYY-MM-DD HH:mm:ss"
+                      class="full-width"
+                    />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="影响范围" name="impactScope">
+                    <a-input v-model:value="formState.impactScope" placeholder="请输入影响范围" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="需要回访" name="callbackRequired">
+                    <a-checkbox v-model:checked="formState.callbackRequired">需要</a-checkbox>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="24">
+                  <a-form-item label="客户诉求" name="customerRequirement">
+                    <a-textarea
+                      v-model:value="formState.customerRequirement"
+                      :rows="4"
+                      placeholder="请输入客户希望解决的问题和诉求"
+                    />
+                  </a-form-item>
+                </a-col>
+                <a-col :span="24">
+                  <a-form-item label="问题描述" name="description">
+                    <a-textarea
+                      v-model:value="formState.description"
+                      :rows="4"
+                      placeholder="请描述问题现象、复现路径和补充背景"
+                    />
+                  </a-form-item>
+                </a-col>
+              </a-row>
+            </div>
+
+            <div class="ticket-form-section">
+              <div class="ticket-form-section__title">处理信息</div>
+              <a-row :gutter="[16, 6]">
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="负责人" name="assigneeName">
+                    <a-input v-model:value="formState.assigneeName" placeholder="请输入负责人" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="负责人ID" name="assigneeId">
+                    <a-input v-model:value="formState.assigneeId" placeholder="请输入负责人 ID" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="负责部门" name="ownerDepartment">
+                    <a-input v-model:value="formState.ownerDepartment" placeholder="请输入负责部门" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :lg="6">
+                  <a-form-item label="申请人ID" name="applicantId">
+                    <a-input v-model:value="formState.applicantId" placeholder="默认当前登录用户 ID" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :lg="12">
+                  <a-form-item label="期望结果" name="expectedResult">
+                    <a-input v-model:value="formState.expectedResult" placeholder="请输入客户期望结果" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :lg="12">
+                  <a-form-item label="紧急原因" name="urgencyReason">
+                    <a-input v-model:value="formState.urgencyReason" placeholder="请输入紧急原因" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :lg="12">
+                  <a-form-item label="抄送邮箱" name="ccEmails">
+                    <a-input v-model:value="formState.ccEmails" placeholder="多个邮箱用逗号分隔" />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :lg="12">
+                  <a-form-item label="标签" name="tags">
+                    <a-select v-model:value="formState.tags" mode="tags" placeholder="请输入标签">
+                      <a-select-option value="SLA风险">SLA风险</a-select-option>
+                      <a-select-option value="高价值客户">高价值客户</a-select-option>
+                      <a-select-option value="需回访">需回访</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+            </div>
+
+            <div class="ticket-form-section">
+              <div class="ticket-form-section__title">附件</div>
+              <a-form-item label="附件上传" name="attachments">
+                <a-upload
+                  v-model:file-list="uploadFileList"
+                  :before-upload="beforeUpload"
+                  :max-count="6"
+                  multiple
+                  @change="handleUploadChange"
+                >
+                  <a-button>
+                    <UploadOutlined />
+                    选择附件
+                  </a-button>
+                </a-upload>
+              </a-form-item>
+            </div>
           </a-form>
 
-          <div class="ticket-lifecycle__actions">
-            <a-space wrap>
-              <a-button
-                v-for="action in actionButtons"
-                :key="action.key"
-                :danger="action.danger"
-                :ghost="action.ghost"
-                :loading="actionLoading === action.key || (action.key === 'aiAnalyze' && aiLoading)"
-                :type="action.type || 'default'"
-                @click="handleAction(action.key)"
-              >
-                {{ action.label }}
-              </a-button>
-            </a-space>
-          </div>
         </a-card>
 
-        <a-card class="ai-panel" :bordered="false">
+        <a-card
+          class="ai-panel"
+          :class="{ 'ai-panel--collapsed': aiPanelCollapsed }"
+          :bordered="false"
+          @click="handleAiPanelClick"
+        >
           <template #title>
-            <span class="section-title">
+            <span class="section-title ai-panel__title">
               <RobotOutlined />
-              AI智能分析
+              <span>AI智能分析</span>
             </span>
           </template>
           <template #extra>
-            <a-tag v-if="aiLoading" color="processing">
-              <LoadingOutlined />
-              分析中
-            </a-tag>
-            <a-tag v-else-if="aiAnalysis" color="success">已完成</a-tag>
+            <a-space :direction="aiPanelCollapsed ? 'vertical' : 'horizontal'" :size="aiPanelCollapsed ? 6 : 8">
+              <a-tag v-if="aiLoading" color="processing">
+                <LoadingOutlined />
+                <span v-if="!aiPanelCollapsed">分析中</span>
+              </a-tag>
+              <a-tag v-else-if="aiAnalysis" color="success">{{ aiPanelCollapsed ? 'AI' : '已完成' }}</a-tag>
+              <a-button class="collapse-toggle" type="text" size="small" @click="aiPanelCollapsed = !aiPanelCollapsed">
+                <component :is="aiPanelCollapsed ? RightOutlined : LeftOutlined" />
+                <span v-if="!aiPanelCollapsed">收起</span>
+              </a-button>
+            </a-space>
           </template>
 
-          <div v-if="aiLoading" class="ai-panel__loading">
+          <div v-if="!aiPanelCollapsed && aiLoading" class="ai-panel__loading">
             <a-spin />
             <span>AI 正在识别问题类型、风险等级和推荐方案</span>
           </div>
           <a-empty
-            v-else-if="!aiAnalysis"
+            v-else-if="!aiPanelCollapsed && !aiAnalysis"
             class="ai-panel__empty"
             description="提交工单后，AI 将自动分析问题类型、风险等级和推荐处理方案"
           />
-          <div v-else class="ai-panel__content">
+          <div v-else-if="!aiPanelCollapsed && aiAnalysis" class="ai-panel__content">
             <div class="ai-panel__score">
               <div>
                 <span>AI识别分类</span>
@@ -312,14 +425,33 @@
         </a-tabs>
       </a-card>
     </div>
+
+    <div class="ticket-lifecycle__actions">
+      <a-space wrap>
+        <a-button
+          v-for="action in actionButtons"
+          :key="action.key"
+          :danger="action.danger"
+          :ghost="action.ghost"
+          :loading="actionLoading === action.key || (action.key === 'aiAnalyze' && aiLoading)"
+          :type="action.type || 'default'"
+          @click="handleAction(action.key)"
+        >
+          {{ action.label }}
+        </a-button>
+      </a-space>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import {
   CommentOutlined,
+  DownOutlined,
   FileTextOutlined,
+  LeftOutlined,
   LoadingOutlined,
+  RightOutlined,
   RobotOutlined,
   SafetyOutlined,
   UploadOutlined,
@@ -397,6 +529,8 @@ const commentSubmitting = ref(false);
 const completedTime = ref('');
 const processingDuration = ref('');
 const uploadFileList = ref<UploadFile[]>([]);
+const lifecycleCollapsed = ref(true);
+const aiPanelCollapsed = ref(false);
 
 const formState = reactive<LifecycleTicketPayload>(createEmptyForm());
 const flowRecords = ref<TicketFlowRecord[]>([]);
@@ -415,14 +549,23 @@ const priorityOptions: Array<{ label: string; value: LifecycleTicketPriority; co
 ];
 
 const sourceOptions: Array<{ label: string; value: LifecycleTicketSource }> = [
-  { label: 'WEB', value: 'WEB' },
-  { label: 'APP', value: 'APP' },
+  { label: '短信', value: 'SMS' },
+  { label: '邮件', value: 'EMAIL' },
   { label: '电话', value: 'PHONE' },
-  { label: '企业微信', value: 'WECHAT' },
-  { label: '人工录入', value: 'MANUAL' },
+  { label: '在线', value: 'ONLINE' },
+  { label: '其他', value: 'OTHER' },
 ];
 
-const categoryOptions = ['IT', '流程异常', '系统故障', '账号权限', '数据问题'];
+const lifecycleStatusOptions: Array<{ label: string; value: LifecycleTicketStatus }> = [
+  { label: '草稿', value: 'DRAFT' },
+  { label: '待受理', value: 'PENDING_ACCEPT' },
+  { label: '已受理', value: 'ACCEPTED' },
+  { label: '处理中', value: 'PROCESSING' },
+  { label: '挂起中', value: 'PENDING' },
+  { label: '待确认', value: 'WAIT_CONFIRM' },
+];
+
+const categoryOptions = ['IT', '流程异常', '系统故障', '账号权限', '数据问题', '咨询建议', '投诉反馈'];
 
 const statusMetaMap: Record<LifecycleTicketStatus, { label: string; color: string }> = {
   DRAFT: { label: '草稿', color: 'default' },
@@ -546,13 +689,27 @@ function createEmptyForm(): LifecycleTicketPayload {
   return {
     title: '',
     priority: 'NORMAL',
-    source: 'WEB',
+    source: 'PHONE',
     category: 'IT',
+    customerName: '',
+    customerPhone: '',
+    customerEmail: '',
+    customerLevel: '普通客户',
     applicantId: undefined,
     applicantName: '',
     assigneeId: undefined,
     assigneeName: '',
+    ownerDepartment: '',
     dueTime: undefined,
+    contactTime: undefined,
+    serviceProduct: '',
+    customerRequirement: '',
+    impactScope: '',
+    expectedResult: '',
+    urgencyReason: '',
+    callbackRequired: false,
+    ccEmails: '',
+    tags: [],
     description: '',
     attachments: [],
   };
@@ -566,6 +723,7 @@ function applyCurrentUser() {
 function buildPayload(): LifecycleTicketPayload {
   return {
     ...formState,
+    description: formState.description || formState.customerRequirement || '',
     attachments: [...(formState.attachments ?? [])],
   };
 }
@@ -631,11 +789,25 @@ function syncTicketFromDetail(detail: LifecycleTicketDetail) {
     priority: detail.priority,
     source: detail.source,
     category: detail.category,
+    customerName: detail.customerName,
+    customerPhone: detail.customerPhone,
+    customerEmail: detail.customerEmail,
+    customerLevel: detail.customerLevel,
     applicantId: detail.applicantId,
     applicantName: detail.applicantName,
     assigneeId: detail.assigneeId,
     assigneeName: detail.assigneeName,
+    ownerDepartment: detail.ownerDepartment,
     dueTime: detail.dueTime,
+    contactTime: detail.contactTime,
+    serviceProduct: detail.serviceProduct,
+    customerRequirement: detail.customerRequirement,
+    impactScope: detail.impactScope,
+    expectedResult: detail.expectedResult,
+    urgencyReason: detail.urgencyReason,
+    callbackRequired: detail.callbackRequired ?? false,
+    ccEmails: detail.ccEmails,
+    tags: detail.tags ?? [],
     description: detail.description,
     attachments: detail.attachments ?? [],
   });
@@ -760,16 +932,21 @@ async function handleSaveDraft() {
 }
 
 async function handleSubmitTicket() {
+  if (!formState.description && formState.customerRequirement) {
+    formState.description = formState.customerRequirement;
+  }
+
   try {
     await formRef.value?.validate();
   } catch {
-    message.warning('请先填写工单标题和问题描述');
+    message.warning('请先填写工单名称和问题描述');
     return;
   }
 
   await executeAction('submitTicket', async () => {
     const detail = await submitTicketApi(buildPayload());
     syncTicketFromDetail(detail);
+    aiPanelCollapsed.value = true;
     appendFlow('提交工单', '工单进入待受理队列，等待服务台受理', 'PENDING_ACCEPT', formState.applicantName || getOperator());
     appendLog('提交工单', 'DRAFT', 'PENDING_ACCEPT', formState.applicantName || getOperator());
     message.success('工单已提交');
@@ -879,6 +1056,12 @@ function handleEvaluateTicket() {
   message.success('评价已记录（模拟）');
 }
 
+function handleAiPanelClick() {
+  if (aiPanelCollapsed.value) {
+    aiPanelCollapsed.value = false;
+  }
+}
+
 async function runAiAnalysis(mode: 'auto' | 'manual') {
   if (aiLoading.value) {
     return;
@@ -934,6 +1117,7 @@ async function submitComment() {
   height: 100%;
   min-height: 0;
   overflow: hidden;
+  padding-bottom: 0;
 }
 
 .ticket-lifecycle__steps {
@@ -949,7 +1133,13 @@ async function submitComment() {
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 0;
+}
+
+.ticket-lifecycle__steps--expanded {
+  .ticket-lifecycle__topbar {
+    margin-bottom: 16px;
+  }
 }
 
 .ticket-lifecycle__eyebrow {
@@ -984,6 +1174,7 @@ async function submitComment() {
   min-height: 0;
   overflow: auto;
   padding-right: 2px;
+  padding-bottom: 12px;
 }
 
 .ticket-lifecycle__workbench {
@@ -991,6 +1182,11 @@ async function submitComment() {
   grid-template-columns: minmax(0, 7fr) minmax(300px, 3fr);
   gap: 12px;
   align-items: stretch;
+  transition: grid-template-columns 0.2s ease;
+}
+
+.ticket-lifecycle__workbench--ai-collapsed {
+  grid-template-columns: minmax(0, 1fr) 72px;
 }
 
 .ticket-lifecycle__form-card,
@@ -1014,18 +1210,97 @@ async function submitComment() {
   font-weight: 600;
 }
 
+.collapse-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ticket-form-section {
+  padding: 12px 0 4px;
+  border-top: 1px solid var(--app-border);
+
+  &:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+}
+
+.ticket-form-section__title {
+  margin-bottom: 12px;
+  color: var(--app-text);
+  font-weight: 600;
+}
+
 .ticket-lifecycle__actions {
+  position: sticky;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
   display: flex;
   justify-content: flex-end;
-  margin-top: 8px;
-  padding-top: 14px;
+  flex: none;
+  margin: 0 -2px -2px;
+  padding: 12px 20px;
   border-top: 1px solid var(--app-border);
+  background: var(--app-surface);
+  box-shadow: 0 -10px 24px rgb(15 23 42 / 8%);
 }
 
 .ai-panel {
+  overflow: hidden;
+  transition: width 0.2s ease;
+
   :deep(.ant-card-body) {
     height: calc(100% - 57px);
     min-height: 420px;
+  }
+}
+
+.ai-panel--collapsed {
+  align-self: start;
+  min-height: 300px;
+  cursor: pointer;
+
+  :deep(.ant-card-head) {
+    min-height: 300px;
+    padding: 10px 8px;
+    border-bottom: 0;
+  }
+
+  :deep(.ant-card-head-wrapper) {
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  :deep(.ant-card-head-title),
+  :deep(.ant-card-extra) {
+    min-width: 0;
+    padding: 0;
+  }
+
+  :deep(.ant-card-body) {
+    display: none;
+  }
+
+  .ai-panel__title {
+    flex-direction: column;
+    gap: 8px;
+    white-space: nowrap;
+
+    span {
+      writing-mode: vertical-rl;
+      letter-spacing: 0;
+    }
+  }
+
+  .collapse-toggle {
+    width: 32px;
+    height: 32px;
+    justify-content: center;
+    padding: 0;
   }
 }
 
@@ -1191,9 +1466,33 @@ html.dark .ai-panel__summary {
     grid-template-columns: 1fr;
   }
 
+  .ticket-lifecycle__workbench--ai-collapsed {
+    grid-template-columns: 1fr;
+  }
+
   .ai-panel {
     :deep(.ant-card-body) {
       min-height: 320px;
+    }
+  }
+
+  .ai-panel--collapsed {
+    min-height: auto;
+
+    :deep(.ant-card-head) {
+      min-height: auto;
+    }
+
+    :deep(.ant-card-head-wrapper) {
+      flex-direction: row;
+    }
+
+    .ai-panel__title {
+      flex-direction: row;
+
+      span {
+        writing-mode: horizontal-tb;
+      }
     }
   }
 }
@@ -1209,6 +1508,8 @@ html.dark .ai-panel__summary {
 
   .ticket-lifecycle__actions {
     justify-content: flex-start;
+    margin-right: 0;
+    margin-left: 0;
   }
 
   .similar-ticket {

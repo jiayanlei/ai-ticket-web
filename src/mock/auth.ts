@@ -1,5 +1,5 @@
 import type { LoginParams, LoginResult, UserInfo } from '@/api/auth';
-import { createMockResponse } from '@/mock/core';
+import { createMockResponse, rejectMockResponse } from '@/mock/core';
 import { getMockMenus } from '@/mock/menu';
 import { getMockPermissionsByRole, getMockUserProfile } from '@/mock/system';
 import { getToken } from '@/utils/token';
@@ -60,7 +60,13 @@ function buildLoginResult(username: string, token: string): LoginResult {
 }
 
 export function mockLogin(params: LoginParams) {
-  const username = params.username?.trim() || 'admin';
+  const username = params.username?.trim() || '';
+  const password = params.password || '';
+
+  if (username !== 'admin' || !['admin123', '123456'].includes(password)) {
+    return rejectMockResponse('账号或密码错误，请确认后重试。', 401);
+  }
+
   const token = buildMockToken(username);
   return createMockResponse(buildLoginResult(username, token));
 }

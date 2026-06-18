@@ -396,7 +396,7 @@ const radarPoints = [
 ];
 
 const quickActions: QuickAction[] = [
-  { label: '新建工单', path: '/ticket/create', tone: 'blue', icon: PlusCircleOutlined },
+  { label: '新建工单', path: '/service/tickets/create', tone: 'blue', icon: PlusCircleOutlined },
   { label: '工单列表', path: '/ticket/list', tone: 'green', icon: UnorderedListOutlined },
   { label: '知识库检索', path: '/knowledge', tone: 'amber', icon: BookOutlined },
   { label: 'AI 问答', path: '/ai/chat', tone: 'violet', icon: RobotOutlined },

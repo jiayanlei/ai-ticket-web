@@ -12,7 +12,7 @@ import type { BusinessRecord, BusinessRecordPayload, BusinessRecordStatus } from
 import { createBusinessRecord, getBusinessRecordList, updateBusinessRecordStatus } from '@/api/business';
 
 const moduleName = 'ai-workflows';
-const pageTitle = 'AI 工作流中心';
+const pageTitle = '工作流中心';
 const pageDescription = '编排触发器、节点、执行记录、发布、回滚、失败告警和流程影响指标。';
 const primaryAction = '发布工作流';
 const metrics = [
@@ -39,7 +39,7 @@ const formState = reactive<BusinessRecordPayload>({
   metric: metrics[0]?.value ?? '-',
   risk: '中风险',
   description: pageDescription,
-  aiSuggestion: 'AI 工作流中心已生成 AI 建议，请优先处理高风险记录。',
+  aiSuggestion: '工作流中心已生成 AI 建议，请优先处理高风险记录。',
   tags: [pageTitle],
 });
 async function loadData() {
@@ -64,7 +64,7 @@ function openCreate() {
     metric: metrics[0]?.value ?? '-',
     risk: '中风险',
     description: pageDescription,
-    aiSuggestion: 'AI 工作流中心已生成 AI 建议，请优先处理高风险记录。',
+    aiSuggestion: '工作流中心已生成 AI 建议，请优先处理高风险记录。',
     tags: [pageTitle],
   });
   createOpen.value = true;

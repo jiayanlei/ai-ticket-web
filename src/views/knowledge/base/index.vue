@@ -788,7 +788,8 @@ function clone<T>(data: T): T {
   grid-template-columns: 258px minmax(0, 1fr);
   gap: 14px;
   min-width: 0;
-  min-height: calc(100vh - 116px);
+  height: 100%;
+  min-height: 0;
   padding: 10px;
   color: var(--knowledge-text);
   background: var(--knowledge-bg);
@@ -1000,7 +1001,7 @@ function clone<T>(data: T): T {
 .canvas-body {
   position: relative;
   flex: 1;
-  min-height: 620px;
+  min-height: 0;
   overflow: hidden;
   background: var(--knowledge-canvas-bg);
 

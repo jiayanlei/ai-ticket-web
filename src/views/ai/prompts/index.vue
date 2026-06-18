@@ -12,7 +12,7 @@ import type { BusinessRecord, BusinessRecordPayload, BusinessRecordStatus } from
 import { createBusinessRecord, getBusinessRecordList } from '@/api/business';
 
 const moduleName = 'ai-prompts';
-const pageTitle = 'AI 提示词中心';
+const pageTitle = '提示词中心';
 const pageDescription = '管理提示词模板、版本、变量、场景绑定、测试运行、效果评分和发布审批。';
 const primaryAction = '发布提示词';
 const metrics = [
@@ -39,7 +39,7 @@ const formState = reactive<BusinessRecordPayload>({
   metric: metrics[0]?.value ?? '-',
   risk: '中风险',
   description: pageDescription,
-  aiSuggestion: 'AI 提示词中心已生成 AI 建议，请优先处理高风险记录。',
+  aiSuggestion: '提示词中心已生成 AI 建议，请优先处理高风险记录。',
   tags: [pageTitle],
 });
 async function loadData() {
@@ -64,7 +64,7 @@ function openCreate() {
     metric: metrics[0]?.value ?? '-',
     risk: '中风险',
     description: pageDescription,
-    aiSuggestion: 'AI 提示词中心已生成 AI 建议，请优先处理高风险记录。',
+    aiSuggestion: '提示词中心已生成 AI 建议，请优先处理高风险记录。',
     tags: [pageTitle],
   });
   createOpen.value = true;

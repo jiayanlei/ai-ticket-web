@@ -12,7 +12,9 @@
         <a-tab-pane v-for="(tab, index) in tabsStore.tabs" :key="tab.path">
           <template #tab>
             <a-dropdown trigger="contextmenu">
-              <span class="app-tabs__title">{{ tab.title }}</span>
+              <span class="app-tabs__trigger">
+                <span class="app-tabs__title">{{ tab.title }}</span>
+              </span>
               <template #overlay>
                 <a-menu @click="handleContextMenuClick($event, tab)">
                   <a-menu-item key="refresh">
@@ -215,7 +217,7 @@ function syncFullscreenState() {
 <style scoped lang="scss">
 .app-tabs {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   height: calc($app-tabs-height + 7px);
   min-width: 0;
@@ -228,30 +230,31 @@ function syncFullscreenState() {
   &__scroll {
     flex: 1 1 auto;
     width: auto;
-    height: 37px;
+    height: 41px;
     min-width: 0;
     overflow-x: auto;
     overflow-y: hidden;
-    scrollbar-color: rgb(148 163 184 / 55%) rgb(226 232 240 / 68%);
+    scrollbar-color: rgb(99 102 241 / 62%) transparent;
     scrollbar-width: thin;
   }
 
   &__scroll::-webkit-scrollbar {
-    height: 6px;
+    height: 5px;
   }
 
   &__scroll::-webkit-scrollbar-track {
-    background: rgb(226 232 240 / 68%);
+    background: transparent;
     border-radius: 999px;
   }
 
   &__scroll::-webkit-scrollbar-thumb {
-    background: rgb(148 163 184 / 55%);
+    background: linear-gradient(90deg, rgb(79 123 255 / 72%), rgb(139 92 246 / 72%));
     border-radius: 999px;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 36%);
   }
 
   &__scroll:hover::-webkit-scrollbar-thumb {
-    background: rgb(100 116 139 / 72%);
+    background: linear-gradient(90deg, rgb(79 123 255 / 88%), rgb(139 92 246 / 88%));
   }
 
   &--limited &__scroll {
@@ -271,6 +274,14 @@ function syncFullscreenState() {
     text-overflow: ellipsis;
     vertical-align: bottom;
     white-space: nowrap;
+  }
+
+  &__trigger {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    min-width: 0;
+    padding: 6px 4px;
   }
 
   &__scroll :deep(.ant-tabs) {
@@ -293,7 +304,7 @@ function syncFullscreenState() {
   &__scroll :deep(.ant-tabs-tab) {
     height: 30px;
     margin: 0 6px 0 0;
-    padding: 5px 12px;
+    padding: 0;
     color: var(--app-text-secondary);
     background: var(--app-surface-muted);
     border-color: var(--app-border);
@@ -311,6 +322,7 @@ function syncFullscreenState() {
 
   &__scroll :deep(.ant-tabs-tab-btn) {
     max-width: 160px;
+    min-width: 0;
     overflow: hidden;
     color: inherit;
     font-size: 13px;
@@ -324,7 +336,8 @@ function syncFullscreenState() {
     justify-content: center;
     width: 18px;
     height: 18px;
-    margin-left: 8px;
+    margin-right: 0;
+    margin-left: 0;
     color: var(--app-text-secondary) !important;
     border-radius: 4px;
   }

@@ -33,6 +33,20 @@ interface MockWorkOrderRecord extends WorkOrderItem {
   finishTime?: string;
   completedTime?: string;
   processingDuration?: string;
+  customerName?: string;
+  customerPhone?: string;
+  customerEmail?: string;
+  customerLevel?: string;
+  ownerDepartment?: string;
+  contactTime?: string;
+  serviceProduct?: string;
+  customerRequirement?: string;
+  impactScope?: string;
+  expectedResult?: string;
+  urgencyReason?: string;
+  callbackRequired?: boolean;
+  ccEmails?: string;
+  tags?: string[];
 }
 
 function toTicketStatus(lifecycleStatus: LifecycleTicketStatus): TicketStatus {
@@ -316,6 +330,7 @@ export function createLifecycleTicket(data: LifecycleTicketPayload, lifecycleSta
   });
 
   record.attachments = cloneMock(data.attachments ?? []);
+  Object.assign(record, pickLifecycleExtraFields(data));
   mockWorkOrders.unshift(record);
   return createMockResponse(toLifecycleDetail(record));
 }
@@ -463,6 +478,25 @@ function toLifecycleStatus(status: TicketStatus): LifecycleTicketStatus {
   }
 }
 
+function pickLifecycleExtraFields(data: LifecycleTicketPayload) {
+  return {
+    customerName: data.customerName,
+    customerPhone: data.customerPhone,
+    customerEmail: data.customerEmail,
+    customerLevel: data.customerLevel,
+    ownerDepartment: data.ownerDepartment,
+    contactTime: data.contactTime,
+    serviceProduct: data.serviceProduct,
+    customerRequirement: data.customerRequirement,
+    impactScope: data.impactScope,
+    expectedResult: data.expectedResult,
+    urgencyReason: data.urgencyReason,
+    callbackRequired: data.callbackRequired,
+    ccEmails: data.ccEmails,
+    tags: data.tags ? cloneMock(data.tags) : undefined,
+  };
+}
+
 function findWorkOrder(id: ApiId) {
   const record = mockWorkOrders.find((item) => String(item.id) === String(id));
 
@@ -474,7 +508,34 @@ function findWorkOrder(id: ApiId) {
 }
 
 function toWorkOrderItem(record: MockWorkOrderRecord): WorkOrderItem {
-  const { deleted, lifecycleStatus, attachments, comments, flowRecords, operationLogs, acceptedTime, startProcessTime, finishTime, completedTime, processingDuration, ...rest } = record;
+  const {
+    deleted,
+    lifecycleStatus,
+    attachments,
+    comments,
+    flowRecords,
+    operationLogs,
+    acceptedTime,
+    startProcessTime,
+    finishTime,
+    completedTime,
+    processingDuration,
+    customerName,
+    customerPhone,
+    customerEmail,
+    customerLevel,
+    ownerDepartment,
+    contactTime,
+    serviceProduct,
+    customerRequirement,
+    impactScope,
+    expectedResult,
+    urgencyReason,
+    callbackRequired,
+    ccEmails,
+    tags,
+    ...rest
+  } = record;
   void deleted;
   void lifecycleStatus;
   void attachments;
@@ -486,6 +547,20 @@ function toWorkOrderItem(record: MockWorkOrderRecord): WorkOrderItem {
   void finishTime;
   void completedTime;
   void processingDuration;
+  void customerName;
+  void customerPhone;
+  void customerEmail;
+  void customerLevel;
+  void ownerDepartment;
+  void contactTime;
+  void serviceProduct;
+  void customerRequirement;
+  void impactScope;
+  void expectedResult;
+  void urgencyReason;
+  void callbackRequired;
+  void ccEmails;
+  void tags;
   return rest;
 }
 
@@ -498,11 +573,25 @@ function toLifecycleDetail(record: MockWorkOrderRecord): LifecycleTicketDetail {
     priority: toLifecyclePriority(record.priority),
     source: (record.source as LifecycleTicketSource) || 'WEB',
     category: record.category || '综合问题',
+    customerName: record.customerName,
+    customerPhone: record.customerPhone,
+    customerEmail: record.customerEmail,
+    customerLevel: record.customerLevel,
     applicantId: record.applicantId || undefined,
     applicantName: record.applicantName || undefined,
     assigneeId: record.assigneeId || undefined,
     assigneeName: record.assigneeName || undefined,
+    ownerDepartment: record.ownerDepartment,
     dueTime: record.dueTime || undefined,
+    contactTime: record.contactTime,
+    serviceProduct: record.serviceProduct,
+    customerRequirement: record.customerRequirement,
+    impactScope: record.impactScope,
+    expectedResult: record.expectedResult,
+    urgencyReason: record.urgencyReason,
+    callbackRequired: record.callbackRequired,
+    ccEmails: record.ccEmails,
+    tags: record.tags ? cloneMock(record.tags) : undefined,
     description: record.description,
     attachments: cloneMock(record.attachments),
     createTime: record.createTime,
@@ -517,11 +606,25 @@ function toLifecycleDetail(record: MockWorkOrderRecord): LifecycleTicketDetail {
       priority: toLifecyclePriority(record.priority),
       source: (record.source as LifecycleTicketSource) || 'WEB',
       category: record.category || '综合问题',
+      customerName: record.customerName,
+      customerPhone: record.customerPhone,
+      customerEmail: record.customerEmail,
+      customerLevel: record.customerLevel,
       applicantId: record.applicantId || undefined,
       applicantName: record.applicantName || undefined,
       assigneeId: record.assigneeId || undefined,
       assigneeName: record.assigneeName || undefined,
+      ownerDepartment: record.ownerDepartment,
       dueTime: record.dueTime || undefined,
+      contactTime: record.contactTime,
+      serviceProduct: record.serviceProduct,
+      customerRequirement: record.customerRequirement,
+      impactScope: record.impactScope,
+      expectedResult: record.expectedResult,
+      urgencyReason: record.urgencyReason,
+      callbackRequired: record.callbackRequired,
+      ccEmails: record.ccEmails,
+      tags: record.tags ? cloneMock(record.tags) : undefined,
       description: record.description,
       attachments: cloneMock(record.attachments),
     }).data,

@@ -1,0 +1,215 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200" role="img" aria-labelledby="title desc">
+  <title id="title">AI Ticket OS 产品工作详情图</title>
+  <desc id="desc">展示 AI Ticket OS 的产品定位、技术栈和客户服务工作流闭环。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#08111f"/>
+      <stop offset="44%" stop-color="#101827"/>
+      <stop offset="100%" stop-color="#07131a"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#172235" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0d1726" stop-opacity="0.96"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#39a7ff"/>
+      <stop offset="100%" stop-color="#6be7ff"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#24d18f"/>
+      <stop offset="100%" stop-color="#99f6c8"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffb020"/>
+      <stop offset="100%" stop-color="#ffe08a"/>
+    </linearGradient>
+    <linearGradient id="violet" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity="0.28"/>
+    </filter>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse">
+      <path d="M 36 0 L 0 0 0 36" fill="none" stroke="#9fb8d9" stroke-opacity="0.055" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+      <path d="M 2 2 L 12 7 L 2 12 Z" fill="#56d6ff"/>
+    </marker>
+    <style>
+      .page { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif; }
+      .muted { fill: #8ea2bd; }
+      .text { fill: #eaf3ff; }
+      .sub { fill: #b9c7d8; }
+      .tiny { font-size: 18px; }
+      .small { font-size: 22px; }
+      .body { font-size: 26px; }
+      .title { font-size: 58px; font-weight: 800; letter-spacing: 0; }
+      .section { font-size: 30px; font-weight: 760; letter-spacing: 0; }
+      .label { font-size: 20px; font-weight: 720; letter-spacing: 0; }
+      .number { font-size: 18px; font-weight: 760; fill: #07111f; }
+      .card { fill: url(#panel); stroke: #2f4664; stroke-width: 1.2; filter: url(#softShadow); }
+      .thin { stroke: #2a3c54; stroke-width: 1; }
+      .dash { stroke: #6ecbff; stroke-width: 2; stroke-dasharray: 8 10; opacity: 0.55; }
+      .flowLine { fill: none; stroke: #56d6ff; stroke-width: 3; marker-end: url(#arrow); opacity: 0.9; }
+      .chip { fill: #101d2c; stroke: #304a69; stroke-width: 1; }
+      .chipText { fill: #d8e8fb; font-size: 19px; font-weight: 650; }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1200" fill="url(#bg)"/>
+  <rect width="1800" height="1200" fill="url(#grid)"/>
+  <g opacity="0.32">
+    <path d="M1320 78 C1510 120 1654 254 1698 438" fill="none" stroke="#2dd4bf" stroke-width="2"/>
+    <path d="M118 930 C340 770 492 958 744 782 C916 662 1040 654 1170 726" fill="none" stroke="#38bdf8" stroke-width="2"/>
+  </g>
+
+  <g class="page">
+    <g transform="translate(82 64)">
+      <rect x="0" y="0" width="1636" height="154" rx="8" class="card"/>
+      <rect x="32" y="34" width="8" height="86" rx="4" fill="url(#blue)"/>
+      <text x="64" y="68" class="text title">AI Ticket OS 产品工作详情图</text>
+      <text x="66" y="112" class="sub body">一个帮企业客服团队统一处理工单、电话、在线咨询和客户问题的 AI 客服管理系统</text>
+      <g transform="translate(1266 37)">
+        <rect x="0" y="0" width="304" height="84" rx="8" fill="#0b1725" stroke="#375575"/>
+        <circle cx="42" cy="42" r="17" fill="#25d0a1"/>
+        <circle cx="42" cy="42" r="28" fill="none" stroke="#25d0a1" stroke-opacity="0.32" stroke-width="2"/>
+        <text x="84" y="36" class="text label">Enterprise AI Service</text>
+        <text x="84" y="64" class="muted tiny">Command Center / SaaS</text>
+      </g>
+    </g>
+
+    <g transform="translate(82 256)">
+      <rect x="0" y="0" width="478" height="824" rx="8" class="card"/>
+      <text x="34" y="58" class="text section">技术栈</text>
+      <text x="34" y="94" class="muted small">当前项目采用的前端工程组合</text>
+
+      <g transform="translate(34 134)">
+        <rect x="0" y="0" width="410" height="106" rx="8" fill="#0f1b2a" stroke="#2d4561"/>
+        <text x="24" y="36" class="sub label">产品界面层</text>
+        <text x="24" y="76" class="text body">Vue 3 + Ant Design Vue</text>
+      </g>
+      <g transform="translate(34 264)">
+        <rect x="0" y="0" width="410" height="106" rx="8" fill="#0f1b2a" stroke="#2d4561"/>
+        <text x="24" y="36" class="sub label">工程与类型</text>
+        <text x="24" y="76" class="text body">Vite + TypeScript + SCSS</text>
+      </g>
+      <g transform="translate(34 394)">
+        <rect x="0" y="0" width="410" height="106" rx="8" fill="#0f1b2a" stroke="#2d4561"/>
+        <text x="24" y="36" class="sub label">状态与路由</text>
+        <text x="24" y="76" class="text body">Pinia + Vue Router</text>
+      </g>
+      <g transform="translate(34 524)">
+        <rect x="0" y="0" width="410" height="106" rx="8" fill="#0f1b2a" stroke="#2d4561"/>
+        <text x="24" y="36" class="sub label">数据与可视化</text>
+        <text x="24" y="76" class="text body">Axios + ECharts</text>
+      </g>
+      <g transform="translate(34 654)">
+        <rect x="0" y="0" width="410" height="106" rx="8" fill="#0f1b2a" stroke="#2d4561"/>
+        <text x="24" y="36" class="sub label">质量与交付</text>
+        <text x="24" y="76" class="text body">ESLint + Prettier + vue-tsc</text>
+      </g>
+
+      <g transform="translate(34 780)">
+        <rect x="0" y="0" width="410" height="1" fill="#2d4561"/>
+        <text x="0" y="36" class="muted tiny">设计基调：深色企业控制台、信息密度高、AI 能力可见。</text>
+      </g>
+    </g>
+
+    <g transform="translate(604 256)">
+      <rect x="0" y="0" width="1114" height="824" rx="8" class="card"/>
+      <text x="34" y="58" class="text section">产品工作流</text>
+      <text x="34" y="94" class="muted small">从客户进入到问题解决，再把经验沉淀为下一次服务能力</text>
+
+      <g transform="translate(34 140)">
+        <rect x="0" y="0" width="1046" height="184" rx="8" fill="#0b1725" stroke="#2e4966"/>
+        <text x="28" y="44" class="sub label">服务入口</text>
+        <g transform="translate(26 72)">
+          <rect x="0" y="0" width="144" height="54" rx="8" class="chip"/>
+          <text x="32" y="35" class="chipText">工单</text>
+          <rect x="164" y="0" width="144" height="54" rx="8" class="chip"/>
+          <text x="196" y="35" class="chipText">电话</text>
+          <rect x="328" y="0" width="144" height="54" rx="8" class="chip"/>
+          <text x="351" y="35" class="chipText">在线咨询</text>
+          <rect x="492" y="0" width="144" height="54" rx="8" class="chip"/>
+          <text x="524" y="35" class="chipText">邮件</text>
+          <rect x="656" y="0" width="144" height="54" rx="8" class="chip"/>
+          <text x="688" y="35" class="chipText">短信</text>
+          <rect x="820" y="0" width="190" height="54" rx="8" class="chip"/>
+          <text x="847" y="35" class="chipText">开放平台接入</text>
+        </g>
+        <text x="28" y="150" class="muted tiny">所有客户触点汇入同一个服务视图，避免多渠道割裂。</text>
+      </g>
+
+      <g transform="translate(34 382)">
+        <g>
+          <rect x="0" y="0" width="148" height="148" rx="8" fill="#10253a" stroke="#3c6386"/>
+          <circle cx="32" cy="32" r="18" fill="url(#blue)"/>
+          <text x="26" y="38" class="number">01</text>
+          <text x="22" y="78" class="text label">统一收件箱</text>
+          <text x="22" y="112" class="muted tiny">合并客户请求</text>
+        </g>
+        <path d="M154 74 H216" class="flowLine"/>
+        <g transform="translate(226 0)">
+          <rect x="0" y="0" width="148" height="148" rx="8" fill="#10253a" stroke="#3c6386"/>
+          <circle cx="32" cy="32" r="18" fill="url(#violet)"/>
+          <text x="26" y="38" class="number">02</text>
+          <text x="22" y="78" class="text label">AI 理解分诊</text>
+          <text x="22" y="112" class="muted tiny">识别意图风险</text>
+        </g>
+        <path d="M380 74 H442" class="flowLine"/>
+        <g transform="translate(452 0)">
+          <rect x="0" y="0" width="148" height="148" rx="8" fill="#10253a" stroke="#3c6386"/>
+          <circle cx="32" cy="32" r="18" fill="url(#green)"/>
+          <text x="26" y="38" class="number">03</text>
+          <text x="22" y="78" class="text label">工单编排</text>
+          <text x="22" y="112" class="muted tiny">派单升级协作</text>
+        </g>
+        <path d="M606 74 H668" class="flowLine"/>
+        <g transform="translate(678 0)">
+          <rect x="0" y="0" width="148" height="148" rx="8" fill="#10253a" stroke="#3c6386"/>
+          <circle cx="32" cy="32" r="18" fill="url(#amber)"/>
+          <text x="26" y="38" class="number">04</text>
+          <text x="22" y="78" class="text label">客服处理</text>
+          <text x="22" y="112" class="muted tiny">AI 辅助回复</text>
+        </g>
+        <path d="M832 74 H894" class="flowLine"/>
+        <g transform="translate(904 0)">
+          <rect x="0" y="0" width="142" height="148" rx="8" fill="#10253a" stroke="#3c6386"/>
+          <circle cx="32" cy="32" r="18" fill="url(#blue)"/>
+          <text x="26" y="38" class="number">05</text>
+          <text x="22" y="78" class="text label">SLA 闭环</text>
+          <text x="22" y="112" class="muted tiny">质检和归档</text>
+        </g>
+      </g>
+
+      <g transform="translate(34 590)">
+        <rect x="0" y="0" width="1046" height="166" rx="8" fill="#0b1725" stroke="#2e4966"/>
+        <text x="28" y="42" class="sub label">闭环沉淀</text>
+        <path d="M128 82 H912" class="dash"/>
+        <g transform="translate(92 58)">
+          <rect x="0" y="0" width="156" height="56" rx="8" fill="#132238" stroke="#345371"/>
+          <text x="24" y="36" class="chipText">知识库更新</text>
+        </g>
+        <g transform="translate(326 58)">
+          <rect x="0" y="0" width="156" height="56" rx="8" fill="#132238" stroke="#345371"/>
+          <text x="24" y="36" class="chipText">提示词优化</text>
+        </g>
+        <g transform="translate(560 58)">
+          <rect x="0" y="0" width="156" height="56" rx="8" fill="#132238" stroke="#345371"/>
+          <text x="24" y="36" class="chipText">流程自动化</text>
+        </g>
+        <g transform="translate(794 58)">
+          <rect x="0" y="0" width="156" height="56" rx="8" fill="#132238" stroke="#345371"/>
+          <text x="24" y="36" class="chipText">运营看板</text>
+        </g>
+        <text x="28" y="136" class="muted tiny">每一次处理结果都会回流到知识、AI、流程和数据中，让下一次处理更快、更准、更可控。</text>
+      </g>
+    </g>
+
+    <g transform="translate(604 1030)">
+      <rect x="0" y="0" width="1114" height="50" rx="8" fill="#0b1725" stroke="#2e4966"/>
+      <text x="28" y="33" class="muted tiny">关键管理对象：客户 360 / 工单生命周期 / SLA 风险 / 坐席效率 / AI Agent / 权限审计 / 数据驾驶舱</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,44 @@
+<svg width="256" height="256" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">AI Ticket OS Abstract Hummingbird Logo</title>
+  <desc id="desc">A transparent, text-free abstract hummingbird logo for premium AI workflow software.</desc>
+  <defs>
+    <linearGradient id="body" x1="42" y1="82" x2="92" y2="37" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#312E81"/>
+      <stop offset="0.46" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#00E5FF"/>
+    </linearGradient>
+    <linearGradient id="wing-a" x1="25" y1="25" x2="75" y2="70" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B5CF6"/>
+      <stop offset="0.56" stop-color="#4F7BFF"/>
+      <stop offset="1" stop-color="#00E5FF"/>
+    </linearGradient>
+    <linearGradient id="wing-b" x1="18" y1="82" x2="70" y2="57" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EEF2FF"/>
+      <stop offset="0.48" stop-color="#60A5FA"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="beak" x1="82" y1="55" x2="113" y2="42" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00E5FF"/>
+      <stop offset="1" stop-color="#A5F3FC"/>
+    </linearGradient>
+    <filter id="soft-depth" x="10" y="14" width="108" height="100" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="9" stdDeviation="8" flood-color="#1E1B4B" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+  <g filter="url(#soft-depth)">
+    <path d="M66 45C76 42 86 47 91 57C82 59 75 64 70 73C65 67 63 57 66 45Z" fill="url(#body)"/>
+    <path d="M55 59C66 55 79 57 91 66C81 81 63 88 43 84C45 73 49 65 55 59Z" fill="url(#body)"/>
+    <path d="M36 25C53 27 66 38 75 57C57 56 41 50 27 39C29 33 32 28 36 25Z" fill="url(#wing-a)"/>
+    <path d="M22 73C38 64 54 61 70 65C58 79 42 87 22 88C20 83 20 78 22 73Z" fill="url(#wing-b)"/>
+    <path d="M87 56L113 43L94 65L86 65C89 62 89 59 87 56Z" fill="url(#beak)"/>
+    <circle cx="76" cy="52" r="3.4" fill="#0F172A"/>
+    <circle cx="77.5" cy="50.8" r="1.2" fill="#E0F2FE"/>
+  </g>
+  <path d="M33 37C47 40 59 47 69 58" stroke="#C4B5FD" stroke-width="2.6" stroke-linecap="round" opacity="0.78"/>
+  <path d="M30 80C44 76 56 71 66 64" stroke="#BAE6FD" stroke-width="2.6" stroke-linecap="round" opacity="0.72"/>
+  <circle cx="27" cy="36" r="2" fill="#00E5FF"/>
+  <circle cx="39" cy="41" r="1.6" fill="#A5B4FC"/>
+  <circle cx="51" cy="47" r="1.4" fill="#E0F2FE"/>
+  <circle cx="29" cy="80" r="1.8" fill="#E0F2FE"/>
+  <circle cx="43" cy="76" r="1.4" fill="#00E5FF"/>
+</svg>

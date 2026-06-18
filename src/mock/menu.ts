@@ -43,7 +43,7 @@ const domainSeeds: MenuSeedInput[] = [
   { id: 'm-service-center', i18nKey: 'menu.serviceCenter', parentId: 0, menuName: 'Service Center', menuType: 'DIR', sortOrder: 2, icon: 'customer-service' },
   { id: 'm-omnichannel-center', i18nKey: 'menu.omnichannelCenter', parentId: 0, menuName: 'Omnichannel Center', menuType: 'DIR', sortOrder: 3, icon: 'inbox' },
   { id: 'm-agent-operations', i18nKey: 'menu.agentOperations', parentId: 0, menuName: 'Agent Operations', menuType: 'DIR', sortOrder: 4, icon: 'team' },
-  { id: 'm-ai-capability', i18nKey: 'menu.aiCapability', parentId: 0, menuName: 'AI Capability Center', menuType: 'DIR', sortOrder: 5, icon: 'robot' },
+  { id: 'm-ai-capability', i18nKey: 'menu.aiCapability', parentId: 0, menuName: 'AI数据中心', menuType: 'DIR', sortOrder: 5, icon: 'robot' },
   { id: 'm-customer-center', i18nKey: 'menu.customerCenter', parentId: 0, menuName: 'Customer Center', menuType: 'DIR', sortOrder: 6, icon: 'user' },
   { id: 'm-tenant-center', parentId: 0, menuName: 'Tenant Management', menuType: 'DIR', sortOrder: 7, icon: 'deployment-unit' },
   { id: 'm-knowledge-center', i18nKey: 'menu.knowledgeCenter', parentId: 0, menuName: 'Knowledge Center', menuType: 'DIR', sortOrder: 8, icon: 'book' },
@@ -55,8 +55,9 @@ const pageSeedInputs: MenuSeedInput[] = [
   { id: 'm-dashboard-workbench', i18nKey: 'menu.dashboard', parentId: 'm-smart-workspace', menuName: 'Dashboard', path: '/dashboard/workbench', component: 'dashboard/workbench/index', perms: 'dashboard:workbench:view', icon: 'dashboard', sortOrder: 1, menuType: 'MENU' },
 
   { id: 'm-service-tickets', i18nKey: 'menu.ticketCenter', parentId: 'm-service-center', menuName: 'Ticket Center', path: '/service/tickets', component: 'service/tickets/index', perms: 'service:ticket:view', icon: 'ticket', sortOrder: 1, menuType: 'MENU' },
-  { id: 'm-service-calls', i18nKey: 'menu.callCenter', parentId: 'm-service-center', menuName: 'Call Center', path: '/service/calls', component: 'service/calls/index', perms: 'service:call:view', icon: 'phone', sortOrder: 2, menuType: 'MENU' },
-  { id: 'm-service-live-chat', i18nKey: 'menu.liveChatCenter', parentId: 'm-service-center', menuName: 'Live Chat Center', path: '/service/live-chat', component: 'service/live-chat/index', perms: 'service:chat:view', icon: 'message', sortOrder: 3, menuType: 'MENU' },
+  { id: 'm-service-ticket-create', i18nKey: 'menu.legacyTicketCreate', parentId: 'm-service-center', menuName: '创建工单', path: '/service/tickets/create', component: 'ticket/create/index', perms: 'service:ticket:create', icon: 'plus-circle', sortOrder: 2, menuType: 'MENU' },
+  { id: 'm-service-calls', i18nKey: 'menu.callCenter', parentId: 'm-service-center', menuName: 'Call Center', path: '/service/calls', component: 'service/calls/index', perms: 'service:call:view', icon: 'phone', sortOrder: 3, menuType: 'MENU' },
+  { id: 'm-service-live-chat', i18nKey: 'menu.liveChatCenter', parentId: 'm-service-center', menuName: 'Live Chat Center', path: '/service/live-chat', component: 'service/live-chat/index', perms: 'service:chat:view', icon: 'message', sortOrder: 4, menuType: 'MENU' },
 
   { id: 'm-omni-email', i18nKey: 'menu.emailCenter', parentId: 'm-omnichannel-center', menuName: 'Email Center', path: '/omnichannel/email', component: 'omnichannel/email/index', perms: 'omnichannel:email:view', icon: 'mail', sortOrder: 1, menuType: 'MENU' },
   { id: 'm-omni-sms', i18nKey: 'menu.smsCenter', parentId: 'm-omnichannel-center', menuName: 'SMS Center', path: '/omnichannel/sms', component: 'omnichannel/sms/index', perms: 'omnichannel:sms:view', icon: 'mobile', sortOrder: 2, menuType: 'MENU' },
@@ -68,10 +69,10 @@ const pageSeedInputs: MenuSeedInput[] = [
   { id: 'm-ops-quality', i18nKey: 'menu.aiQualityInspection', parentId: 'm-agent-operations', menuName: 'AI Quality Inspection', path: '/operations/quality', component: 'operations/quality/index', perms: 'operations:quality:view', icon: 'safety', sortOrder: 4, menuType: 'MENU' },
   { id: 'm-ops-training', i18nKey: 'menu.trainingCenter', parentId: 'm-agent-operations', menuName: 'Training Center', path: '/operations/training', component: 'operations/training/index', perms: 'operations:training:view', icon: 'read', sortOrder: 5, menuType: 'MENU' },
 
-  { id: 'm-ai-agents', i18nKey: 'menu.aiAgentCenter', parentId: 'm-ai-capability', menuName: 'AI Agent Center', path: '/ai/agents', component: 'ai/agents/index', perms: 'ai:agent:view', icon: 'robot', sortOrder: 1, menuType: 'MENU' },
-  { id: 'm-ai-workflows', i18nKey: 'menu.aiWorkflowCenter', parentId: 'm-ai-capability', menuName: 'AI Workflow Center', path: '/ai/workflows', component: 'ai/workflows/index', perms: 'ai:workflow:view', icon: 'branches', sortOrder: 2, menuType: 'MENU' },
-  { id: 'm-ai-prompts', i18nKey: 'menu.aiPromptCenter', parentId: 'm-ai-capability', menuName: 'AI Prompt Center', path: '/ai/prompts', component: 'ai/prompts/index', perms: 'ai:prompt:view', icon: 'code', sortOrder: 3, menuType: 'MENU' },
-  { id: 'm-ai-models', i18nKey: 'menu.aiModelCenter', parentId: 'm-ai-capability', menuName: 'AI Model Center', path: '/ai/models', component: 'ai/models/index', perms: 'ai:model:view', icon: 'experiment', sortOrder: 4, menuType: 'MENU' },
+  { id: 'm-ai-chat', parentId: 'm-ai-capability', menuName: 'AI 问答', path: '/ai/chat', component: 'console/codex/index', perms: 'ai:assistant:chat', icon: 'robot', sortOrder: 1, menuType: 'MENU' },
+  { id: 'm-ai-workflows', i18nKey: 'menu.aiWorkflowCenter', parentId: 'm-ai-capability', menuName: '工作流中心', path: '/ai/workflows', component: 'ai/workflows/index', perms: 'ai:workflow:view', icon: 'branches', sortOrder: 3, menuType: 'MENU' },
+  { id: 'm-ai-prompts', i18nKey: 'menu.aiPromptCenter', parentId: 'm-ai-capability', menuName: '提示词中心', path: '/ai/prompts', component: 'ai/prompts/index', perms: 'ai:prompt:view', icon: 'code', sortOrder: 4, menuType: 'MENU' },
+  { id: 'm-ai-models', i18nKey: 'menu.aiModelCenter', parentId: 'm-ai-capability', menuName: '模型中心', path: '/ai/models', component: 'ai/models/index', perms: 'ai:model:view', icon: 'experiment', sortOrder: 5, menuType: 'MENU' },
 
   { id: 'm-customer-360', i18nKey: 'menu.customer360', parentId: 'm-customer-center', menuName: 'Customer 360', path: '/customers/360', component: 'customers/360/index', perms: 'customer:360:view', icon: 'user', sortOrder: 1, menuType: 'MENU' },
   { id: 'm-customer-journey', i18nKey: 'menu.customerJourney', parentId: 'm-customer-center', menuName: 'Customer Journey', path: '/customers/journey', component: 'customers/journey/index', perms: 'customer:journey:view', icon: 'deployment-unit', sortOrder: 2, menuType: 'MENU' },
@@ -103,17 +104,15 @@ const pageSeedInputs: MenuSeedInput[] = [
   { id: 'm-system-settings', parentId: 'm-system-management', menuName: '系统配置', path: '/system/settings', component: 'system/settings/index', perms: 'system:settings:view', icon: 'setting', sortOrder: 9, menuType: 'MENU' },
   { id: 'm-system-permission-legacy', parentId: 'm-system-management', menuName: '用户权限', path: '/system/permission', component: 'system/permission/index', perms: 'system:permission:view', icon: 'shield', sortOrder: 10, menuType: 'MENU' },
 
-  { id: 'm-ai-chat', parentId: 'm-ai-capability', menuName: 'AI 问答', path: '/ai/chat', component: 'console/codex/index', perms: 'ai:assistant:chat', icon: 'robot', sortOrder: 80, menuType: 'MENU' },
-  { id: 'm-ai-overview-legacy', parentId: 'm-ai-capability', menuName: 'AI 分析概览', path: '/ai/overview', component: 'ai/overview/index', perms: 'ai:overview:view', icon: 'bar-chart', sortOrder: 81, menuType: 'MENU' },
-  { id: 'm-ai-result', parentId: 'm-ai-capability', menuName: 'AI 分析结果', path: '/ai/result', component: 'ai/result/index', perms: 'ai:result:view', icon: 'file-search', sortOrder: 82, menuType: 'MENU' },
-  { id: 'm-ai-conversation', parentId: 'm-ai-capability', menuName: '对话记录', path: '/ai/conversation', component: 'conversation/records/index', perms: 'ai:conversation:list', icon: 'profile', sortOrder: 83, menuType: 'MENU' },
+  { id: 'm-ai-result', parentId: 'm-ai-capability', menuName: '分析结果', path: '/ai/result', component: 'ai/result/index', perms: 'ai:result:view', icon: 'file-search', sortOrder: 6, menuType: 'MENU' },
+  { id: 'm-ai-conversation', parentId: 'm-ai-capability', menuName: '对话记录', path: '/ai/conversation', component: 'conversation/records/index', perms: 'ai:conversation:list', icon: 'profile', sortOrder: 7, menuType: 'MENU' },
 ];
 
 const pageSeeds: MenuSeedInput[] = pageSeedInputs;
 
 const compatibilitySeeds: MenuSeedInput[] = [
   { id: 'm-ticket-list-legacy', i18nKey: 'menu.legacyTicketList', parentId: 'm-service-center', menuName: 'Legacy Ticket List', path: '/ticket/list', component: 'ticket/list/index', perms: 'service:ticket:view', icon: 'unordered-list', sortOrder: 90, menuType: 'MENU', visible: false },
-  { id: 'm-ticket-create-legacy', i18nKey: 'menu.legacyTicketCreate', parentId: 'm-service-center', menuName: 'Legacy Ticket Create', path: '/ticket/create', component: 'ticket/create/index', perms: 'service:ticket:create', icon: 'plus-circle', sortOrder: 91, menuType: 'MENU', visible: false },
+  { id: 'm-ticket-create-legacy', i18nKey: 'menu.legacyTicketCreate', parentId: 'm-service-center', menuName: '创建工单', path: '/ticket/create', component: 'ticket/create/index', perms: 'service:ticket:create', icon: 'plus-circle', sortOrder: 91, menuType: 'MENU', visible: false },
   { id: 'm-ticket-trash-legacy', i18nKey: 'menu.legacyTicketTrash', parentId: 'm-service-center', menuName: 'Legacy Ticket Trash', path: '/ticket/trash', component: 'ticket/trash/index', perms: 'service:ticket:delete', icon: 'delete', sortOrder: 92, menuType: 'MENU', visible: false },
 ];
 

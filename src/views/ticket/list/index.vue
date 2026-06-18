@@ -23,7 +23,7 @@
         <a-space>
           <a-button @click="resetQuery">重置</a-button>
           <a-button type="primary" @click="handleSearch">查询</a-button>
-          <a-button type="primary" @click="router.push('/ticket/create')">新建工单</a-button>
+          <a-button type="primary" @click="router.push('/service/tickets/create')">新建工单</a-button>
         </a-space>
       </div>
 

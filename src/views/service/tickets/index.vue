@@ -7,12 +7,14 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import type { TableColumnsType } from 'ant-design-vue';
 import type { BusinessRecord, BusinessRecordPayload, BusinessRecordStatus } from '@/api/business';
 import { createBusinessRecord, getBusinessRecordList, updateBusinessRecordStatus } from '@/api/business';
 
 const moduleName = 'service-tickets';
+const router = useRouter();
 const pageTitle = '工单中心';
 const pageDescription = '围绕工单生命周期完成筛选、创建、分派、升级、关系追踪和 SLA 闭环。';
 const primaryAction = '创建工单';
@@ -76,21 +78,7 @@ function selectRecord(record?: BusinessRecord) {
   detailOpen.value = true;
 }
 function openCreate() {
-  Object.assign(formState, {
-    module: moduleName,
-    title: pageTitle + '新记录',
-    owner: '陈沐阳',
-    customer: '蓝湖集团',
-    channel: pageTitle,
-    status: '待处理',
-    priority: '高',
-    metric: metrics[0]?.value ?? '-',
-    risk: '中风险',
-    description: pageDescription,
-    aiSuggestion: '工单中心已生成 AI 建议，请优先处理高风险记录。',
-    tags: [pageTitle],
-  });
-  createOpen.value = true;
+  void router.push('/service/tickets/create');
 }
 async function submitCreate() {
   if (!formState.title.trim()) {

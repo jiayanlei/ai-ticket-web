@@ -650,54 +650,9 @@ export const aiTicketPages: AiTicketPageConfig[] = [
     "number": "14"
   },
   {
-    "path": "/ai/agents",
-    "title": "AI Agent Center",
-    "group": "AI Capability Center",
-    "objective": "Operate agent marketplace, orchestration, monitoring, logs, performance, cost, tools, traces and multi-agent collaboration",
-    "primaryAction": "Deploy Agent",
-    "metrics": [
-      {
-        "label": "Running Agents",
-        "value": "12840",
-        "delta": "+4.2%",
-        "tone": "purple"
-      },
-      {
-        "label": "Tool Calls",
-        "value": "947",
-        "delta": "-6.3%",
-        "tone": "green"
-      },
-      {
-        "label": "Avg Latency",
-        "value": "216ms",
-        "delta": "+8.4%",
-        "tone": "amber"
-      },
-      {
-        "label": "AI Cost",
-        "value": "$23.5k",
-        "delta": "-10.5%",
-        "tone": "red"
-      }
-    ],
-    "panels": [
-      "Agent Marketplace",
-      "Run Monitor",
-      "Multi-Agent Graph"
-    ],
-    "charts": [
-      "Agent Performance",
-      "Cost Trend",
-      "Tool Call Chain"
-    ],
-    "aiInsight": "AI recommends throttling the refund analysis agent because cost per resolved case rose 18%.",
-    "number": "15"
-  },
-  {
     "path": "/ai/workflows",
-    "title": "AI Workflow Center",
-    "group": "AI Capability Center",
+    "title": "Workflow Center",
+    "group": "AI Data Center",
     "objective": "Build visual workflows with nodes, conditions, tools, model calls and approval flows",
     "primaryAction": "Publish Workflow",
     "metrics": [
@@ -741,8 +696,8 @@ export const aiTicketPages: AiTicketPageConfig[] = [
   },
   {
     "path": "/ai/prompts",
-    "title": "AI Prompt Center",
-    "group": "AI Capability Center",
+    "title": "Prompt Center",
+    "group": "AI Data Center",
     "objective": "Manage prompt library, versions, evaluations, optimization and A/B tests",
     "primaryAction": "Run Evaluation",
     "metrics": [
@@ -1281,8 +1236,8 @@ export const aiTicketPages: AiTicketPageConfig[] = [
   },
   {
     "path": "/ai/models",
-    "title": "AI Model Center",
-    "group": "AI Capability Center",
+    "title": "Model Center",
+    "group": "AI Data Center",
     "objective": "Manage models, model routing, token monitoring, cost analysis and evaluations",
     "primaryAction": "Update Route",
     "metrics": [

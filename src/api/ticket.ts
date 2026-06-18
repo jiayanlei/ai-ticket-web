@@ -22,7 +22,16 @@ export type LifecycleTicketStatus =
   | 'CLOSED';
 
 export type LifecycleTicketPriority = 'NORMAL' | 'IMPORTANT' | 'URGENT';
-export type LifecycleTicketSource = 'WEB' | 'APP' | 'PHONE' | 'WECHAT' | 'MANUAL';
+export type LifecycleTicketSource =
+  | 'SMS'
+  | 'EMAIL'
+  | 'PHONE'
+  | 'ONLINE'
+  | 'OTHER'
+  | 'WEB'
+  | 'APP'
+  | 'WECHAT'
+  | 'MANUAL';
 
 export interface TicketAttachment {
   id: ApiId;
@@ -55,11 +64,25 @@ export interface LifecycleTicketPayload {
   priority: LifecycleTicketPriority;
   source: LifecycleTicketSource;
   category: string;
+  customerName?: string;
+  customerPhone?: string;
+  customerEmail?: string;
+  customerLevel?: string;
   applicantId?: ApiId;
   applicantName?: string;
   assigneeId?: ApiId;
   assigneeName?: string;
+  ownerDepartment?: string;
   dueTime?: string;
+  contactTime?: string;
+  serviceProduct?: string;
+  customerRequirement?: string;
+  impactScope?: string;
+  expectedResult?: string;
+  urgencyReason?: string;
+  callbackRequired?: boolean;
+  ccEmails?: string;
+  tags?: string[];
   description: string;
   attachments?: TicketAttachment[];
 }

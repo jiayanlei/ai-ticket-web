@@ -24,7 +24,6 @@ const moduleSeeds: ModuleSeed[] = [
   { module: 'operations-training', prefix: 'TRN', titles: ['新人课程未完成', '账单争议专项训练', '考试结果待发布'], channel: '培训', metric: '完成率 78%', aiSuggestion: '建议为低分坐席安排模拟演练。' },
   { module: 'customers-360', prefix: 'CUS', titles: ['高价值客户续约风险', '客户画像待补全', '互动历史需回访'], channel: '客户', metric: '风险账户 14 个', aiSuggestion: '建议先回访续约临近且情绪下降的客户。' },
   { module: 'customers-journey', prefix: 'JNY', titles: ['首次升级后重复来访', '触点转化下降', '主动关怀节点缺失'], channel: '旅程', metric: '触点 36 个', aiSuggestion: '建议在升级后增加主动关怀触点。' },
-  { module: 'ai-agents', prefix: 'AIA', titles: ['账单 AI 坐席待发布', '工具权限待确认', '人工兜底规则需调整'], channel: 'AI 坐席', metric: '自动化率 64%', aiSuggestion: '建议启用订单查询工具并增加高风险确认。' },
   { module: 'ai-workflows', prefix: 'WF', titles: ['退款审批节点拥堵', '失败流程待重试', '灰度版本待发布'], channel: 'AI 工作流', metric: '失败节点 7 个', aiSuggestion: '建议拆分审批节点并回滚异常版本。' },
   { module: 'ai-prompts', prefix: 'PRM', titles: ['退款提示词评测下降', '变量覆盖不足', '安全护栏触发'], channel: '提示词', metric: '通过率 88%', aiSuggestion: '建议回滚到上一稳定版本并补充评测集。' },
   { module: 'ai-models', prefix: 'MDL', titles: ['摘要任务成本偏高', '模型路由待调整', '降级策略触发'], channel: '模型', metric: '成本节省 18%', aiSuggestion: '建议低风险摘要路由到低成本模型。' },
