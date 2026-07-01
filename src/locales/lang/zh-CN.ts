@@ -22,7 +22,7 @@ export default {
     },
     organization: {
       cx: '客户体验中心',
-      call: '北区呼叫中心',
+      call: '北区客户联络中心',
       afterSales: '售后服务组',
     },
     searchPlaceholder: '搜索工单、客户、坐席、流程...',
@@ -38,16 +38,16 @@ export default {
     },
     messages: {
       risk: {
-        title: '风控消息待处理',
-        desc: '3 条关键告警未处理',
+        content: '检测到 3 条关键风险告警未处理，请优先确认升级策略。',
+        type: '风控',
       },
       sla: {
-        title: 'SLA 压力上升',
-        desc: '7 条服务风险需关注',
+        content: '7 条服务单即将触达 SLA 阈值，请关注坐席处理节奏。',
+        type: 'SLA',
       },
       queue: {
-        title: '队列运行稳定',
-        desc: '1 条普通消息',
+        content: '当前在线客服队列运行稳定，无需处理。',
+        type: '通知',
       },
     },
     serviceHub: '服务消息中心',
@@ -103,7 +103,7 @@ export default {
     systemManagement: '系统管理',
     dashboard: '仪表盘',
     ticketCenter: '工单中心',
-    callCenter: '呼叫中心',
+    callCenter: '客户联络中心',
     liveChatCenter: '在线客服中心',
     emailCenter: '邮件中心',
     smsCenter: '短信中心',
@@ -286,7 +286,7 @@ export default {
         aiInsight: 'AI 建议合并 18 个重复登录事件，并升级企业 SSO 聚类问题。',
       },
       callCenter: {
-        title: '呼叫中心',
+        title: '客户联络中心',
         group: '服务中心',
         objective: '运营实时呼叫队列、IVR、监听、录音、质检和 AI 实时辅助',
         primaryAction: '@:aiTicketOs.actions.monitorQueue',

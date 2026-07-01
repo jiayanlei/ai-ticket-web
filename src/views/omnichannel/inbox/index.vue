@@ -1,7 +1,7 @@
 <template>
   <div class="biz-page biz-page--inbox">
-    <header class="biz-topbar"><p>{{ pageDescription }}</p><a-space><a-button @click="loadData">刷新</a-button><a-button type="primary" @click="openCreate">{{ primaryAction }}</a-button></a-space></header><section class="metric-strip"><article v-for="item in metrics" :key="item.label"><span>{{ item.label }}</span><strong>{{ item.value }}</strong><small>{{ item.hint }}</small></article></section><section class="filter-line"><a-input v-model:value="query.keyword" allow-clear :placeholder="'搜索' + pageTitle + '、客户、负责人'" @press-enter="loadData" /><a-select v-model:value="query.status" allow-clear placeholder="状态" @change="loadData"><a-select-option v-for="item in statusOptions" :key="item.value" :value="item.value">{{ item.label }}</a-select-option></a-select><a-button type="primary" @click="loadData">查询</a-button></section><section class="inbox-shell"><aside><h2>渠道</h2><span v-for="channel in ['电话','邮件','在线客服','短信','社媒']" :key="channel">{{ channel }}</span></aside><main><h2>跨渠道消息流</h2><article v-for="item in records" :key="item.id" @click="active = item"><a-tag>{{ item.channel }}</a-tag><strong>{{ item.title }}</strong><small>{{ item.customer }} / {{ item.status }}</small></article></main><aside><h2>客户合并</h2><p>{{ active?.customer }} 存在 3 条相似咨询。</p><a-button type="primary" @click="changeStatus(active,'处理中')">统一分派</a-button><a-button block @click="selectRecord(active)">转工单</a-button></aside></section>
-    <a-drawer v-model:open="detailOpen" width="520" :title="detailRecord?.title"><a-descriptions v-if="detailRecord" bordered :column="1" size="small"><a-descriptions-item label="编号">{{ detailRecord.code }}</a-descriptions-item><a-descriptions-item label="客户">{{ detailRecord.customer }}</a-descriptions-item><a-descriptions-item label="负责人">{{ detailRecord.owner }}</a-descriptions-item><a-descriptions-item label="状态"><a-tag :color="statusColor(detailRecord.status)">{{ detailRecord.status }}</a-tag></a-descriptions-item><a-descriptions-item label="业务指标">{{ detailRecord.metric }}</a-descriptions-item><a-descriptions-item label="AI 建议">{{ detailRecord.aiSuggestion }}</a-descriptions-item></a-descriptions><a-divider>闭环记录</a-divider><a-timeline v-if="detailRecord"><a-timeline-item v-for="item in detailRecord.timeline" :key="item.time + item.action"><strong>{{ item.action }}</strong><p>{{ item.content }}</p><small>{{ item.operator }} / {{ item.time }}</small></a-timeline-item></a-timeline></a-drawer><a-modal v-model:open="createOpen" :title="'新增' + pageTitle" @ok="submitCreate"><a-form layout="vertical"><a-form-item label="标题"><a-input v-model:value="formState.title" /></a-form-item><a-form-item label="客户"><a-input v-model:value="formState.customer" /></a-form-item><a-form-item label="负责人"><a-input v-model:value="formState.owner" /></a-form-item><a-form-item label="说明"><a-textarea v-model:value="formState.description" :rows="3" /></a-form-item></a-form></a-modal>
+    <header class="biz-topbar"><p>{{ pageDescription }}</p><div class="biz-topbar__controls"><div class="topbar-filter"><a-input v-model:value="query.keyword" allow-clear :placeholder="'搜索' + pageTitle + '、客户、负责人'" @press-enter="loadData" /><a-select v-model:value="query.status" allow-clear placeholder="状态" @change="loadData"><a-select-option v-for="item in statusOptions" :key="item.value" :value="item.value">{{ item.label }}</a-select-option></a-select><a-button type="primary" @click="loadData">查询</a-button></div><a-space class="biz-topbar__actions"><a-button @click="loadData">刷新</a-button><a-button type="primary" @click="openCreate">{{ primaryAction }}</a-button></a-space></div></header><section class="inbox-shell"><aside><h2>渠道</h2><span v-for="channel in ['电话','邮件','在线客服','短信','社媒']" :key="channel">{{ channel }}</span></aside><main><h2>跨渠道消息流</h2><article v-for="item in records" :key="item.id" @click="active = item"><a-tag>{{ item.channel }}</a-tag><strong>{{ item.title }}</strong><small>{{ item.customer }} / {{ item.status }}</small></article></main><aside><h2>客户合并</h2><p>{{ active?.customer }} 存在 3 条相似咨询。</p><a-button type="primary" @click="changeStatus(active,'处理中')">统一分派</a-button><a-button block @click="selectRecord(active)">转工单</a-button></aside></section>
+    <a-drawer v-model:open="detailOpen" width="520" :title="detailRecord?.title"><a-descriptions v-if="detailRecord" bordered :column="1" size="small"><a-descriptions-item label="编号">{{ detailRecord.code }}</a-descriptions-item><a-descriptions-item label="客户">{{ detailRecord.customer }}</a-descriptions-item><a-descriptions-item label="负责人">{{ detailRecord.owner }}</a-descriptions-item><a-descriptions-item label="状态"><a-tag :color="statusColor(detailRecord.status)">{{ detailRecord.status }}</a-tag></a-descriptions-item><a-descriptions-item label="AI 建议">{{ detailRecord.aiSuggestion }}</a-descriptions-item></a-descriptions><a-divider>闭环记录</a-divider><a-timeline v-if="detailRecord"><a-timeline-item v-for="item in detailRecord.timeline" :key="item.time + item.action"><strong>{{ item.action }}</strong><p>{{ item.content }}</p><small>{{ item.operator }} / {{ item.time }}</small></a-timeline-item></a-timeline></a-drawer><a-modal v-model:open="createOpen" :title="'新增' + pageTitle" @ok="submitCreate"><a-form layout="vertical"><a-form-item label="标题"><a-input v-model:value="formState.title" /></a-form-item><a-form-item label="客户"><a-input v-model:value="formState.customer" /></a-form-item><a-form-item label="负责人"><a-input v-model:value="formState.owner" /></a-form-item><a-form-item label="说明"><a-textarea v-model:value="formState.description" :rows="3" /></a-form-item></a-form></a-modal>
   </div>
 </template>
 
@@ -15,12 +15,6 @@ const moduleName = 'omnichannel-inbox';
 const pageTitle = '统一收件箱';
 const pageDescription = '聚合电话、邮件、在线客服、短信消息，完成客户合并、去重、分派和转工单。';
 const primaryAction = '分派负责人';
-const metrics = [
-  { label: '待分派', value: '128', hint: '跨渠道消息' },
-  { label: '重复意图', value: '23', hint: '可合并' },
-  { label: '高优消息', value: '14', hint: '需立即处理' },
-  { label: '转工单', value: '31', hint: '今日新增' },
-];
 const statusOptions = [
   { label: '待处理', value: '待处理' },
   { label: '处理中', value: '处理中' },
@@ -44,7 +38,7 @@ const formState = reactive<BusinessRecordPayload>({
   channel: pageTitle,
   status: '待处理',
   priority: '高',
-  metric: metrics[0]?.value ?? '-',
+  metric: '-',
   risk: '中风险',
   description: pageDescription,
   aiSuggestion: '统一收件箱已生成 AI 建议，请优先处理高风险记录。',
@@ -75,7 +69,7 @@ function openCreate() {
     channel: pageTitle,
     status: '待处理',
     priority: '高',
-    metric: metrics[0]?.value ?? '-',
+    metric: '-',
     risk: '中风险',
     description: pageDescription,
     aiSuggestion: '统一收件箱已生成 AI 建议，请优先处理高风险记录。',
@@ -108,14 +102,13 @@ onMounted(loadData);
 
 <style scoped lang="scss">
 .biz-page { display: flex; flex-direction: column; gap: 16px; min-width: 1180px; color: var(--app-text); }
-.biz-topbar, .metric-strip article, .filter-line, section > aside, section > main, .call-stage { background: var(--app-surface); border: 1px solid var(--app-border); border-radius: 8px; box-shadow: 0 10px 26px rgba(15,23,42,.06); }
-.biz-topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 14px 18px; }
-.biz-topbar p { margin: 0; color: var(--app-text-secondary); font-weight: 600; line-height: 1.7; }
-.metric-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.metric-strip article { padding: 16px; }
-.metric-strip strong { display: block; margin: 8px 0; font-size: 26px; }
-.metric-strip span, .metric-strip small, p, small { color: var(--app-text-secondary); }
-.filter-line { display: grid; grid-template-columns: minmax(260px, 1fr) 160px auto; gap: 10px; padding: 12px; }
+.biz-topbar, section > aside, section > main, .call-stage { background: var(--app-surface); border: 1px solid var(--app-border); border-radius: 8px; box-shadow: 0 10px 26px rgba(15,23,42,.06); }
+.biz-topbar { display: flex; align-items: center; gap: 18px; padding: 14px 18px; }
+.biz-topbar p { flex: 0 1 420px; min-width: 240px; margin: 0; color: var(--app-text-secondary); font-weight: 600; line-height: 1.7; }
+p, small { color: var(--app-text-secondary); }
+.biz-topbar__controls { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex: 1; min-width: 0; }
+.topbar-filter { display: grid; grid-template-columns: minmax(220px, 1fr) 150px auto; gap: 10px; flex: 1; max-width: 760px; min-width: 0; }
+.biz-topbar__actions { flex: 0 0 auto; }
 .call-shell, .chat-shell, .mail-shell, .sms-shell, .inbox-shell, .agent-shell, .schedule-shell, .performance-shell, .quality-shell, .training-shell, .customer-shell, .journey-shell, .ai-agent-shell, .workflow-shell, .prompt-shell, .model-shell, .analytics-shell, .bi-shell, .cockpit-shell, .sla-shell, .risk-shell, .monitor-shell, .alert-shell, .permission-shell, .audit-shell, .settings-shell, .platform-shell, .ticket-shell { display: grid; gap: 16px; }
 .call-shell { grid-template-columns: 300px minmax(0, 1fr) 300px; } .chat-shell { grid-template-columns: 280px minmax(0, 1fr) 320px; } .mail-shell { grid-template-columns: 320px minmax(0, 1fr) 300px; }
 .sms-shell, .performance-shell, .training-shell, .journey-shell, .ai-agent-shell, .model-shell, .cockpit-shell, .sla-shell, .risk-shell, .monitor-shell, .audit-shell, .platform-shell, .ticket-shell { grid-template-columns: minmax(0, 1fr) 320px; }

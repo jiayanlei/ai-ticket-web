@@ -460,6 +460,7 @@ import { message } from 'ant-design-vue';
 import type { FormInstance, Rule } from 'ant-design-vue/es/form';
 import type { UploadChangeParam, UploadFile, UploadProps } from 'ant-design-vue/es/upload';
 import { computed, onMounted, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import type { ApiId } from '@/api/types';
 import {
@@ -516,6 +517,7 @@ interface ActionButton {
 }
 
 const userStore = useUserStore();
+const router = useRouter();
 const formRef = ref<FormInstance>();
 const ticketStatus = ref<LifecycleTicketStatus>('DRAFT');
 const ticketId = ref<ApiId>('draft-local');
@@ -950,6 +952,9 @@ async function handleSubmitTicket() {
     appendFlow('提交工单', '工单进入待受理队列，等待服务台受理', 'PENDING_ACCEPT', formState.applicantName || getOperator());
     appendLog('提交工单', 'DRAFT', 'PENDING_ACCEPT', formState.applicantName || getOperator());
     message.success('工单已提交');
+    window.setTimeout(() => {
+      void router.push('/service/tickets');
+    }, 500);
   });
 
   void runAiAnalysis('auto');

@@ -1,11 +1,5 @@
 <template>
   <div class="page-view permission-page">
-    <div class="stat-grid">
-      <a-card v-for="item in stats" :key="item.title" :bordered="false" :loading="loading">
-        <a-statistic :title="item.title" :value="item.value" />
-      </a-card>
-    </div>
-
     <a-row :gutter="[16, 16]">
       <a-col :xs="24" :lg="15">
         <a-card title="按钮权限清单" :bordered="false" :loading="loading">
@@ -28,7 +22,7 @@
 <script setup lang="ts">
 import type { TableColumnsType } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 import { getMenuListApi } from '@/api/menu';
 import type { MenuItem } from '@/api/menu';
@@ -39,13 +33,6 @@ import { getErrorMessage } from '@/utils/api-error';
 const loading = ref(false);
 const overview = ref<PermissionOverview>();
 const permissions = ref<MenuItem[]>([]);
-
-const stats = computed(() => [
-  { title: '用户数', value: overview.value?.totalUsers ?? 0 },
-  { title: '启用用户', value: overview.value?.enabledUsers ?? 0 },
-  { title: '角色数', value: overview.value?.totalRoles ?? 0 },
-  { title: '按钮权限', value: overview.value?.totalPermissions ?? 0 },
-]);
 
 const columns: TableColumnsType<MenuItem> = [
   { title: '权限名称', dataIndex: 'menuName', key: 'menuName', width: 180 },

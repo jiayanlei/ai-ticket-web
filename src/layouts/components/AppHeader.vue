@@ -39,7 +39,7 @@
         </a-tooltip>
       </div>
 
-      <a-dropdown trigger="click" overlay-class-name="app-header-service-menu">
+      <a-dropdown trigger="click" overlay-class-name="app-header-service-menu" transition-name="app-header-message-pop">
         <a-tooltip :title="t('header.serviceHub')">
           <a-badge :count="serviceHubCount" size="small">
             <a-button type="text">
@@ -53,16 +53,19 @@
           <div class="app-header-message-panel">
             <button
               v-for="item in messageList"
-              :key="item.titleKey"
+              :key="item.contentKey"
               class="app-header-message-panel__item"
               type="button"
               @click="handleSearch"
             >
-              <i :class="`app-header-message-panel__severity-dot--${item.color}`"></i>
-              <span>
-                <strong>{{ t(item.titleKey) }}</strong>
-                <small>{{ t(item.descKey) }}</small>
-              </span>
+              <strong>{{ t(item.contentKey) }}</strong>
+              <a-tooltip :title="t(item.typeKey)">
+                <span
+                  class="app-header-message-panel__type-dot"
+                  :class="`app-header-message-panel__type-dot--${item.color}`"
+                  :aria-label="t(item.typeKey)"
+                ></span>
+              </a-tooltip>
             </button>
           </div>
         </template>
@@ -142,9 +145,9 @@ const { t } = useI18n();
 const settingsOpen = ref(false);
 const serviceHubCount = 11;
 const messageList = [
-  { titleKey: 'header.messages.risk.title', descKey: 'header.messages.risk.desc', color: 'danger' },
-  { titleKey: 'header.messages.sla.title', descKey: 'header.messages.sla.desc', color: 'warning' },
-  { titleKey: 'header.messages.queue.title', descKey: 'header.messages.queue.desc', color: 'normal' },
+  { contentKey: 'header.messages.risk.content', typeKey: 'header.messages.risk.type', color: 'danger' },
+  { contentKey: 'header.messages.sla.content', typeKey: 'header.messages.sla.type', color: 'warning' },
+  { contentKey: 'header.messages.queue.content', typeKey: 'header.messages.queue.type', color: 'normal' },
 ];
 const showTopMenu = computed(() => ['top', 'mixed'].includes(appStore.layout.menuMode));
 const showSiderControl = computed(() => ['side', 'mixed'].includes(appStore.layout.menuMode));
@@ -350,12 +353,44 @@ async function handleLogout() {
   box-shadow: 0 16px 36px rgba(15, 23, 42, 0.14);
 }
 
+:global(.app-header-message-pop-enter-active),
+:global(.app-header-message-pop-appear-active) {
+  transform-origin: top right;
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:global(.app-header-message-pop-leave-active) {
+  transform-origin: top right;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+}
+
+:global(.app-header-message-pop-enter),
+:global(.app-header-message-pop-enter-from),
+:global(.app-header-message-pop-appear),
+:global(.app-header-message-pop-appear-from),
+:global(.app-header-message-pop-leave-to) {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+}
+
+:global(.app-header-message-pop-enter-to),
+:global(.app-header-message-pop-appear-to),
+:global(.app-header-message-pop-leave),
+:global(.app-header-message-pop-leave-from) {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
 :global(.app-header-message-panel__item) {
-  display: grid;
-  grid-template-columns: 8px minmax(0, 1fr);
-  gap: 10px;
+  position: relative;
+  display: block;
   width: 100%;
-  padding: 10px 8px;
+  min-height: 56px;
+  padding: 10px 28px 10px 8px;
   color: var(--app-text);
   text-align: left;
   cursor: pointer;
@@ -368,44 +403,33 @@ async function handleLogout() {
   background: var(--app-surface-muted);
 }
 
-:global(.app-header-message-panel__item span) {
-  display: grid;
-  gap: 3px;
-  min-width: 0;
-}
-
 :global(.app-header-message-panel__item strong) {
-  overflow: hidden;
+  display: block;
   font-size: 13px;
   font-weight: 650;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.5;
+  white-space: normal;
 }
 
-:global(.app-header-message-panel__item small) {
-  overflow: hidden;
-  color: var(--app-text-muted);
-  font-size: 12px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-:global(.app-header-message-panel__item > i) {
-  align-self: center;
-  width: 7px;
-  height: 7px;
+:global(.app-header-message-panel__type-dot) {
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.04);
 }
 
-:global(.app-header-message-panel__severity-dot--danger) {
+:global(.app-header-message-panel__type-dot--danger) {
   background: #f5222d;
 }
 
-:global(.app-header-message-panel__severity-dot--warning) {
-  background: #faad14;
+:global(.app-header-message-panel__type-dot--warning) {
+  background: #fa8c16;
 }
 
-:global(.app-header-message-panel__severity-dot--normal) {
+:global(.app-header-message-panel__type-dot--normal) {
   background: #52c41a;
 }
 

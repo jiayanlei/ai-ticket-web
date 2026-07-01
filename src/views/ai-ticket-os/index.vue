@@ -18,14 +18,6 @@
       </div>
     </section>
 
-    <section class="metric-grid" :aria-label="t('aiTicketOs.labels.pageMetrics')">
-      <article v-for="metric in page.metrics" :key="metric.label" class="metric-card" :class="`metric-card--${metric.tone}`">
-        <span>{{ metric.label }}</span>
-        <strong>{{ metric.value }}</strong>
-        <small>{{ metric.delta }} {{ t('aiTicketOs.labels.vsLastCycle') }}</small>
-      </article>
-    </section>
-
     <section class="smart-filter">
       <a-input class="smart-filter__search" :placeholder="t('aiTicketOs.labels.searchPlaceholder')">
         <template #prefix><SearchOutlined /></template>
@@ -552,8 +544,7 @@ onBeforeUnmount(() => {
 
 .command-hero,
 .glass-panel,
-.smart-filter,
-.metric-card {
+.smart-filter {
   background: var(--app-surface);
   border: 1px solid var(--app-border);
   box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
@@ -561,8 +552,7 @@ onBeforeUnmount(() => {
 
 :global(html.dark) .command-hero,
 :global(html.dark) .glass-panel,
-:global(html.dark) .smart-filter,
-:global(html.dark) .metric-card {
+:global(html.dark) .smart-filter {
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)),
     rgba(15, 23, 42, 0.72);
@@ -610,70 +600,6 @@ onBeforeUnmount(() => {
     display: flex;
     flex: 0 0 auto;
     gap: 10px;
-  }
-}
-
-.metric-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.metric-card {
-  position: relative;
-  min-height: 116px;
-  padding: 18px;
-  overflow: hidden;
-  border-radius: 8px;
-
-  &::after {
-    position: absolute;
-    right: -28px;
-    bottom: -36px;
-    width: 104px;
-    height: 104px;
-    content: '';
-    background: currentColor;
-    border-radius: 50%;
-    opacity: 0.12;
-  }
-
-  span,
-  small {
-    display: block;
-    color: var(--app-text-secondary);
-  }
-
-  strong {
-    display: block;
-    margin: 10px 0 6px;
-    color: var(--app-text);
-    font-size: 30px;
-    line-height: 1;
-  }
-
-  &--blue {
-    color: var(--app-primary);
-  }
-
-  &--cyan {
-    color: var(--app-accent);
-  }
-
-  &--purple {
-    color: var(--app-secondary);
-  }
-
-  &--green {
-    color: var(--app-success);
-  }
-
-  &--amber {
-    color: var(--app-warning);
-  }
-
-  &--red {
-    color: var(--app-danger);
   }
 }
 

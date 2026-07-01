@@ -1,0 +1,266 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: AI
+        - generic [ref=e8]:
+          - strong [ref=e9]: AI Ticket OS
+          - generic [ref=e10]: 企业级 AI 客服操作系统
+      - menu [ref=e12]:
+        - generic [ref=e13] [cursor=pointer]:
+          - img "dashboard" [ref=e14]:
+            - img [ref=e15]
+          - generic [ref=e19]: 智能工作台
+        - generic [ref=e20] [cursor=pointer]:
+          - img "customer-service" [ref=e21]:
+            - img [ref=e22]
+          - generic [ref=e26]: 服务中心
+        - generic [ref=e27] [cursor=pointer]:
+          - img "inbox" [ref=e28]:
+            - img [ref=e29]
+          - generic [ref=e33]: 全渠道中心
+        - generic [ref=e34] [cursor=pointer]:
+          - img "team" [ref=e35]:
+            - img [ref=e36]
+          - generic [ref=e40]: 坐席运营
+        - generic [ref=e41] [cursor=pointer]:
+          - img "robot" [ref=e42]:
+            - img [ref=e43]
+          - generic [ref=e47]: AI数据中心
+        - generic [ref=e48] [cursor=pointer]:
+          - img "user" [ref=e49]:
+            - img [ref=e50]
+          - generic [ref=e54]: 客户中心
+        - generic [ref=e55] [cursor=pointer]:
+          - img "deployment-unit" [ref=e56]:
+            - img [ref=e57]
+          - generic [ref=e61]: Tenant Management
+        - generic [ref=e62] [cursor=pointer]:
+          - img "book" [ref=e63]:
+            - img [ref=e64]
+          - generic [ref=e68]: 知识中心
+        - generic [ref=e72] [cursor=pointer]: 数据分析
+        - list [ref=e73]:
+          - menuitem "line-chart 运营分析" [ref=e74] [cursor=pointer]:
+            - img "line-chart" [ref=e75]:
+              - img [ref=e76]
+            - generic [ref=e78]: 运营分析
+          - menuitem "BI 报表" [ref=e79] [cursor=pointer]:
+            - generic [ref=e80]: BI 报表
+          - menuitem "dashboard 数据驾驶舱" [ref=e81] [cursor=pointer]:
+            - img "dashboard" [ref=e82]:
+              - img [ref=e83]
+            - generic [ref=e85]: 数据驾驶舱
+          - menuitem "clock-circle SLA 管理" [ref=e86] [cursor=pointer]:
+            - img "clock-circle" [ref=e87]:
+              - img [ref=e88]
+            - generic [ref=e91]: SLA 管理
+          - menuitem "warning 风险预警" [ref=e92] [cursor=pointer]:
+            - img "warning" [ref=e93]:
+              - img [ref=e94]
+            - generic [ref=e96]: 风险预警
+          - menuitem "monitor 系统监控" [ref=e97] [cursor=pointer]:
+            - img "monitor" [ref=e98]:
+              - img [ref=e99]
+            - generic [ref=e101]: 系统监控
+          - menuitem "alert 告警中心" [ref=e102] [cursor=pointer]:
+            - img "alert" [ref=e103]:
+              - img [ref=e104]
+            - generic [ref=e106]: 告警中心
+        - generic [ref=e107] [cursor=pointer]:
+          - img "setting" [ref=e108]:
+            - img [ref=e109]
+          - generic [ref=e113]: 系统管理
+  - generic [ref=e114]:
+    - generic [ref=e115]:
+      - generic [ref=e116]:
+        - button "menu-fold" [ref=e117] [cursor=pointer]:
+          - img "menu-fold" [ref=e118]:
+            - img [ref=e119]
+        - generic [ref=e121]:
+          - generic [ref=e122] [cursor=pointer]:
+            - generic [ref=e123]:
+              - combobox [ref=e125]
+              - generic [ref=e126]: 全球企业
+            - generic:
+              - img:
+                - img
+          - generic [ref=e127] [cursor=pointer]:
+            - generic [ref=e128]:
+              - combobox [ref=e130]
+              - generic [ref=e131]: 客户体验中心
+            - generic:
+              - img:
+                - img
+      - generic [ref=e132]:
+        - generic [ref=e133]:
+          - generic [ref=e134]:
+            - img "search" [ref=e136]:
+              - img [ref=e137]
+            - textbox "搜索工单、客户、坐席、流程..." [ref=e139]
+          - button "robot AI 助手" [ref=e140] [cursor=pointer]:
+            - img "robot" [ref=e141]:
+              - img [ref=e142]
+            - generic [ref=e144]: AI 助手
+        - generic [ref=e145]:
+          - button "bell" [ref=e146] [cursor=pointer]:
+            - img "bell" [ref=e147]:
+              - img [ref=e148]
+          - superscript [ref=e150]:
+            - paragraph [ref=e152]: "1"
+            - paragraph [ref=e154]: "1"
+        - button "reload" [ref=e155] [cursor=pointer]:
+          - img "reload" [ref=e156]:
+            - img [ref=e157]
+        - button "dashboard" [ref=e159] [cursor=pointer]:
+          - img "dashboard" [ref=e160]:
+            - img [ref=e161]
+        - button "setting" [ref=e163] [cursor=pointer]:
+          - img "setting" [ref=e164]:
+            - img [ref=e165]
+        - button "林知远" [ref=e167] [cursor=pointer]:
+          - generic [ref=e168]: 林知远
+    - generic [ref=e171]:
+      - tablist [ref=e172]:
+        - generic [ref=e174]:
+          - generic [ref=e175] [cursor=pointer]:
+            - tab "仪表盘" [ref=e176]:
+              - generic [ref=e178]: 仪表盘
+            - button "remove" [ref=e179]:
+              - img "close" [ref=e180]:
+                - img [ref=e181]
+          - generic [ref=e183] [cursor=pointer]:
+            - tab "培训中心" [ref=e184]:
+              - generic [ref=e186]: 培训中心
+            - button "remove" [ref=e187]:
+              - img "close" [ref=e188]:
+                - img [ref=e189]
+          - generic [ref=e191] [cursor=pointer]:
+            - tab "AI 质检" [ref=e192]:
+              - generic [ref=e194]: AI 质检
+            - button "remove" [ref=e195]:
+              - img "close" [ref=e196]:
+                - img [ref=e197]
+          - generic [ref=e199] [cursor=pointer]:
+            - tab "绩效中心" [ref=e200]:
+              - generic [ref=e202]: 绩效中心
+            - button "remove" [ref=e203]:
+              - img "close" [ref=e204]:
+                - img [ref=e205]
+          - generic [ref=e207] [cursor=pointer]:
+            - tab "坐席中心" [ref=e208]:
+              - generic [ref=e210]: 坐席中心
+            - button "remove" [ref=e211]:
+              - img "close" [ref=e212]:
+                - img [ref=e213]
+          - generic [ref=e215] [cursor=pointer]:
+            - tab "排班调度" [ref=e216]:
+              - generic [ref=e218]: 排班调度
+            - button "remove" [ref=e219]:
+              - img "close" [ref=e220]:
+                - img [ref=e221]
+          - generic [ref=e223] [cursor=pointer]:
+            - tab "工作流中心" [ref=e224]:
+              - generic [ref=e226]: 工作流中心
+            - button "remove" [ref=e227]:
+              - img "close" [ref=e228]:
+                - img [ref=e229]
+          - generic [ref=e231] [cursor=pointer]:
+            - tab "提示词中心" [ref=e232]:
+              - generic [ref=e234]: 提示词中心
+            - button "remove" [ref=e235]:
+              - img "close" [ref=e236]:
+                - img [ref=e237]
+          - generic [ref=e239] [cursor=pointer]:
+            - tab "模型中心" [ref=e240]:
+              - generic [ref=e242]: 模型中心
+            - button "remove" [ref=e243]:
+              - img "close" [ref=e244]:
+                - img [ref=e245]
+          - generic [ref=e247] [cursor=pointer]:
+            - tab "统一收件箱" [ref=e248]:
+              - generic [ref=e250]: 统一收件箱
+            - button "remove" [ref=e251]:
+              - img "close" [ref=e252]:
+                - img [ref=e253]
+          - generic [ref=e255] [cursor=pointer]:
+            - tab "短信中心" [ref=e256]:
+              - generic [ref=e258]: 短信中心
+            - button "remove" [ref=e259]:
+              - img "close" [ref=e260]:
+                - img [ref=e261]
+          - generic [ref=e263] [cursor=pointer]:
+            - tab "邮件中心" [ref=e264]:
+              - generic [ref=e266]: 邮件中心
+            - button "remove" [ref=e267]:
+              - img "close" [ref=e268]:
+                - img [ref=e269]
+          - generic [ref=e271] [cursor=pointer]:
+            - tab "工单中心" [ref=e272]:
+              - generic [ref=e274]: 工单中心
+            - button "remove" [ref=e275]:
+              - img "close" [ref=e276]:
+                - img [ref=e277]
+          - generic [ref=e279] [cursor=pointer]:
+            - tab "运营分析" [ref=e280]:
+              - generic [ref=e282]: 运营分析
+            - button "remove" [ref=e283]:
+              - img "close" [ref=e284]:
+                - img [ref=e285]
+          - generic [ref=e287] [cursor=pointer]:
+            - tab "BI 报表" [ref=e288]:
+              - generic [ref=e290]: BI 报表
+            - button "remove" [ref=e291]:
+              - img "close" [ref=e292]:
+                - img [ref=e293]
+          - generic [ref=e295] [cursor=pointer]:
+            - tab "SLA 管理" [ref=e296]:
+              - generic [ref=e298]: SLA 管理
+            - button "remove" [ref=e299]:
+              - img "close" [ref=e300]:
+                - img [ref=e301]
+          - generic [ref=e303] [cursor=pointer]:
+            - tab "风险预警" [selected] [ref=e304]:
+              - generic [ref=e306]: 风险预警
+            - button "remove" [ref=e307]:
+              - img "close" [ref=e308]:
+                - img [ref=e309]
+      - generic:
+        - generic:
+          - tabpanel "风险预警"
+    - main [ref=e311]:
+      - generic [ref=e312]:
+        - generic [ref=e313]:
+          - paragraph [ref=e314]: 管理风险事件、流失风险、投诉升级、情绪异常、风险等级、闭环处置和证据。
+          - generic [ref=e315]:
+            - generic [ref=e316]:
+              - textbox "搜索风险预警、客户、负责人" [ref=e318]
+              - generic [ref=e320] [cursor=pointer]:
+                - generic [ref=e321]:
+                  - combobox [ref=e323]
+                  - generic: 状态
+                - generic:
+                  - img:
+                    - img
+              - button "查 询" [ref=e324] [cursor=pointer]:
+                - generic [ref=e325]: 查 询
+            - generic [ref=e326]:
+              - button "刷 新" [ref=e328] [cursor=pointer]:
+                - generic [ref=e329]: 刷 新
+              - button "处置风险" [ref=e331] [cursor=pointer]:
+                - generic [ref=e332]: 处置风险
+        - generic [ref=e333]:
+          - main [ref=e334]:
+            - article [ref=e335]:
+              - heading "严重" [level=2] [ref=e336]
+            - article [ref=e337]:
+              - heading "高" [level=2] [ref=e338]
+            - article [ref=e339]:
+              - heading "中" [level=2] [ref=e340]
+            - article [ref=e341]:
+              - heading "低" [level=2] [ref=e342]
+          - complementary [ref=e343]:
+            - heading "处置证据" [level=2] [ref=e344]
+            - paragraph
+            - button "关闭风险" [ref=e345] [cursor=pointer]:
+              - generic [ref=e346]: 关闭风险

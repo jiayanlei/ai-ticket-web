@@ -38,16 +38,16 @@ export default {
     },
     messages: {
       risk: {
-        title: 'Risk message pending',
-        desc: '3 critical alerts unresolved',
+        content: '3 critical risk alerts are unresolved. Please review the escalation policy first.',
+        type: 'Risk',
       },
       sla: {
-        title: 'SLA pressure rising',
-        desc: '7 service risks need attention',
+        content: '7 service tickets are approaching the SLA threshold. Watch the agent handling pace.',
+        type: 'SLA',
       },
       queue: {
-        title: 'Queue running stable',
-        desc: '1 normal message',
+        content: 'The live chat queue is running steadily. No action is required.',
+        type: 'Notice',
       },
     },
     serviceHub: 'Service Hub',

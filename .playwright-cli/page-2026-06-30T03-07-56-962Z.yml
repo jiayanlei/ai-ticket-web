@@ -1,0 +1,54 @@
+- main [ref=e3]:
+  - generic [ref=e73]:
+    - paragraph [ref=e77]: 正在加载知识库索引...
+    - generic [ref=e78]: Neural Auth Engine
+  - complementary "AI intelligent operations visual area" [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: AI Analysis
+      - generic [ref=e7]: Knowledge Base
+      - generic [ref=e8]: Ticket Operations
+    - generic [ref=e11]:
+      - heading "AI 智能工单运营中枢" [level=2] [ref=e12]
+      - paragraph [ref=e13]: 统一接入工单、知识库与 AI 分析能力，构建稳定、高效、可追踪的服务运营入口。
+    - generic [ref=e14]:
+      - text: Secure Access
+      - strong [ref=e15]: AI Service Operation Console
+      - paragraph [ref=e16]: 面向客服、运营与知识管理团队的统一工作入口。
+  - generic [ref=e18]:
+    - generic [ref=e19]:
+      - generic [ref=e20]: AI
+      - generic [ref=e21]:
+        - heading "AI 智能工单分析系统" [level=1] [ref=e22]
+        - paragraph [ref=e23]: 工单处理 · AI 分析 · 知识库运营入口
+    - generic [ref=e24]:
+      - generic [ref=e26]:
+        - generic "账号" [ref=e28]: "* 账号"
+        - generic [ref=e32]:
+          - img "user" [ref=e34]:
+            - img [ref=e35]
+          - textbox "* 账号" [ref=e37]:
+            - /placeholder: 请输入账号
+            - text: admin
+      - generic [ref=e39]:
+        - generic "密码" [ref=e41]: "* 密码"
+        - generic [ref=e45]:
+          - img "lock" [ref=e47]:
+            - img [ref=e48]
+          - textbox "* 密码" [ref=e50]:
+            - /placeholder: 请输入密码
+            - text: admin123
+          - img "eye-invisible" [ref=e52] [cursor=pointer]:
+            - img [ref=e53]
+      - generic [ref=e56]:
+        - generic [ref=e57] [cursor=pointer]:
+          - checkbox "记住登录状态" [checked] [ref=e59]
+          - generic [ref=e61]: 记住登录状态
+        - generic [ref=e62] [cursor=pointer]: 忘记密码
+      - button "loading 正在认证..." [active] [ref=e82]:
+        - img "loading" [ref=e84]:
+          - img [ref=e85]
+        - generic [ref=e64]: 正在认证...
+    - generic [ref=e65]:
+      - generic [ref=e66]: Console Ready
+      - generic [ref=e68]: API Auth
+      - generic [ref=e70]: Token Guard

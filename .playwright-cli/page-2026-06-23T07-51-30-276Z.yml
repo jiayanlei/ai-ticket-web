@@ -1,0 +1,54 @@
+- main [ref=e3]:
+  - generic [ref=e83]:
+    - paragraph [ref=e87]: 认证完成，正在进入工作台...
+    - generic [ref=e88]: Session Linked
+  - complementary "AI intelligent operations visual area" [ref=e14]:
+    - generic [ref=e15]:
+      - generic [ref=e16]: AI Analysis
+      - generic [ref=e17]: Knowledge Base
+      - generic [ref=e18]: Ticket Operations
+    - generic [ref=e21]:
+      - heading "AI 智能工单运营中枢" [level=2] [ref=e22]
+      - paragraph [ref=e23]: 统一接入工单、知识库与 AI 分析能力，构建稳定、高效、可追踪的服务运营入口。
+    - generic [ref=e24]:
+      - text: Secure Access
+      - strong [ref=e25]: AI Service Operation Console
+      - paragraph [ref=e26]: 面向客服、运营与知识管理团队的统一工作入口。
+  - generic [ref=e28]:
+    - generic [ref=e29]:
+      - generic [ref=e30]: AI
+      - generic [ref=e31]:
+        - heading "AI 智能工单分析系统" [level=1] [ref=e32]
+        - paragraph [ref=e33]: 工单处理 · AI 分析 · 知识库运营入口
+    - generic [ref=e34]:
+      - generic [ref=e36]:
+        - generic "账号" [ref=e38]: "* 账号"
+        - generic [ref=e42]:
+          - img "user" [ref=e44]:
+            - img [ref=e45]
+          - textbox "* 账号" [ref=e47]:
+            - /placeholder: 请输入账号
+            - text: admin
+      - generic [ref=e49]:
+        - generic "密码" [ref=e51]: "* 密码"
+        - generic [ref=e55]:
+          - img "lock" [ref=e57]:
+            - img [ref=e58]
+          - textbox "* 密码" [ref=e60]:
+            - /placeholder: 请输入密码
+            - text: admin123
+          - img "eye-invisible" [ref=e62] [cursor=pointer]:
+            - img [ref=e63]
+      - generic [ref=e66]:
+        - generic [ref=e67] [cursor=pointer]:
+          - checkbox "记住登录状态" [checked] [ref=e69]
+          - generic [ref=e71]: 记住登录状态
+        - generic [ref=e72] [cursor=pointer]: 忘记密码
+      - button "loading 正在认证..." [active] [ref=e92]:
+        - img "loading" [ref=e94]:
+          - img [ref=e95]
+        - generic [ref=e74]: 正在认证...
+    - generic [ref=e75]:
+      - generic [ref=e76]: Console Ready
+      - generic [ref=e78]: API Auth
+      - generic [ref=e80]: Token Guard

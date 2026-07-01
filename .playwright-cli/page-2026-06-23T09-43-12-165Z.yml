@@ -1,0 +1,693 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e7]: AI
+          - generic [ref=e8]:
+            - strong [ref=e9]: AI Ticket OS
+            - generic [ref=e10]: 企业级 AI 客服操作系统
+        - menu [ref=e12]:
+          - generic [ref=e13] [cursor=pointer]:
+            - img "dashboard" [ref=e14]:
+              - img [ref=e15]
+            - generic [ref=e19]: 智能工作台
+          - generic [ref=e20] [cursor=pointer]:
+            - img "customer-service" [ref=e21]:
+              - img [ref=e22]
+            - generic [ref=e26]: 服务中心
+          - generic [ref=e27] [cursor=pointer]:
+            - img "inbox" [ref=e28]:
+              - img [ref=e29]
+            - generic [ref=e33]: 全渠道中心
+          - generic [ref=e34] [cursor=pointer]:
+            - img "team" [ref=e35]:
+              - img [ref=e36]
+            - generic [ref=e40]: 坐席运营
+          - generic [ref=e41] [cursor=pointer]:
+            - img "robot" [ref=e42]:
+              - img [ref=e43]
+            - generic [ref=e47]: AI数据中心
+          - generic [ref=e48] [cursor=pointer]:
+            - img "user" [ref=e49]:
+              - img [ref=e50]
+            - generic [ref=e54]: 客户中心
+          - generic [ref=e55] [cursor=pointer]:
+            - img "deployment-unit" [ref=e56]:
+              - img [ref=e57]
+            - generic [ref=e61]: Tenant Management
+          - generic [ref=e62] [cursor=pointer]:
+            - img "book" [ref=e63]:
+              - img [ref=e64]
+            - generic [ref=e68]: 知识中心
+          - generic [ref=e72] [cursor=pointer]: 数据分析
+          - list [ref=e73]:
+            - menuitem "line-chart 运营分析" [ref=e74] [cursor=pointer]:
+              - img "line-chart" [ref=e75]:
+                - img [ref=e76]
+              - generic [ref=e78]: 运营分析
+            - menuitem "BI 报表" [ref=e79] [cursor=pointer]:
+              - generic [ref=e80]: BI 报表
+            - menuitem "dashboard 数据驾驶舱" [ref=e81] [cursor=pointer]:
+              - img "dashboard" [ref=e82]:
+                - img [ref=e83]
+              - generic [ref=e85]: 数据驾驶舱
+            - menuitem "clock-circle SLA 管理" [ref=e86] [cursor=pointer]:
+              - img "clock-circle" [ref=e87]:
+                - img [ref=e88]
+              - generic [ref=e91]: SLA 管理
+            - menuitem "warning 风险预警" [ref=e92] [cursor=pointer]:
+              - img "warning" [ref=e93]:
+                - img [ref=e94]
+              - generic [ref=e96]: 风险预警
+            - menuitem "monitor 系统监控" [ref=e97] [cursor=pointer]:
+              - img "monitor" [ref=e98]:
+                - img [ref=e99]
+              - generic [ref=e101]: 系统监控
+            - menuitem "alert 告警中心" [ref=e102] [cursor=pointer]:
+              - img "alert" [ref=e103]:
+                - img [ref=e104]
+              - generic [ref=e106]: 告警中心
+          - generic [ref=e107] [cursor=pointer]:
+            - img "setting" [ref=e108]:
+              - img [ref=e109]
+            - generic [ref=e113]: 系统管理
+    - generic [ref=e114]:
+      - generic [ref=e115]:
+        - generic [ref=e116]:
+          - button "menu-fold" [ref=e117] [cursor=pointer]:
+            - img "menu-fold" [ref=e118]:
+              - img [ref=e119]
+          - generic [ref=e121]:
+            - generic [ref=e122] [cursor=pointer]:
+              - generic [ref=e123]:
+                - combobox [ref=e125]
+                - generic [ref=e126]: 全球企业
+              - generic:
+                - img:
+                  - img
+            - generic [ref=e127] [cursor=pointer]:
+              - generic [ref=e128]:
+                - combobox [ref=e130]
+                - generic [ref=e131]: 客户体验中心
+              - generic:
+                - img:
+                  - img
+        - generic [ref=e132]:
+          - generic [ref=e133]:
+            - generic [ref=e134]:
+              - img "search" [ref=e136]:
+                - img [ref=e137]
+              - textbox "搜索工单、客户、坐席、流程..." [ref=e139]
+            - button "robot AI 助手" [ref=e140] [cursor=pointer]:
+              - img "robot" [ref=e141]:
+                - img [ref=e142]
+              - generic [ref=e144]: AI 助手
+          - generic [ref=e145]:
+            - button "bell" [ref=e146] [cursor=pointer]:
+              - img "bell" [ref=e147]:
+                - img [ref=e148]
+            - superscript [ref=e150]:
+              - paragraph [ref=e152]: "1"
+              - paragraph [ref=e154]: "1"
+          - button "reload" [ref=e155] [cursor=pointer]:
+            - img "reload" [ref=e156]:
+              - img [ref=e157]
+          - button "dashboard" [ref=e159] [cursor=pointer]:
+            - img "dashboard" [ref=e160]:
+              - img [ref=e161]
+          - button "setting" [ref=e163] [cursor=pointer]:
+            - img "setting" [ref=e164]:
+              - img [ref=e165]
+          - button "林知远" [ref=e167] [cursor=pointer]:
+            - generic [ref=e168]: 林知远
+      - generic [ref=e171]:
+        - tablist [ref=e172]:
+          - generic [ref=e175] [cursor=pointer]:
+            - tab "运营分析" [selected] [ref=e176]:
+              - generic [ref=e178]: 运营分析
+            - button "remove" [ref=e179]:
+              - img "close" [ref=e180]:
+                - img [ref=e181]
+        - generic:
+          - generic:
+            - tabpanel "运营分析"
+      - main [ref=e183]:
+        - generic [ref=e184]:
+          - generic [ref=e185]:
+            - generic [ref=e186]:
+              - heading "运营分析" [level=1] [ref=e187]
+              - paragraph [ref=e188]: 跨在线客服、呼叫、邮件、短信、工单、坐席、排班、绩效、质检和培训的数据健康分析与改进闭环中心。
+            - generic [ref=e189]:
+              - textbox "搜索异常 / 任务 / 客户 / 负责人" [ref=e191]
+              - generic [ref=e193]:
+                - textbox "Start date" [ref=e195]
+                - generic "to" [ref=e197]:
+                  - img "swap-right" [ref=e198]:
+                    - img [ref=e199]
+                - textbox "End date" [ref=e202]
+                - generic:
+                  - img "calendar":
+                    - img
+              - generic [ref=e203] [cursor=pointer]:
+                - generic [ref=e204]:
+                  - combobox [ref=e206]
+                  - generic: 渠道
+                - generic:
+                  - img:
+                    - img
+              - generic [ref=e207] [cursor=pointer]:
+                - generic [ref=e208]:
+                  - combobox [ref=e210]
+                  - generic: 团队
+                - generic:
+                  - img:
+                    - img
+              - generic [ref=e211] [cursor=pointer]:
+                - generic [ref=e212]:
+                  - combobox [ref=e214]
+                  - generic: 负责人
+                - generic:
+                  - img:
+                    - img
+              - generic [ref=e215] [cursor=pointer]:
+                - generic [ref=e216]:
+                  - combobox [ref=e218]
+                  - generic: 状态
+                - generic:
+                  - img:
+                    - img
+              - generic [ref=e219]:
+                - button "search 查询" [ref=e221] [cursor=pointer]:
+                  - img "search" [ref=e222]:
+                    - img [ref=e223]
+                  - generic [ref=e225]: 查询
+                - button "reload 刷新" [ref=e227] [cursor=pointer]:
+                  - img "reload" [ref=e228]:
+                    - img [ref=e229]
+                  - generic [ref=e231]: 刷新
+                - button "dashboard 打开看板" [ref=e233] [cursor=pointer]:
+                  - img "dashboard" [ref=e234]:
+                    - img [ref=e235]
+                  - generic [ref=e237]: 打开看板
+          - main [ref=e238]:
+            - generic [ref=e239]:
+              - generic [ref=e240]:
+                - generic [ref=e241]:
+                  - heading "运营健康表" [level=2] [ref=e242]
+                  - paragraph [ref=e243]: 按渠道、团队和业务类型汇总服务量、压力、SLA、满意度和解决效果。
+                - generic [ref=e245]:
+                  - generic [ref=e246] [cursor=pointer]:
+                    - radio "渠道" [checked]
+                    - generic "渠道" [ref=e247]
+                  - generic [ref=e248] [cursor=pointer]:
+                    - radio "团队"
+                    - generic "团队" [ref=e249]
+                  - generic [ref=e250] [cursor=pointer]:
+                    - radio "业务类型"
+                    - generic "业务类型" [ref=e251]
+              - generic [ref=e256]:
+                - table [ref=e258]:
+                  - rowgroup [ref=e277]:
+                    - row "对象 服务量 caret-up caret-down 处理中 排队 压力 caret-up caret-down 响应时长 处理时长 解决率 满意度 SLA风险 超时率 失败率 转人工率 投诉风险 状态 操作" [ref=e278]:
+                      - columnheader "对象" [ref=e279]
+                      - columnheader "服务量 caret-up caret-down" [ref=e280] [cursor=pointer]:
+                        - generic [ref=e281]:
+                          - generic [ref=e282]: 服务量
+                          - generic [ref=e284]:
+                            - generic "caret-up" [ref=e285]:
+                              - img [ref=e286]
+                            - generic "caret-down" [ref=e288]:
+                              - img [ref=e289]
+                      - columnheader "处理中" [ref=e291]
+                      - columnheader "排队" [ref=e292]
+                      - columnheader "压力 caret-up caret-down" [ref=e293] [cursor=pointer]:
+                        - generic [ref=e294]:
+                          - generic [ref=e295]: 压力
+                          - generic [ref=e297]:
+                            - generic "caret-up" [ref=e298]:
+                              - img [ref=e299]
+                            - generic "caret-down" [ref=e301]:
+                              - img [ref=e302]
+                      - columnheader "响应时长" [ref=e304]
+                      - columnheader "处理时长" [ref=e305]
+                      - columnheader "解决率" [ref=e306]
+                      - columnheader "满意度" [ref=e307]
+                      - columnheader "SLA风险" [ref=e308]
+                      - columnheader "超时率" [ref=e309]
+                      - columnheader "失败率" [ref=e310]
+                      - columnheader "转人工率" [ref=e311]
+                      - columnheader "投诉风险" [ref=e312]
+                      - columnheader "状态" [ref=e313]
+                      - columnheader "操作" [ref=e314]
+                      - columnheader [ref=e315]
+                - table [ref=e317]:
+                  - rowgroup [ref=e335]:
+                    - row "在线客服 渠道 · 售前 / 售后 / 投诉咨询 4286 318 46 82 28秒 5分42秒 89.6% 93.1% 18 单 3.8% 0.4% 12.6% 5 起 关注 拆解 看异常" [ref=e336]:
+                      - cell "在线客服 渠道 · 售前 / 售后 / 投诉咨询" [ref=e337]:
+                        - button "在线客服 渠道 · 售前 / 售后 / 投诉咨询" [ref=e338] [cursor=pointer]:
+                          - strong [ref=e339]: 在线客服
+                          - generic [ref=e340]: 渠道 · 售前 / 售后 / 投诉咨询
+                      - cell "4286" [ref=e341]
+                      - cell "318" [ref=e342]
+                      - cell "46" [ref=e343]
+                      - cell "82" [ref=e344]:
+                        - generic [ref=e345]:
+                          - strong [ref=e346]: "82"
+                          - progressbar [ref=e347]
+                      - cell "28秒" [ref=e351]
+                      - cell "5分42秒" [ref=e352]
+                      - cell "89.6%" [ref=e353]
+                      - cell "93.1%" [ref=e354]
+                      - cell "18 单" [ref=e355]:
+                        - generic [ref=e356]: 18 单
+                      - cell "3.8%" [ref=e357]
+                      - cell "0.4%" [ref=e358]
+                      - cell "12.6%" [ref=e359]
+                      - cell "5 起" [ref=e360]:
+                        - generic [ref=e361]: 5 起
+                      - cell "关注" [ref=e362]:
+                        - generic [ref=e363]: 关注
+                      - cell "拆解 看异常" [ref=e365]:
+                        - generic [ref=e366]:
+                          - button "拆解" [ref=e368] [cursor=pointer]:
+                            - generic [ref=e369]: 拆解
+                          - button "看异常" [ref=e371] [cursor=pointer]:
+                            - generic [ref=e372]: 看异常
+                    - row "呼叫中心 渠道 · 热线 / VIP / 外呼回访 2380 186 68 91 16秒 6分18秒 84.2% 88.7% 31 单 6.9% 0.8% 9.8% 12 起 风险 拆解 看异常" [ref=e373]:
+                      - cell "呼叫中心 渠道 · 热线 / VIP / 外呼回访" [ref=e374]:
+                        - button "呼叫中心 渠道 · 热线 / VIP / 外呼回访" [ref=e375] [cursor=pointer]:
+                          - strong [ref=e376]: 呼叫中心
+                          - generic [ref=e377]: 渠道 · 热线 / VIP / 外呼回访
+                      - cell "2380" [ref=e378]
+                      - cell "186" [ref=e379]
+                      - cell "68" [ref=e380]
+                      - cell "91" [ref=e381]:
+                        - generic [ref=e382]:
+                          - strong [ref=e383]: "91"
+                          - progressbar [ref=e384]
+                      - cell "16秒" [ref=e388]
+                      - cell "6分18秒" [ref=e389]
+                      - cell "84.2%" [ref=e390]
+                      - cell "88.7%" [ref=e391]
+                      - cell "31 单" [ref=e392]:
+                        - generic [ref=e393]: 31 单
+                      - cell "6.9%" [ref=e394]
+                      - cell "0.8%" [ref=e395]
+                      - cell "9.8%" [ref=e396]
+                      - cell "12 起" [ref=e397]:
+                        - generic [ref=e398]: 12 起
+                      - cell "风险" [ref=e399]:
+                        - generic [ref=e400]: 风险
+                      - cell "拆解 看异常" [ref=e402]:
+                        - generic [ref=e403]:
+                          - button "拆解" [ref=e405] [cursor=pointer]:
+                            - generic [ref=e406]: 拆解
+                          - button "看异常" [ref=e408] [cursor=pointer]:
+                            - generic [ref=e409]: 看异常
+                    - row "邮件中心 渠道 · 账单 / 权限 / 售后线程 1268 246 93 88 18分 42分 81.7% 90.5% 26 单 8.1% 0.2% 4.2% 4 起 风险 拆解 看异常" [ref=e410]:
+                      - cell "邮件中心 渠道 · 账单 / 权限 / 售后线程" [ref=e411]:
+                        - button "邮件中心 渠道 · 账单 / 权限 / 售后线程" [ref=e412] [cursor=pointer]:
+                          - strong [ref=e413]: 邮件中心
+                          - generic [ref=e414]: 渠道 · 账单 / 权限 / 售后线程
+                      - cell "1268" [ref=e415]
+                      - cell "246" [ref=e416]
+                      - cell "93" [ref=e417]
+                      - cell "88" [ref=e418]:
+                        - generic [ref=e419]:
+                          - strong [ref=e420]: "88"
+                          - progressbar [ref=e421]
+                      - cell "18分" [ref=e425]
+                      - cell "42分" [ref=e426]
+                      - cell "81.7%" [ref=e427]
+                      - cell "90.5%" [ref=e428]
+                      - cell "26 单" [ref=e429]:
+                        - generic [ref=e430]: 26 单
+                      - cell "8.1%" [ref=e431]
+                      - cell "0.2%" [ref=e432]
+                      - cell "4.2%" [ref=e433]
+                      - cell "4 起" [ref=e434]:
+                        - generic [ref=e435]: 4 起
+                      - cell "风险" [ref=e436]:
+                        - generic [ref=e437]: 风险
+                      - cell "拆解 看异常" [ref=e439]:
+                        - generic [ref=e440]:
+                          - button "拆解" [ref=e442] [cursor=pointer]:
+                            - generic [ref=e443]: 拆解
+                          - button "看异常" [ref=e445] [cursor=pointer]:
+                            - generic [ref=e446]: 看异常
+                    - row "短信中心 渠道 · 通知 / 验证码 / 满意度邀评 18620 74 12 64 自动 1分20秒 86.4% 91.9% 6 单 1.6% 5.7% 18.4% 2 起 关注 拆解 看异常" [ref=e447]:
+                      - cell "短信中心 渠道 · 通知 / 验证码 / 满意度邀评" [ref=e448]:
+                        - button "短信中心 渠道 · 通知 / 验证码 / 满意度邀评" [ref=e449] [cursor=pointer]:
+                          - strong [ref=e450]: 短信中心
+                          - generic [ref=e451]: 渠道 · 通知 / 验证码 / 满意度邀评
+                      - cell "18620" [ref=e452]
+                      - cell "74" [ref=e453]
+                      - cell "12" [ref=e454]
+                      - cell "64" [ref=e455]:
+                        - generic [ref=e456]:
+                          - strong [ref=e457]: "64"
+                          - progressbar [ref=e458]
+                      - cell "自动" [ref=e462]
+                      - cell "1分20秒" [ref=e463]
+                      - cell "86.4%" [ref=e464]
+                      - cell "91.9%" [ref=e465]
+                      - cell "6 单" [ref=e466]:
+                        - generic [ref=e467]: 6 单
+                      - cell "1.6%" [ref=e468]
+                      - cell "5.7%" [ref=e469]
+                      - cell "18.4%" [ref=e470]
+                      - cell "2 起" [ref=e471]:
+                        - generic [ref=e472]: 2 起
+                      - cell "关注" [ref=e473]:
+                        - generic [ref=e474]: 关注
+                      - cell "拆解 看异常" [ref=e476]:
+                        - generic [ref=e477]:
+                          - button "拆解" [ref=e479] [cursor=pointer]:
+                            - generic [ref=e480]: 拆解
+                          - button "看异常" [ref=e482] [cursor=pointer]:
+                            - generic [ref=e483]: 看异常
+                    - row "工单中心 渠道 · 跨团队协作 / 升级处理 1764 412 38 78 11分 3时12分 87.5% 92.2% 22 单 5.2% 0.1% 6.5% 6 起 关注 拆解 看异常" [ref=e484]:
+                      - cell "工单中心 渠道 · 跨团队协作 / 升级处理" [ref=e485]:
+                        - button "工单中心 渠道 · 跨团队协作 / 升级处理" [ref=e486] [cursor=pointer]:
+                          - strong [ref=e487]: 工单中心
+                          - generic [ref=e488]: 渠道 · 跨团队协作 / 升级处理
+                      - cell "1764" [ref=e489]
+                      - cell "412" [ref=e490]
+                      - cell "38" [ref=e491]
+                      - cell "78" [ref=e492]:
+                        - generic [ref=e493]:
+                          - strong [ref=e494]: "78"
+                          - progressbar [ref=e495]
+                      - cell "11分" [ref=e499]
+                      - cell "3时12分" [ref=e500]
+                      - cell "87.5%" [ref=e501]
+                      - cell "92.2%" [ref=e502]
+                      - cell "22 单" [ref=e503]:
+                        - generic [ref=e504]: 22 单
+                      - cell "5.2%" [ref=e505]
+                      - cell "0.1%" [ref=e506]
+                      - cell "6.5%" [ref=e507]
+                      - cell "6 起" [ref=e508]:
+                        - generic [ref=e509]: 6 起
+                      - cell "关注" [ref=e510]:
+                        - generic [ref=e511]: 关注
+                      - cell "拆解 看异常" [ref=e513]:
+                        - generic [ref=e514]:
+                          - button "拆解" [ref=e516] [cursor=pointer]:
+                            - generic [ref=e517]: 拆解
+                          - button "看异常" [ref=e519] [cursor=pointer]:
+                            - generic [ref=e520]: 看异常
+            - generic [ref=e521]:
+              - generic [ref=e522]:
+                - generic [ref=e524]:
+                  - heading "风险与异常" [level=2] [ref=e525]
+                  - paragraph [ref=e526]: 识别当前需要处理的问题，并拆解到渠道、团队、时段和业务类型。
+                - generic [ref=e527]:
+                  - button "呼叫中心投诉风险升高 退款咨询通话满意度连续 3 个时段下降，投诉量较昨日增加 38%。 高风险 呼叫中心 呼叫中心 退款 投诉 12 起 环比 +38%" [ref=e528] [cursor=pointer]:
+                    - generic [ref=e529]:
+                      - generic [ref=e530]: 呼叫中心投诉风险升高
+                      - paragraph [ref=e531]: 退款咨询通话满意度连续 3 个时段下降，投诉量较昨日增加 38%。
+                      - generic [ref=e532]:
+                        - generic [ref=e533]: 高风险
+                        - generic [ref=e534]: 呼叫中心
+                        - generic [ref=e535]: 呼叫中心
+                        - generic [ref=e536]: 退款
+                    - generic [ref=e537]:
+                      - strong [ref=e538]: 投诉 12 起
+                      - generic [ref=e539]: 环比 +38%
+                  - button "邮件中心 SLA 积压 账单和权限邮件线程积压，26 个任务将在 30 分钟内超时。 高风险 邮件中心 邮件工单组 账单 SLA 风险 26 单 近 2 小时持续上升" [ref=e540] [cursor=pointer]:
+                    - generic [ref=e541]:
+                      - generic [ref=e542]: 邮件中心 SLA 积压
+                      - paragraph [ref=e543]: 账单和权限邮件线程积压，26 个任务将在 30 分钟内超时。
+                      - generic [ref=e544]:
+                        - generic [ref=e545]: 高风险
+                        - generic [ref=e546]: 邮件中心
+                        - generic [ref=e547]: 邮件工单组
+                        - generic [ref=e548]: 账单
+                    - generic [ref=e549]:
+                      - strong [ref=e550]: SLA 风险 26 单
+                      - generic [ref=e551]: 近 2 小时持续上升
+                  - button "短信失败率升高 夜间运营商通道波动，满意度邀评和验证码通知失败率超过阈值。 中风险 短信中心 短信运营组 售后 失败率 5.7% 高于阈值 2.2pct" [ref=e552] [cursor=pointer]:
+                    - generic [ref=e553]:
+                      - generic [ref=e554]: 短信失败率升高
+                      - paragraph [ref=e555]: 夜间运营商通道波动，满意度邀评和验证码通知失败率超过阈值。
+                      - generic [ref=e556]:
+                        - generic [ref=e557]: 中风险
+                        - generic [ref=e558]: 短信中心
+                        - generic [ref=e559]: 短信运营组
+                        - generic [ref=e560]: 售后
+                    - generic [ref=e561]:
+                      - strong [ref=e562]: 失败率 5.7%
+                      - generic [ref=e563]: 高于阈值 2.2pct
+                  - button "在线客服排队突增 登录问题在发布后集中进线，在线一组转人工率上升。 中风险 在线客服 在线一组 登录 排队 46 人 30 分钟 +27 人" [ref=e564] [cursor=pointer]:
+                    - generic [ref=e565]:
+                      - generic [ref=e566]: 在线客服排队突增
+                      - paragraph [ref=e567]: 登录问题在发布后集中进线，在线一组转人工率上升。
+                      - generic [ref=e568]:
+                        - generic [ref=e569]: 中风险
+                        - generic [ref=e570]: 在线客服
+                        - generic [ref=e571]: 在线一组
+                        - generic [ref=e572]: 登录
+                    - generic [ref=e573]:
+                      - strong [ref=e574]: 排队 46 人
+                      - generic [ref=e575]: 30 分钟 +27 人
+              - generic [ref=e576]:
+                - generic [ref=e577]:
+                  - generic [ref=e578]:
+                    - heading "改进任务" [level=2] [ref=e579]
+                    - paragraph [ref=e580]: 从异常发起排班、分配、培训、质检、工单和知识库优化动作。
+                  - button "plus 发起动作" [ref=e581] [cursor=pointer]:
+                    - img "plus" [ref=e582]:
+                      - img [ref=e583]
+                    - generic [ref=e586]: 发起动作
+                - generic [ref=e591]:
+                  - table [ref=e593]:
+                    - rowgroup [ref=e603]:
+                      - row "改进动作 负责人 状态 截止 进度 业务联动 处理结果" [ref=e604]:
+                        - columnheader "改进动作" [ref=e605]
+                        - columnheader "负责人" [ref=e606]
+                        - columnheader "状态" [ref=e607]
+                        - columnheader "截止" [ref=e608]
+                        - columnheader "进度" [ref=e609]
+                        - columnheader "业务联动" [ref=e610]
+                        - columnheader "处理结果" [ref=e611]
+                        - columnheader [ref=e612]
+                  - table [ref=e614]:
+                    - rowgroup [ref=e623]:
+                      - row "创建退款政策专项培训 呼叫中心投诉风险升高 王珂 处理中 06-26 18:00 培训中心 质检中心 呼叫中心 已完成 18 人培训，待复核 6 条低满意度通话。" [ref=e624]:
+                        - cell "创建退款政策专项培训 呼叫中心投诉风险升高" [ref=e625]:
+                          - button "创建退款政策专项培训 呼叫中心投诉风险升高" [ref=e626] [cursor=pointer]:
+                            - strong [ref=e627]: 创建退款政策专项培训
+                            - generic [ref=e628]: 呼叫中心投诉风险升高
+                        - cell "王珂" [ref=e629]
+                        - cell "处理中" [ref=e630]:
+                          - generic [ref=e631]: 处理中
+                        - cell "06-26 18:00" [ref=e632]
+                        - cell [ref=e633]:
+                          - progressbar [ref=e634]:
+                            - generic "60%" [ref=e638]
+                        - cell "培训中心 质检中心 呼叫中心" [ref=e639]:
+                          - generic [ref=e640]:
+                            - generic [ref=e642]: 培训中心
+                            - generic [ref=e644]: 质检中心
+                            - generic [ref=e646]: 呼叫中心
+                        - cell "已完成 18 人培训，待复核 6 条低满意度通话。" [ref=e647]
+                      - row "分配 4 名坐席支援账单邮件 邮件中心 SLA 积压 许言 待处理 06-23 17:30 排班调度 邮件中心 工单中心 已锁定支援名单，待排班主管确认。" [ref=e648]:
+                        - cell "分配 4 名坐席支援账单邮件 邮件中心 SLA 积压" [ref=e649]:
+                          - button "分配 4 名坐席支援账单邮件 邮件中心 SLA 积压" [ref=e650] [cursor=pointer]:
+                            - strong [ref=e651]: 分配 4 名坐席支援账单邮件
+                            - generic [ref=e652]: 邮件中心 SLA 积压
+                        - cell "许言" [ref=e653]
+                        - cell "待处理" [ref=e654]:
+                          - generic [ref=e655]: 待处理
+                        - cell "06-23 17:30" [ref=e656]
+                        - cell [ref=e657]:
+                          - progressbar [ref=e658]:
+                            - generic "20%" [ref=e662]
+                        - cell "排班调度 邮件中心 工单中心" [ref=e663]:
+                          - generic [ref=e664]:
+                            - generic [ref=e666]: 排班调度
+                            - generic [ref=e668]: 邮件中心
+                            - generic [ref=e670]: 工单中心
+                        - cell "已锁定支援名单，待排班主管确认。" [ref=e671]
+                      - row "切换备用短信通道并重试失败号码 短信失败率升高 韩书 待复核 06-24 10:00 短信中心 工单中心 备用通道已生效，失败率回落到 2.4%。" [ref=e672]:
+                        - cell "切换备用短信通道并重试失败号码 短信失败率升高" [ref=e673]:
+                          - button "切换备用短信通道并重试失败号码 短信失败率升高" [ref=e674] [cursor=pointer]:
+                            - strong [ref=e675]: 切换备用短信通道并重试失败号码
+                            - generic [ref=e676]: 短信失败率升高
+                        - cell "韩书" [ref=e677]
+                        - cell "待复核" [ref=e678]:
+                          - generic [ref=e679]: 待复核
+                        - cell "06-24 10:00" [ref=e680]
+                        - cell [ref=e681]:
+                          - progressbar [ref=e682]:
+                            - generic "85%" [ref=e686]
+                        - cell "短信中心 工单中心" [ref=e687]:
+                          - generic [ref=e688]:
+                            - generic [ref=e690]: 短信中心
+                            - generic [ref=e692]: 工单中心
+                        - cell "备用通道已生效，失败率回落到 2.4%。" [ref=e693]
+                      - row "补齐 MFA 登录知识库与快捷回复 在线客服排队突增 赵明远 处理中 06-24 12:00 知识库 在线客服 培训中心 已补 3 条错误码知识，待观察机器人命中率。" [ref=e694]:
+                        - cell "补齐 MFA 登录知识库与快捷回复 在线客服排队突增" [ref=e695]:
+                          - button "补齐 MFA 登录知识库与快捷回复 在线客服排队突增" [ref=e696] [cursor=pointer]:
+                            - strong [ref=e697]: 补齐 MFA 登录知识库与快捷回复
+                            - generic [ref=e698]: 在线客服排队突增
+                        - cell "赵明远" [ref=e699]
+                        - cell "处理中" [ref=e700]:
+                          - generic [ref=e701]: 处理中
+                        - cell "06-24 12:00" [ref=e702]
+                        - cell [ref=e703]:
+                          - progressbar [ref=e704]:
+                            - generic "45%" [ref=e708]
+                        - cell "知识库 在线客服 培训中心" [ref=e709]:
+                          - generic [ref=e710]:
+                            - generic [ref=e712]: 知识库
+                            - generic [ref=e714]: 在线客服
+                            - generic [ref=e716]: 培训中心
+                        - cell "已补 3 条错误码知识，待观察机器人命中率。" [ref=e717]
+              - generic [ref=e718]:
+                - generic [ref=e720]:
+                  - heading "复盘验证" [level=2] [ref=e721]
+                  - paragraph [ref=e722]: 对已完成动作比较处理前后指标，确认问题是否真正恢复。
+                - generic [ref=e723]:
+                  - article [ref=e724]:
+                    - generic [ref=e725]:
+                      - strong [ref=e726]: 短信失败率治理
+                      - generic [ref=e727]: 已恢复
+                    - generic [ref=e728]:
+                      - generic [ref=e729]: 失败率 5.7% -> 2.4%
+                      - generic [ref=e730]: 重试成功 61% -> 86%
+                      - generic [ref=e731]: 邀评回收 72% -> 81%
+                    - paragraph [ref=e732]: 备用通道和失败号码重试生效，失败率低于 3% 阈值，邀评回收同步恢复。
+                  - article [ref=e733]:
+                    - generic [ref=e734]:
+                      - strong [ref=e735]: VIP 热线话术复训
+                      - generic [ref=e736]: 观察中
+                    - generic [ref=e737]:
+                      - generic [ref=e738]: 满意度 88.7% -> 91.5%
+                      - generic [ref=e739]: 投诉量 12 起 -> 7 起
+                      - generic [ref=e740]: 质检分 82 -> 88
+                    - paragraph [ref=e741]: 质检扣分已下降，但晚高峰投诉仍需观察一个完整班次。
+                  - article [ref=e742]:
+                    - generic [ref=e743]:
+                      - strong [ref=e744]: 邮件账单模板补齐
+                      - generic [ref=e745]: 观察中
+                    - generic [ref=e746]:
+                      - generic [ref=e747]: 首响 18分 -> 13分
+                      - generic [ref=e748]: SLA风险 26 单 -> 17 单
+                      - generic [ref=e749]: 解决率 81.7% -> 84.9%
+                    - paragraph [ref=e750]: 模板命中率提升，但 SLA 风险仍等待支援坐席消化。
+  - generic [ref=e753]:
+    - generic [ref=e755]:
+      - button "Close" [ref=e756] [cursor=pointer]:
+        - img "close" [ref=e757]:
+          - img [ref=e758]
+      - generic [ref=e760]: 呼叫中心投诉风险升高
+    - generic [ref=e761]:
+      - generic [ref=e762]:
+        - heading "异常概况" [level=3] [ref=e763]
+        - table [ref=e766]:
+          - rowgroup [ref=e767]:
+            - row "风险等级 高风险" [ref=e768]:
+              - rowheader "风险等级" [ref=e769]
+              - cell "高风险" [ref=e770]:
+                - generic [ref=e772]: 高风险
+            - row "影响范围 呼叫中心 / 呼叫中心 / 企业版续费客户" [ref=e773]:
+              - rowheader "影响范围" [ref=e774]
+              - cell "呼叫中心 / 呼叫中心 / 企业版续费客户" [ref=e775]:
+                - generic [ref=e776]: 呼叫中心 / 呼叫中心 / 企业版续费客户
+            - row "当前指标 投诉 12 起，环比 +38%" [ref=e777]:
+              - rowheader "当前指标" [ref=e778]
+              - cell "投诉 12 起，环比 +38%" [ref=e779]:
+                - generic [ref=e780]: 投诉 12 起，环比 +38%
+            - row "责任团队 呼叫中心 / 质检培训组" [ref=e781]:
+              - rowheader "责任团队" [ref=e782]
+              - cell "呼叫中心 / 质检培训组" [ref=e783]:
+                - generic [ref=e784]: 呼叫中心 / 质检培训组
+            - row "影响客户 86 位客户，含 12 位高价值客户" [ref=e785]:
+              - rowheader "影响客户" [ref=e786]
+              - cell "86 位客户，含 12 位高价值客户" [ref=e787]:
+                - generic [ref=e788]: 86 位客户，含 12 位高价值客户
+            - row "关联工单 WO-20260623-0186 等 31 单" [ref=e789]:
+              - rowheader "关联工单" [ref=e790]
+              - cell "WO-20260623-0186 等 31 单" [ref=e791]:
+                - generic [ref=e792]: WO-20260623-0186 等 31 单
+      - generic [ref=e793]:
+        - heading "原因拆解" [level=3] [ref=e794]
+        - generic [ref=e795]:
+          - article [ref=e796]:
+            - text: 渠道
+            - strong [ref=e797]: 呼叫中心
+            - paragraph [ref=e798]: 热线排队峰值达到 68 人，等待后情绪波动明显。
+          - article [ref=e799]:
+            - text: 业务类型
+            - strong [ref=e800]: 退款
+            - paragraph [ref=e801]: 退款政策解释口径不一致，重复确认增加平均处理时长。
+          - article [ref=e802]:
+            - text: 技能组
+            - strong [ref=e803]: VIP 热线
+            - paragraph [ref=e804]: 2 名熟练坐席临时支援工单，导致退款技能覆盖不足。
+          - article [ref=e805]:
+            - text: 时间段
+            - strong [ref=e806]: 10:00-12:00
+            - paragraph [ref=e807]: 来电量集中，排班冗余不足。
+      - generic [ref=e808]:
+        - heading "可发起动作" [level=3] [ref=e809]
+        - generic [ref=e810]:
+          - button "调整排班" [ref=e811] [cursor=pointer]:
+            - generic [ref=e812]: 调整排班
+          - button "创建培训任务" [ref=e813] [cursor=pointer]:
+            - generic [ref=e814]: 创建培训任务
+          - button "创建质检复核" [ref=e815] [cursor=pointer]:
+            - generic [ref=e816]: 创建质检复核
+          - button "转工单跟进" [ref=e817] [cursor=pointer]:
+            - generic [ref=e818]: 转工单跟进
+          - button "优化知识库" [ref=e819] [cursor=pointer]:
+            - generic [ref=e820]: 优化知识库
+      - generic [ref=e821]:
+        - heading "跟进记录" [level=3] [ref=e822]
+        - table [ref=e825]:
+          - rowgroup [ref=e826]:
+            - row "改进动作 创建退款政策专项培训" [ref=e827]:
+              - rowheader "改进动作" [ref=e828]
+              - cell "创建退款政策专项培训" [ref=e829]:
+                - generic [ref=e830]: 创建退款政策专项培训
+            - row "负责人 王珂" [ref=e831]:
+              - rowheader "负责人" [ref=e832]
+              - cell "王珂" [ref=e833]:
+                - generic [ref=e834]: 王珂
+            - row "状态 处理中" [ref=e835]:
+              - rowheader "状态" [ref=e836]
+              - cell "处理中" [ref=e837]:
+                - generic [ref=e839]: 处理中
+            - row "截止时间 06-26 18:00" [ref=e840]:
+              - rowheader "截止时间" [ref=e841]
+              - cell "06-26 18:00" [ref=e842]:
+                - generic [ref=e843]: 06-26 18:00
+            - row "处理结果 已完成 18 人培训，待复核 6 条低满意度通话。" [ref=e844]:
+              - rowheader "处理结果" [ref=e845]
+              - cell "已完成 18 人培训，待复核 6 条低满意度通话。" [ref=e846]:
+                - generic [ref=e847]: 已完成 18 人培训，待复核 6 条低满意度通话。
+        - list [ref=e848]:
+          - listitem [ref=e849]:
+            - generic [ref=e852]:
+              - strong [ref=e853]: 刘婧
+              - paragraph [ref=e854]: 圈定 20 通低满意度样本，标记退款解释不完整。
+              - text: 06-23 10:40
+          - listitem [ref=e855]:
+            - generic [ref=e858]:
+              - strong [ref=e859]: 王珂
+              - paragraph [ref=e860]: 生成退款政策演练任务，覆盖白班和晚班坐席。
+              - text: 06-23 13:30
+          - listitem [ref=e861]:
+            - generic [ref=e863]:
+              - strong [ref=e864]: 刘婧
+              - paragraph [ref=e865]: 复核 6 条培训后通话，等待晚高峰指标回看。
+              - text: 06-23 15:10
+      - generic [ref=e866]:
+        - heading "复盘验证" [level=3] [ref=e867]
+        - generic [ref=e868]:
+          - generic [ref=e869]: 满意度：88.7% -> 91.5%
+          - generic [ref=e870]: 投诉量：12 起 -> 7 起
+          - generic [ref=e871]: 质检分：82 -> 88

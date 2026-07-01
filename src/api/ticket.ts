@@ -7,6 +7,7 @@ import {
   getMockTicketAttachments,
   getMockTicketComments,
   getMockTicketFlowRecords,
+  getMockTicketOperationLogs,
   updateLifecycleTicketStatus,
 } from '@/mock/ticket';
 import { resolveMockResponse } from '@/mock/core';
@@ -221,6 +222,10 @@ export function addTicketComment(id: ApiId, content: string): Promise<TicketComm
 
 export function getTicketAttachments(id: ApiId): Promise<TicketAttachment[]> {
   return resolveMockResponse(getMockTicketAttachments(id));
+}
+
+export function getTicketOperationLogs(id: ApiId): Promise<TicketOperationLog[]> {
+  return resolveMockResponse(getMockTicketOperationLogs(id));
 }
 
 export function analyzeTicketByAi(data: LifecycleTicketPayload): Promise<TicketAiAnalysis> {

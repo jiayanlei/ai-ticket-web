@@ -55,13 +55,12 @@ const pageSeedInputs: MenuSeedInput[] = [
   { id: 'm-dashboard-workbench', i18nKey: 'menu.dashboard', parentId: 'm-smart-workspace', menuName: 'Dashboard', path: '/dashboard/workbench', component: 'dashboard/workbench/index', perms: 'dashboard:workbench:view', icon: 'dashboard', sortOrder: 1, menuType: 'MENU' },
 
   { id: 'm-service-tickets', i18nKey: 'menu.ticketCenter', parentId: 'm-service-center', menuName: 'Ticket Center', path: '/service/tickets', component: 'service/tickets/index', perms: 'service:ticket:view', icon: 'ticket', sortOrder: 1, menuType: 'MENU' },
-  { id: 'm-service-ticket-create', i18nKey: 'menu.legacyTicketCreate', parentId: 'm-service-center', menuName: '创建工单', path: '/service/tickets/create', component: 'ticket/create/index', perms: 'service:ticket:create', icon: 'plus-circle', sortOrder: 2, menuType: 'MENU' },
+  { id: 'm-service-ticket-create', i18nKey: 'menu.legacyTicketCreate', parentId: 'm-service-center', menuName: '创建工单', path: '/service/tickets/create', component: 'ticket/create/index', perms: 'service:ticket:create', icon: 'plus-circle', sortOrder: 2, menuType: 'MENU', visible: false },
   { id: 'm-service-calls', i18nKey: 'menu.callCenter', parentId: 'm-service-center', menuName: 'Call Center', path: '/service/calls', component: 'service/calls/index', perms: 'service:call:view', icon: 'phone', sortOrder: 3, menuType: 'MENU' },
   { id: 'm-service-live-chat', i18nKey: 'menu.liveChatCenter', parentId: 'm-service-center', menuName: 'Live Chat Center', path: '/service/live-chat', component: 'service/live-chat/index', perms: 'service:chat:view', icon: 'message', sortOrder: 4, menuType: 'MENU' },
 
   { id: 'm-omni-email', i18nKey: 'menu.emailCenter', parentId: 'm-omnichannel-center', menuName: 'Email Center', path: '/omnichannel/email', component: 'omnichannel/email/index', perms: 'omnichannel:email:view', icon: 'mail', sortOrder: 1, menuType: 'MENU' },
   { id: 'm-omni-sms', i18nKey: 'menu.smsCenter', parentId: 'm-omnichannel-center', menuName: 'SMS Center', path: '/omnichannel/sms', component: 'omnichannel/sms/index', perms: 'omnichannel:sms:view', icon: 'mobile', sortOrder: 2, menuType: 'MENU' },
-  { id: 'm-omni-inbox', i18nKey: 'menu.unifiedInbox', parentId: 'm-omnichannel-center', menuName: 'Unified Inbox', path: '/omnichannel/inbox', component: 'omnichannel/inbox/index', perms: 'omnichannel:inbox:view', icon: 'inbox', sortOrder: 3, menuType: 'MENU' },
 
   { id: 'm-ops-agents', i18nKey: 'menu.agentCenter', parentId: 'm-agent-operations', menuName: 'Agent Center', path: '/operations/agents', component: 'operations/agents/index', perms: 'operations:agent:view', icon: 'team', sortOrder: 1, menuType: 'MENU' },
   { id: 'm-ops-scheduling', i18nKey: 'menu.workforceScheduling', parentId: 'm-agent-operations', menuName: 'Workforce Scheduling', path: '/operations/scheduling', component: 'operations/scheduling/index', perms: 'operations:schedule:view', icon: 'schedule', sortOrder: 2, menuType: 'MENU' },
@@ -80,7 +79,7 @@ const pageSeedInputs: MenuSeedInput[] = [
   { id: 'm-knowledge-base', i18nKey: 'menu.knowledgeBase', parentId: 'm-knowledge-center', menuName: 'Knowledge Base', path: '/knowledge/base', component: 'knowledge/base/index', perms: 'knowledge:base:view', icon: 'book', sortOrder: 1, menuType: 'MENU' },
   { id: 'm-knowledge-manage', parentId: 'm-knowledge-center', menuName: '知识库管理', path: '/knowledge/manage', component: 'knowledge/manage/index', perms: 'knowledge:document:list', icon: 'read', sortOrder: 2, menuType: 'MENU' },
   { id: 'm-knowledge-documents', parentId: 'm-knowledge-center', menuName: '文档中心', path: '/knowledge/documents', component: 'knowledge/documents/index', perms: 'knowledge:document:list', icon: 'file-search', sortOrder: 3, menuType: 'MENU' },
-  { id: 'm-knowledge-faq', parentId: 'm-knowledge-center', menuName: 'FAQ 管理', path: '/knowledge/faq', component: 'knowledge/faq/index', perms: 'knowledge:faq:view', icon: 'question-circle', sortOrder: 4, menuType: 'MENU' },
+  { id: 'm-knowledge-faq', parentId: 'm-knowledge-center', menuName: 'FAQ 管理', path: '/knowledge/faq', component: 'knowledge/faq/index', perms: 'knowledge:faq:view', icon: 'question-circle', sortOrder: 4, menuType: 'MENU', visible: false },
   { id: 'm-knowledge-legacy', parentId: 'm-knowledge-center', menuName: '旧版知识库入口', path: '/knowledge', component: 'knowledge/base/index', perms: 'knowledge:base:view', icon: 'book', sortOrder: 90, menuType: 'MENU', visible: false },
 
   { id: 'm-analytics-operations', i18nKey: 'menu.operationsAnalytics', parentId: 'm-analytics', menuName: 'Operations Analytics', path: '/analytics/operations', component: 'analytics/operations/index', perms: 'analytics:operations:view', icon: 'line-chart', sortOrder: 1, menuType: 'MENU' },

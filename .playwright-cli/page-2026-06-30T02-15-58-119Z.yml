@@ -1,0 +1,486 @@
+- generic [ref=e1]:
+  - generic [ref=e87]:
+    - complementary [ref=e88]:
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - generic [ref=e91]: AI
+          - generic [ref=e92]:
+            - strong [ref=e93]: AI Ticket OS
+            - generic [ref=e94]: 企业级 AI 客服操作系统
+        - menu [ref=e96]:
+          - generic [ref=e97] [cursor=pointer]:
+            - img "dashboard" [ref=e98]:
+              - img [ref=e99]
+            - generic [ref=e103]: 智能工作台
+          - generic [ref=e104] [cursor=pointer]:
+            - img "customer-service" [ref=e105]:
+              - img [ref=e106]
+            - generic [ref=e110]: 服务中心
+          - generic [ref=e111] [cursor=pointer]:
+            - img "inbox" [ref=e112]:
+              - img [ref=e113]
+            - generic [ref=e117]: 全渠道中心
+          - generic [ref=e118] [cursor=pointer]:
+            - img "team" [ref=e119]:
+              - img [ref=e120]
+            - generic [ref=e124]: 坐席运营
+          - list [ref=e125]:
+            - menuitem "team 坐席中心" [ref=e126] [cursor=pointer]:
+              - img "team" [ref=e127]:
+                - img [ref=e128]
+              - generic [ref=e130]: 坐席中心
+            - menuitem "schedule 排班调度" [ref=e131] [cursor=pointer]:
+              - img "schedule" [ref=e132]:
+                - img [ref=e133]
+              - generic [ref=e135]: 排班调度
+            - menuitem "trophy 绩效中心" [ref=e136] [cursor=pointer]:
+              - img "trophy" [ref=e137]:
+                - img [ref=e138]
+              - generic [ref=e140]: 绩效中心
+            - menuitem "safety-certificate AI 质检" [ref=e141] [cursor=pointer]:
+              - img "safety-certificate" [ref=e142]:
+                - img [ref=e143]
+              - generic [ref=e145]: AI 质检
+            - menuitem "read 培训中心" [ref=e146] [cursor=pointer]:
+              - img "read" [ref=e147]:
+                - img [ref=e148]
+              - generic [ref=e150]: 培训中心
+          - generic [ref=e151] [cursor=pointer]:
+            - img "robot" [ref=e152]:
+              - img [ref=e153]
+            - generic [ref=e157]: AI数据中心
+          - generic [ref=e158] [cursor=pointer]:
+            - img "user" [ref=e159]:
+              - img [ref=e160]
+            - generic [ref=e164]: 客户中心
+          - generic [ref=e165] [cursor=pointer]:
+            - img "deployment-unit" [ref=e166]:
+              - img [ref=e167]
+            - generic [ref=e171]: Tenant Management
+          - generic [ref=e172] [cursor=pointer]:
+            - img "book" [ref=e173]:
+              - img [ref=e174]
+            - generic [ref=e178]: 知识中心
+          - generic [ref=e182] [cursor=pointer]: 数据分析
+          - generic [ref=e183] [cursor=pointer]:
+            - img "setting" [ref=e184]:
+              - img [ref=e185]
+            - generic [ref=e189]: 系统管理
+    - generic [ref=e190]:
+      - generic [ref=e191]:
+        - generic [ref=e192]:
+          - button "menu-fold" [ref=e193] [cursor=pointer]:
+            - img "menu-fold" [ref=e194]:
+              - img [ref=e195]
+          - generic [ref=e197]:
+            - generic [ref=e198] [cursor=pointer]:
+              - generic [ref=e199]:
+                - combobox [ref=e201]
+                - generic [ref=e202]: 全球企业
+              - generic:
+                - img:
+                  - img
+            - generic [ref=e203] [cursor=pointer]:
+              - generic [ref=e204]:
+                - combobox [ref=e206]
+                - generic [ref=e207]: 客户体验中心
+              - generic:
+                - img:
+                  - img
+        - generic [ref=e208]:
+          - generic [ref=e209]:
+            - generic [ref=e210]:
+              - img "search" [ref=e212]:
+                - img [ref=e213]
+              - textbox "搜索工单、客户、坐席、流程..." [ref=e215]
+            - button "robot AI 助手" [ref=e216] [cursor=pointer]:
+              - img "robot" [ref=e217]:
+                - img [ref=e218]
+              - generic [ref=e220]: AI 助手
+          - generic [ref=e221]:
+            - button "bell" [ref=e222] [cursor=pointer]:
+              - img "bell" [ref=e223]:
+                - img [ref=e224]
+            - superscript [ref=e226]:
+              - paragraph [ref=e228]: "1"
+              - paragraph [ref=e230]: "1"
+          - button "reload" [ref=e231] [cursor=pointer]:
+            - img "reload" [ref=e232]:
+              - img [ref=e233]
+          - button "dashboard" [ref=e235] [cursor=pointer]:
+            - img "dashboard" [ref=e236]:
+              - img [ref=e237]
+          - button "setting" [ref=e239] [cursor=pointer]:
+            - img "setting" [ref=e240]:
+              - img [ref=e241]
+          - button "林知远" [ref=e243] [cursor=pointer]:
+            - generic [ref=e244]: 林知远
+      - generic [ref=e247]:
+        - tablist [ref=e248]:
+          - generic [ref=e251] [cursor=pointer]:
+            - tab "绩效中心" [selected] [ref=e252]:
+              - generic [ref=e254]: 绩效中心
+            - button "remove" [ref=e255]:
+              - img "close" [ref=e256]:
+                - img [ref=e257]
+        - generic:
+          - generic:
+            - tabpanel "绩效中心"
+      - main [ref=e259]:
+        - generic [ref=e260]:
+          - generic [ref=e261]:
+            - generic [ref=e262]:
+              - heading "绩效中心" [level=1] [ref=e263]
+              - paragraph [ref=e264]: 统一管理在线客服、呼叫、邮件、短信和工单坐席绩效，串联质检、培训与复盘闭环。
+            - generic [ref=e265]:
+              - textbox "搜索坐席 / 团队 / 工号" [ref=e267]
+              - generic [ref=e269] [cursor=pointer]:
+                - generic [ref=e270]:
+                  - combobox [ref=e272]
+                  - generic: 团队
+                - generic:
+                  - img:
+                    - img
+              - generic [ref=e273] [cursor=pointer]:
+                - generic [ref=e274]:
+                  - combobox [ref=e276]
+                  - generic: 渠道
+                - generic:
+                  - img:
+                    - img
+              - generic [ref=e277]:
+                - textbox "Start date" [ref=e279]
+                - generic "to" [ref=e281]:
+                  - img "swap-right" [ref=e282]:
+                    - img [ref=e283]
+                - textbox "End date" [ref=e286]
+                - generic:
+                  - img "calendar":
+                    - img
+              - generic [ref=e287] [cursor=pointer]:
+                - generic [ref=e288]:
+                  - combobox [ref=e290]
+                  - generic: 状态
+                - generic:
+                  - img:
+                    - img
+              - generic [ref=e291]:
+                - button "search 查询" [ref=e293] [cursor=pointer]:
+                  - img "search" [ref=e294]:
+                    - img [ref=e295]
+                  - generic [ref=e297]: 查询
+                - button "reload 刷新" [ref=e299] [cursor=pointer]:
+                  - img "reload" [ref=e300]:
+                    - img [ref=e301]
+                  - generic [ref=e303]: 刷新
+                - button "dashboard 打开看板" [ref=e305] [cursor=pointer]:
+                  - img "dashboard" [ref=e306]:
+                    - img [ref=e307]
+                  - generic [ref=e309]: 打开看板
+                - button "download 导出" [ref=e311] [cursor=pointer]:
+                  - img "download" [ref=e312]:
+                    - img [ref=e313]
+                  - generic [ref=e315]: 导出
+          - main [ref=e316]:
+            - generic [ref=e317]:
+              - generic [ref=e318]:
+                - heading "绩效总览" [level=2] [ref=e319]
+                - paragraph [ref=e320]: 按个人、团队、渠道和周期计算得分，异常可直接进入改进闭环。
+              - generic [ref=e325]:
+                - table [ref=e327]:
+                  - rowgroup [ref=e345]:
+                    - row "坐席 / 团队 渠道 得分 caret-up caret-down 排名 caret-up caret-down 处理量 首响 解决率 满意度 质检分 超时率 转人工率 投诉率 异常标签 状态 操作" [ref=e346]:
+                      - columnheader "坐席 / 团队" [ref=e347]
+                      - columnheader "渠道" [ref=e348]
+                      - columnheader "得分 caret-up caret-down" [ref=e349] [cursor=pointer]:
+                        - generic [ref=e350]:
+                          - generic [ref=e351]: 得分
+                          - generic [ref=e353]:
+                            - generic "caret-up" [ref=e354]:
+                              - img [ref=e355]
+                            - generic "caret-down" [ref=e357]:
+                              - img [ref=e358]
+                      - columnheader "排名 caret-up caret-down" [ref=e360] [cursor=pointer]:
+                        - generic [ref=e361]:
+                          - generic [ref=e362]: 排名
+                          - generic [ref=e364]:
+                            - generic "caret-up" [ref=e365]:
+                              - img [ref=e366]
+                            - generic "caret-down" [ref=e368]:
+                              - img [ref=e369]
+                      - columnheader "处理量" [ref=e371]
+                      - columnheader "首响" [ref=e372]
+                      - columnheader "解决率" [ref=e373]
+                      - columnheader "满意度" [ref=e374]
+                      - columnheader "质检分" [ref=e375]
+                      - columnheader "超时率" [ref=e376]
+                      - columnheader "转人工率" [ref=e377]
+                      - columnheader "投诉率" [ref=e378]
+                      - columnheader "异常标签" [ref=e379]
+                      - columnheader "状态" [ref=e380]
+                      - columnheader "操作" [ref=e381]
+                      - columnheader [ref=e382]
+                - table [ref=e384]:
+                  - rowgroup [ref=e401]:
+                    - row "陈沐阳 A1024 · 在线一组 在线客服 96 第 1 486 18秒 92.4% 98.2% 94 1.8% 7.5% 0.2% 无重大异常 达标 拆解 建任务 查记录" [ref=e402]:
+                      - cell "陈沐阳 A1024 · 在线一组" [ref=e403]:
+                        - button "陈沐阳 A1024 · 在线一组" [ref=e404] [cursor=pointer]:
+                          - strong [ref=e405]: 陈沐阳
+                          - generic [ref=e406]: A1024 · 在线一组
+                      - cell "在线客服" [ref=e407]
+                      - cell "96" [ref=e408]:
+                        - generic [ref=e409]:
+                          - strong [ref=e410]: "96"
+                          - progressbar [ref=e411]
+                      - cell "第 1" [ref=e415]:
+                        - generic [ref=e416]: 第 1
+                      - cell "486" [ref=e417]
+                      - cell "18秒" [ref=e418]
+                      - cell "92.4%" [ref=e419]
+                      - cell "98.2%" [ref=e420]
+                      - cell "94" [ref=e421]
+                      - cell "1.8%" [ref=e422]
+                      - cell "7.5%" [ref=e423]
+                      - cell "0.2%" [ref=e424]
+                      - cell "无重大异常" [ref=e425]:
+                        - generic [ref=e427]: 无重大异常
+                      - cell "达标" [ref=e428]:
+                        - generic [ref=e429]: 达标
+                      - cell "拆解 建任务 查记录" [ref=e431]:
+                        - generic [ref=e432]:
+                          - button "拆解" [ref=e434] [cursor=pointer]:
+                            - generic [ref=e435]: 拆解
+                          - button "建任务" [ref=e437] [cursor=pointer]:
+                            - generic [ref=e438]: 建任务
+                          - button "查记录" [ref=e440] [cursor=pointer]:
+                            - generic [ref=e441]: 查记录
+                    - row "林知夏 A1098 · VIP 专席 客户联络中心 91 第 2 352 9秒 89.8% 96.7% 91 2.1% 5.2% 0.5% 质检关注 达标 拆解 建任务 查记录" [ref=e442]:
+                      - cell "林知夏 A1098 · VIP 专席" [ref=e443]:
+                        - button "林知夏 A1098 · VIP 专席" [ref=e444] [cursor=pointer]:
+                          - strong [ref=e445]: 林知夏
+                          - generic [ref=e446]: A1098 · VIP 专席
+                      - cell "客户联络中心" [ref=e447]
+                      - cell "91" [ref=e448]:
+                        - generic [ref=e449]:
+                          - strong [ref=e450]: "91"
+                          - progressbar [ref=e451]
+                      - cell "第 2" [ref=e455]:
+                        - generic [ref=e456]: 第 2
+                      - cell "352" [ref=e457]
+                      - cell "9秒" [ref=e458]
+                      - cell "89.8%" [ref=e459]
+                      - cell "96.7%" [ref=e460]
+                      - cell "91" [ref=e461]
+                      - cell "2.1%" [ref=e462]
+                      - cell "5.2%" [ref=e463]
+                      - cell "0.5%" [ref=e464]
+                      - cell "质检关注" [ref=e465]:
+                        - generic [ref=e467]: 质检关注
+                      - cell "达标" [ref=e468]:
+                        - generic [ref=e469]: 达标
+                      - cell "拆解 建任务 查记录" [ref=e471]:
+                        - generic [ref=e472]:
+                          - button "拆解" [ref=e474] [cursor=pointer]:
+                            - generic [ref=e475]: 拆解
+                          - button "建任务" [ref=e477] [cursor=pointer]:
+                            - generic [ref=e478]: 建任务
+                          - button "查记录" [ref=e480] [cursor=pointer]:
+                            - generic [ref=e481]: 查记录
+                    - row "周予安 A1130 · 邮件工单组 邮件 86 第 5 278 12分 87.1% 93.4% 88 3.6% 4.9% 0.8% 首响波动 复盘中 拆解 建任务 查记录" [ref=e482]:
+                      - cell "周予安 A1130 · 邮件工单组" [ref=e483]:
+                        - button "周予安 A1130 · 邮件工单组" [ref=e484] [cursor=pointer]:
+                          - strong [ref=e485]: 周予安
+                          - generic [ref=e486]: A1130 · 邮件工单组
+                      - cell "邮件" [ref=e487]
+                      - cell "86" [ref=e488]:
+                        - generic [ref=e489]:
+                          - strong [ref=e490]: "86"
+                          - progressbar [ref=e491]
+                      - cell "第 5" [ref=e495]:
+                        - generic [ref=e496]: 第 5
+                      - cell "278" [ref=e497]
+                      - cell "12分" [ref=e498]
+                      - cell "87.1%" [ref=e499]
+                      - cell "93.4%" [ref=e500]
+                      - cell "88" [ref=e501]
+                      - cell "3.6%" [ref=e502]
+                      - cell "4.9%" [ref=e503]
+                      - cell "0.8%" [ref=e504]
+                      - cell "首响波动" [ref=e505]:
+                        - generic [ref=e507]: 首响波动
+                      - cell "复盘中" [ref=e508]:
+                        - generic [ref=e509]: 复盘中
+                      - cell "拆解 建任务 查记录" [ref=e511]:
+                        - generic [ref=e512]:
+                          - button "拆解" [ref=e514] [cursor=pointer]:
+                            - generic [ref=e515]: 拆解
+                          - button "建任务" [ref=e517] [cursor=pointer]:
+                            - generic [ref=e518]: 建任务
+                          - button "查记录" [ref=e520] [cursor=pointer]:
+                            - generic [ref=e521]: 查记录
+                    - row "王嘉宁 A1186 · 客户联络中心 客户联络中心 78 第 11 421 14秒 76.5% 84.3% 82 6.4% 12.8% 2.4% 满意度低 投诉升高 解决率下降 需改进 拆解 建任务 查记录" [ref=e522]:
+                      - cell "王嘉宁 A1186 · 客户联络中心" [ref=e523]:
+                        - button "王嘉宁 A1186 · 客户联络中心" [ref=e524] [cursor=pointer]:
+                          - strong [ref=e525]: 王嘉宁
+                          - generic [ref=e526]: A1186 · 客户联络中心
+                      - cell "客户联络中心" [ref=e527]
+                      - cell "78" [ref=e528]:
+                        - generic [ref=e529]:
+                          - strong [ref=e530]: "78"
+                          - progressbar [ref=e531]
+                      - cell "第 11" [ref=e535]:
+                        - generic [ref=e536]: 第 11
+                      - cell "421" [ref=e537]
+                      - cell "14秒" [ref=e538]
+                      - cell "76.5%" [ref=e539]
+                      - cell "84.3%" [ref=e540]
+                      - cell "82" [ref=e541]
+                      - cell "6.4%" [ref=e542]
+                      - cell "12.8%" [ref=e543]
+                      - cell "2.4%" [ref=e544]
+                      - cell "满意度低 投诉升高 解决率下降" [ref=e545]:
+                        - generic [ref=e546]:
+                          - generic [ref=e547]: 满意度低
+                          - generic [ref=e548]: 投诉升高
+                          - generic [ref=e549]: 解决率下降
+                      - cell "需改进" [ref=e550]:
+                        - generic [ref=e551]: 需改进
+                      - cell "拆解 建任务 查记录" [ref=e553]:
+                        - generic [ref=e554]:
+                          - button "拆解" [ref=e556] [cursor=pointer]:
+                            - generic [ref=e557]: 拆解
+                          - button "建任务" [ref=e559] [cursor=pointer]:
+                            - generic [ref=e560]: 建任务
+                          - button "查记录" [ref=e562] [cursor=pointer]:
+                            - generic [ref=e563]: 查记录
+                    - row "赵一鸣 A1217 · 在线一组 工单 74 第 14 198 26分 72.8% 86.1% 79 9.2% 9.4% 1.8% 首响超时 质检扣分 超时率高 需改进 拆解 建任务 查记录" [ref=e564]:
+                      - cell "赵一鸣 A1217 · 在线一组" [ref=e565]:
+                        - button "赵一鸣 A1217 · 在线一组" [ref=e566] [cursor=pointer]:
+                          - strong [ref=e567]: 赵一鸣
+                          - generic [ref=e568]: A1217 · 在线一组
+                      - cell "工单" [ref=e569]
+                      - cell "74" [ref=e570]:
+                        - generic [ref=e571]:
+                          - strong [ref=e572]: "74"
+                          - progressbar [ref=e573]
+                      - cell "第 14" [ref=e577]:
+                        - generic [ref=e578]: 第 14
+                      - cell "198" [ref=e579]
+                      - cell "26分" [ref=e580]
+                      - cell "72.8%" [ref=e581]
+                      - cell "86.1%" [ref=e582]
+                      - cell "79" [ref=e583]
+                      - cell "9.2%" [ref=e584]
+                      - cell "9.4%" [ref=e585]
+                      - cell "1.8%" [ref=e586]
+                      - cell "首响超时 质检扣分 超时率高" [ref=e587]:
+                        - generic [ref=e588]:
+                          - generic [ref=e589]: 首响超时
+                          - generic [ref=e590]: 质检扣分
+                          - generic [ref=e591]: 超时率高
+                      - cell "需改进" [ref=e592]:
+                        - generic [ref=e593]: 需改进
+                      - cell "拆解 建任务 查记录" [ref=e595]:
+                        - generic [ref=e596]:
+                          - button "拆解" [ref=e598] [cursor=pointer]:
+                            - generic [ref=e599]: 拆解
+                          - button "建任务" [ref=e601] [cursor=pointer]:
+                            - generic [ref=e602]: 建任务
+                          - button "查记录" [ref=e604] [cursor=pointer]:
+                            - generic [ref=e605]: 查记录
+                    - row "宋梨 A1266 · 邮件工单组 短信 83 第 8 632 自动触达 85.6% 91.5% 87 2.9% 18.6% 0.9% 转人工率高 复盘中 拆解 建任务 查记录" [ref=e606]:
+                      - cell "宋梨 A1266 · 邮件工单组" [ref=e607]:
+                        - button "宋梨 A1266 · 邮件工单组" [ref=e608] [cursor=pointer]:
+                          - strong [ref=e609]: 宋梨
+                          - generic [ref=e610]: A1266 · 邮件工单组
+                      - cell "短信" [ref=e611]
+                      - cell "83" [ref=e612]:
+                        - generic [ref=e613]:
+                          - strong [ref=e614]: "83"
+                          - progressbar [ref=e615]
+                      - cell "第 8" [ref=e619]:
+                        - generic [ref=e620]: 第 8
+                      - cell "632" [ref=e621]
+                      - cell "自动触达" [ref=e622]
+                      - cell "85.6%" [ref=e623]
+                      - cell "91.5%" [ref=e624]
+                      - cell "87" [ref=e625]
+                      - cell "2.9%" [ref=e626]
+                      - cell "18.6%" [ref=e627]
+                      - cell "0.9%" [ref=e628]
+                      - cell "转人工率高" [ref=e629]:
+                        - generic [ref=e631]: 转人工率高
+                      - cell "复盘中" [ref=e632]:
+                        - generic [ref=e633]: 复盘中
+                      - cell "拆解 建任务 查记录" [ref=e635]:
+                        - generic [ref=e636]:
+                          - button "拆解" [ref=e638] [cursor=pointer]:
+                            - generic [ref=e639]: 拆解
+                          - button "建任务" [ref=e641] [cursor=pointer]:
+                            - generic [ref=e642]: 建任务
+                          - button "查记录" [ref=e644] [cursor=pointer]:
+                            - generic [ref=e645]: 查记录
+  - generic [ref=e648]:
+    - generic [ref=e650]:
+      - button "Close" [ref=e651] [cursor=pointer]:
+        - img "close" [ref=e652]:
+          - img [ref=e653]
+      - generic [ref=e655]: 绩效看板
+    - generic [ref=e657]:
+      - tablist [ref=e658]:
+        - generic [ref=e660]:
+          - tab "指标拆解" [selected] [ref=e662] [cursor=pointer]
+          - tab "异常原因" [ref=e664] [cursor=pointer]
+          - tab "改进任务" [ref=e666] [cursor=pointer]
+          - tab "历史复盘" [ref=e668] [cursor=pointer]
+      - tabpanel "指标拆解" [ref=e671]:
+        - generic [ref=e673]:
+          - generic [ref=e674]:
+            - generic [ref=e675]: 指标
+            - generic [ref=e676]: 当前值
+            - generic [ref=e677]: 目标
+            - generic [ref=e678]: 权重
+            - generic [ref=e679]: 趋势
+            - generic [ref=e680]: 数据来源
+          - generic [ref=e681]:
+            - generic [ref=e682]: 处理量
+            - strong [ref=e683]: "486"
+            - generic [ref=e684]: 日均 180+
+            - generic [ref=e685]: 15%
+            - generic [ref=e686]: 稳定
+            - generic [ref=e687]: 在线客服 / 呼叫 / 邮件 / 短信 / 工单
+          - generic [ref=e688]:
+            - generic [ref=e689]: 首响时长
+            - strong [ref=e690]: 18秒
+            - generic [ref=e691]: 在线 30秒内 / 工单 15分钟内
+            - generic [ref=e692]: 15%
+            - generic [ref=e693]: 稳定
+            - generic [ref=e694]: 会话记录 / 工单 SLA
+          - generic [ref=e695]:
+            - generic [ref=e696]: 解决率
+            - strong [ref=e697]: 92.4%
+            - generic [ref=e698]: 85%+
+            - generic [ref=e699]: 20%
+            - generic [ref=e700]: 稳定
+            - generic [ref=e701]: 工单关闭 / 会话结案
+          - generic [ref=e702]:
+            - generic [ref=e703]: 满意度
+            - strong [ref=e704]: 98.2%
+            - generic [ref=e705]: 92%+
+            - generic [ref=e706]: 20%
+            - generic [ref=e707]: 上升
+            - generic [ref=e708]: 满意度评价 / 投诉记录
+          - generic [ref=e709]:
+            - generic [ref=e710]: 质检分
+            - strong [ref=e711]: "94"
+            - generic [ref=e712]: 86+
+            - generic [ref=e713]: 20%
+            - generic [ref=e714]: 稳定
+            - generic [ref=e715]: 质检中心
+          - generic [ref=e716]:
+            - generic [ref=e717]: 风险项
+            - strong [ref=e718]: 1.8% / 0.2%
+            - generic [ref=e719]: 超时 < 5% / 投诉 < 1%
+            - generic [ref=e720]: 10%
+            - generic [ref=e721]: 稳定
+            - generic [ref=e722]: SLA / 投诉 / 转人工

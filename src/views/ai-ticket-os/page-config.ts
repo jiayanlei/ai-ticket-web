@@ -290,51 +290,6 @@ export const aiTicketPages: AiTicketPageConfig[] = [
     "number": "06"
   },
   {
-    "path": "/omnichannel/inbox",
-    "title": "Unified Inbox",
-    "group": "Omnichannel Center",
-    "objective": "Unify phone, SMS, email, live chat, WhatsApp, Telegram, Facebook, WeChat, WeCom, DingTalk and Feishu",
-    "primaryAction": "Route Message",
-    "metrics": [
-      {
-        "label": "Unified Items",
-        "value": "12840",
-        "delta": "+4.2%",
-        "tone": "blue"
-      },
-      {
-        "label": "Channels Online",
-        "value": "947",
-        "delta": "-6.3%",
-        "tone": "cyan"
-      },
-      {
-        "label": "Unassigned Items",
-        "value": "316",
-        "delta": "+8.4%",
-        "tone": "purple"
-      },
-      {
-        "label": "AI Routed",
-        "value": "72",
-        "delta": "-10.5%",
-        "tone": "green"
-      }
-    ],
-    "panels": [
-      "Omnichannel Inbox",
-      "Channel Health",
-      "Routing Rules"
-    ],
-    "charts": [
-      "Channel Volume",
-      "Routing Sankey",
-      "Sentiment Stream"
-    ],
-    "aiInsight": "AI routed 91% of new contacts and identified Telegram as today's fastest-growing support channel.",
-    "number": "07"
-  },
-  {
     "path": "/operations/agents",
     "title": "Agent Center",
     "group": "Agent Operations",

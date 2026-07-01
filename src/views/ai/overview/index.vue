@@ -1,11 +1,5 @@
 <template>
   <div class="page-view">
-    <div class="stat-grid">
-      <a-card v-for="item in stats" :key="item.title" :bordered="false" :loading="loading">
-        <a-statistic :title="item.title" :value="item.value" :suffix="item.suffix" />
-      </a-card>
-    </div>
-
     <a-row :gutter="[16, 16]">
       <a-col :xs="24" :lg="12">
         <a-card title="风险分布" :bordered="false" :loading="loading">
@@ -24,7 +18,7 @@
 <script setup lang="ts">
 import { message } from 'ant-design-vue';
 import * as echarts from 'echarts';
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { getWorkOrderListApi } from '@/api/workOrder';
 import type { WorkOrderItem } from '@/api/workOrder';
@@ -36,18 +30,6 @@ const riskChartRef = ref<HTMLDivElement>();
 const categoryChartRef = ref<HTMLDivElement>();
 let riskChart: echarts.ECharts | undefined;
 let categoryChart: echarts.ECharts | undefined;
-
-const analyzedCount = computed(() => tickets.value.filter((item) => item.aiSummary || item.aiRiskLevel).length);
-const stats = computed(() => [
-  { title: '样本工单', value: tickets.value.length, suffix: '件' },
-  { title: '已有 AI 字段', value: analyzedCount.value, suffix: '件' },
-  { title: '高风险工单', value: tickets.value.filter((item) => ['HIGH', 'URGENT'].includes(item.aiRiskLevel || '')).length, suffix: '件' },
-  {
-    title: '字段覆盖率',
-    value: tickets.value.length ? Math.round((analyzedCount.value / tickets.value.length) * 100) : 0,
-    suffix: '%',
-  },
-]);
 
 onMounted(async () => {
   if (riskChartRef.value) {

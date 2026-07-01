@@ -1,0 +1,359 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: AI
+        - generic [ref=e8]:
+          - strong [ref=e9]: AI Ticket OS
+          - generic [ref=e10]: 企业级 AI 客服操作系统
+      - menu [ref=e12]:
+        - generic [ref=e13] [cursor=pointer]:
+          - img "dashboard" [ref=e14]:
+            - img [ref=e15]
+          - generic [ref=e19]: 智能工作台
+        - generic [ref=e20] [cursor=pointer]:
+          - img "customer-service" [ref=e21]:
+            - img [ref=e22]
+          - generic [ref=e26]: 服务中心
+        - generic [ref=e27] [cursor=pointer]:
+          - img "inbox" [ref=e28]:
+            - img [ref=e29]
+          - generic [ref=e33]: 全渠道中心
+        - generic [ref=e34] [cursor=pointer]:
+          - img "team" [ref=e35]:
+            - img [ref=e36]
+          - generic [ref=e40]: 坐席运营
+        - generic [ref=e41] [cursor=pointer]:
+          - img "robot" [ref=e42]:
+            - img [ref=e43]
+          - generic [ref=e47]: AI数据中心
+        - list [ref=e48]:
+          - menuitem "robot AI 问答" [ref=e49] [cursor=pointer]:
+            - img "robot" [ref=e50]:
+              - img [ref=e51]
+            - generic [ref=e53]: AI 问答
+          - menuitem "branches 工作流中心" [ref=e54] [cursor=pointer]:
+            - img "branches" [ref=e55]:
+              - img [ref=e56]
+            - generic [ref=e58]: 工作流中心
+          - menuitem "code 提示词中心" [ref=e59] [cursor=pointer]:
+            - img "code" [ref=e60]:
+              - img [ref=e61]
+            - generic [ref=e63]: 提示词中心
+          - menuitem "experiment 模型中心" [ref=e64] [cursor=pointer]:
+            - img "experiment" [ref=e65]:
+              - img [ref=e66]
+            - generic [ref=e68]: 模型中心
+          - menuitem "file-search 分析结果" [ref=e69] [cursor=pointer]:
+            - img "file-search" [ref=e70]:
+              - img [ref=e71]
+            - generic [ref=e73]: 分析结果
+          - menuitem "profile 对话记录" [ref=e74] [cursor=pointer]:
+            - img "profile" [ref=e75]:
+              - img [ref=e76]
+            - generic [ref=e78]: 对话记录
+        - generic [ref=e79] [cursor=pointer]:
+          - img "user" [ref=e80]:
+            - img [ref=e81]
+          - generic [ref=e85]: 客户中心
+        - generic [ref=e86] [cursor=pointer]:
+          - img "deployment-unit" [ref=e87]:
+            - img [ref=e88]
+          - generic [ref=e92]: Tenant Management
+        - generic [ref=e93] [cursor=pointer]:
+          - img "book" [ref=e94]:
+            - img [ref=e95]
+          - generic [ref=e99]: 知识中心
+        - generic [ref=e103] [cursor=pointer]: 数据分析
+        - generic [ref=e104] [cursor=pointer]:
+          - img "setting" [ref=e105]:
+            - img [ref=e106]
+          - generic [ref=e110]: 系统管理
+  - generic [ref=e111]:
+    - generic [ref=e112]:
+      - generic [ref=e113]:
+        - button "menu-fold" [ref=e114] [cursor=pointer]:
+          - img "menu-fold" [ref=e115]:
+            - img [ref=e116]
+        - generic [ref=e118]:
+          - generic [ref=e119] [cursor=pointer]:
+            - generic [ref=e120]:
+              - combobox [ref=e122]
+              - generic [ref=e123]: 全球企业
+            - generic:
+              - img:
+                - img
+          - generic [ref=e124] [cursor=pointer]:
+            - generic [ref=e125]:
+              - combobox [ref=e127]
+              - generic [ref=e128]: 客户体验中心
+            - generic:
+              - img:
+                - img
+      - generic [ref=e129]:
+        - generic [ref=e130]:
+          - generic [ref=e131]:
+            - img "search" [ref=e133]:
+              - img [ref=e134]
+            - textbox "搜索工单、客户、坐席、流程..." [ref=e136]
+          - button "robot AI 助手" [ref=e137] [cursor=pointer]:
+            - img "robot" [ref=e138]:
+              - img [ref=e139]
+            - generic [ref=e141]: AI 助手
+        - generic [ref=e142]:
+          - button "bell" [ref=e143] [cursor=pointer]:
+            - img "bell" [ref=e144]:
+              - img [ref=e145]
+          - superscript [ref=e147]:
+            - paragraph [ref=e149]: "1"
+            - paragraph [ref=e151]: "1"
+        - button "reload" [ref=e152] [cursor=pointer]:
+          - img "reload" [ref=e153]:
+            - img [ref=e154]
+        - button "dashboard" [ref=e156] [cursor=pointer]:
+          - img "dashboard" [ref=e157]:
+            - img [ref=e158]
+        - button "setting" [ref=e160] [cursor=pointer]:
+          - img "setting" [ref=e161]:
+            - img [ref=e162]
+        - button "林知远" [ref=e164] [cursor=pointer]:
+          - generic [ref=e165]: 林知远
+    - generic [ref=e168]:
+      - tablist [ref=e169]:
+        - generic [ref=e172] [cursor=pointer]:
+          - tab "工作流中心" [selected] [ref=e173]:
+            - generic [ref=e175]: 工作流中心
+          - button "remove" [ref=e176]:
+            - img "close" [ref=e177]:
+              - img [ref=e178]
+      - generic:
+        - generic:
+          - tabpanel "工作流中心"
+    - main [ref=e180]:
+      - generic [ref=e181]:
+        - generic [ref=e182]:
+          - generic [ref=e183]:
+            - heading "工作流中心" [level=1] [ref=e184]
+            - paragraph [ref=e185]: 编排触发器、AI 节点、人工审批、执行记录、发布回滚、异常告警和流程影响指标。
+          - generic [ref=e186]:
+            - button "刷 新" [ref=e188] [cursor=pointer]:
+              - generic [ref=e189]: 刷 新
+            - button "新建流程" [ref=e191] [cursor=pointer]:
+              - generic [ref=e192]: 新建流程
+            - button "发布工作流" [ref=e194] [cursor=pointer]:
+              - generic [ref=e195]: 发布工作流
+            - button "复制流程" [ref=e197] [cursor=pointer]:
+              - generic [ref=e198]: 复制流程
+            - button "查看运行日志" [ref=e200] [cursor=pointer]:
+              - generic [ref=e201]: 查看运行日志
+        - generic [ref=e202]:
+          - complementary [ref=e203]:
+            - generic [ref=e205]:
+              - heading "流程列表" [level=2] [ref=e206]
+              - text: 6 个流程
+            - textbox "搜索流程名称、触发场景、节点名称、负责人" [ref=e208]
+            - generic [ref=e210]:
+              - generic [ref=e211]: 状态
+              - generic [ref=e212]:
+                - button "全部" [ref=e213] [cursor=pointer]
+                - button "运行中" [ref=e214] [cursor=pointer]
+                - button "草稿" [ref=e215] [cursor=pointer]
+                - button "待发布" [ref=e216] [cursor=pointer]
+                - button "已停用" [ref=e217] [cursor=pointer]
+                - button "异常" [ref=e218] [cursor=pointer]
+            - generic [ref=e219]:
+              - generic [ref=e220]: 场景
+              - generic [ref=e221] [cursor=pointer]:
+                - generic [ref=e222]:
+                  - combobox [ref=e224]
+                  - generic: 全部场景
+                - generic:
+                  - img:
+                    - img
+            - generic [ref=e225]:
+              - button "退款审批节点异常拦截 异常 质检复核 · 退款 / 合同 / 投诉高风险会话 今日 428 成功率 91.2% 异常 12 3 分钟前 陈沐阳" [ref=e226] [cursor=pointer]:
+                - generic [ref=e227]:
+                  - strong [ref=e228]: 退款审批节点异常拦截
+                  - generic [ref=e229]: 异常
+                - paragraph [ref=e230]: 质检复核 · 退款 / 合同 / 投诉高风险会话
+                - generic [ref=e231]:
+                  - generic [ref=e232]: 今日 428
+                  - generic [ref=e233]: 成功率 91.2%
+                  - generic [ref=e234]: 异常 12
+                - generic [ref=e235]:
+                  - generic [ref=e236]: 3 分钟前
+                  - generic [ref=e237]: 陈沐阳
+              - button "机器人未命中意图转人工 运行中 机器人转人工 · AI 未命中意图 / 连续低置信度 今日 1362 成功率 98.4% 异常 3 1 分钟前 林知远" [ref=e238] [cursor=pointer]:
+                - generic [ref=e239]:
+                  - strong [ref=e240]: 机器人未命中意图转人工
+                  - generic [ref=e241]: 运行中
+                - paragraph [ref=e242]: 机器人转人工 · AI 未命中意图 / 连续低置信度
+                - generic [ref=e243]:
+                  - generic [ref=e244]: 今日 1362
+                  - generic [ref=e245]: 成功率 98.4%
+                  - generic [ref=e246]: 异常 3
+                - generic [ref=e247]:
+                  - generic [ref=e248]: 1 分钟前
+                  - generic [ref=e249]: 林知远
+              - button "高价值客户工单优先分派 待发布 工单分派 · 新工单创建 今日 312 成功率 96.8% 异常 1 18 分钟前 赵安然" [ref=e250] [cursor=pointer]:
+                - generic [ref=e251]:
+                  - strong [ref=e252]: 高价值客户工单优先分派
+                  - generic [ref=e253]: 待发布
+                - paragraph [ref=e254]: 工单分派 · 新工单创建
+                - generic [ref=e255]:
+                  - generic [ref=e256]: 今日 312
+                  - generic [ref=e257]: 成功率 96.8%
+                  - generic [ref=e258]: 异常 1
+                - generic [ref=e259]:
+                  - generic [ref=e260]: 18 分钟前
+                  - generic [ref=e261]: 赵安然
+              - button "SLA 即将超时自动升级 运行中 SLA 升级 · 距离响应 / 解决时限不足 今日 786 成功率 97.5% 异常 4 5 分钟前 周向晚" [ref=e262] [cursor=pointer]:
+                - generic [ref=e263]:
+                  - strong [ref=e264]: SLA 即将超时自动升级
+                  - generic [ref=e265]: 运行中
+                - paragraph [ref=e266]: SLA 升级 · 距离响应 / 解决时限不足
+                - generic [ref=e267]:
+                  - generic [ref=e268]: 今日 786
+                  - generic [ref=e269]: 成功率 97.5%
+                  - generic [ref=e270]: 异常 4
+                - generic [ref=e271]:
+                  - generic [ref=e272]: 5 分钟前
+                  - generic [ref=e273]: 周向晚
+              - button "知识库缺口自动沉淀 草稿 知识库补全 · 相似未命中问题聚集 今日 0 成功率 0% 异常 0 未运行 孟栀" [ref=e274] [cursor=pointer]:
+                - generic [ref=e275]:
+                  - strong [ref=e276]: 知识库缺口自动沉淀
+                  - generic [ref=e277]: 草稿
+                - paragraph [ref=e278]: 知识库补全 · 相似未命中问题聚集
+                - generic [ref=e279]:
+                  - generic [ref=e280]: 今日 0
+                  - generic [ref=e281]: 成功率 0%
+                  - generic [ref=e282]: 异常 0
+                - generic [ref=e283]:
+                  - generic [ref=e284]: 未运行
+                  - generic [ref=e285]: 孟栀
+              - button "低满意度会话自动复盘 运行中 满意度回访 · 客户评分低于阈值 今日 124 成功率 95.9% 异常 2 9 分钟前 许嘉宁" [ref=e286] [cursor=pointer]:
+                - generic [ref=e287]:
+                  - strong [ref=e288]: 低满意度会话自动复盘
+                  - generic [ref=e289]: 运行中
+                - paragraph [ref=e290]: 满意度回访 · 客户评分低于阈值
+                - generic [ref=e291]:
+                  - generic [ref=e292]: 今日 124
+                  - generic [ref=e293]: 成功率 95.9%
+                  - generic [ref=e294]: 异常 2
+                - generic [ref=e295]:
+                  - generic [ref=e296]: 9 分钟前
+                  - generic [ref=e297]: 许嘉宁
+          - main [ref=e298]:
+            - generic [ref=e299]:
+              - generic [ref=e300]:
+                - heading "退款审批节点异常拦截" [level=2] [ref=e301]
+                - paragraph [ref=e302]: 质检复核 · v2.8.1 · 灰度 20%
+              - generic [ref=e303]:
+                - button "新增节点" [ref=e305] [cursor=pointer]:
+                  - generic [ref=e306]: 新增节点
+                - button "前 移" [ref=e308] [cursor=pointer]:
+                  - generic [ref=e309]: 前 移
+                - button "后 移" [ref=e311] [cursor=pointer]:
+                  - generic [ref=e312]: 后 移
+                - button "删除节点" [ref=e314] [cursor=pointer]:
+                  - generic [ref=e315]: 删除节点
+                - button "缩 放" [ref=e317] [cursor=pointer]:
+                  - generic [ref=e318]: 缩 放
+                - button "发布前校验" [ref=e320] [cursor=pointer]:
+                  - generic [ref=e321]: 发布前校验
+            - generic [ref=e322]:
+              - article [ref=e323]:
+                - generic [ref=e324]: AI 节点命中率
+                - strong [ref=e325]: 87.6%
+                - generic [ref=e326]: +4.8%
+              - article [ref=e327]:
+                - generic [ref=e328]: 高风险拦截
+                - strong [ref=e329]: "76"
+                - generic [ref=e330]: "+12"
+              - article [ref=e331]:
+                - generic [ref=e332]: 节省人工时长
+                - strong [ref=e333]: 38h
+                - generic [ref=e334]: +6h
+              - article [ref=e335]:
+                - generic [ref=e336]: 异常告警
+                - strong [ref=e337]: "12"
+                - generic [ref=e338]: 需处理
+            - generic [ref=e339]:
+              - img:
+                - generic:
+                  - generic: 低风险
+                - generic:
+                  - generic: 高风险
+                - generic:
+                  - generic: 超时/驳回
+              - button "触发器 高风险回复生成 客户命中退款/投诉关键词 正常" [ref=e340] [cursor=pointer]:
+                - generic [ref=e341]: 触发器
+                - strong [ref=e342]: 高风险回复生成
+                - generic [ref=e343]: 客户命中退款/投诉关键词
+                - emphasis [ref=e344]: 正常
+              - button "AI 处理 AI 风险评分 识别退款、合同、账号安全风险 成功" [ref=e345] [cursor=pointer]:
+                - generic [ref=e346]: AI 处理
+                - strong [ref=e347]: AI 风险评分
+                - generic [ref=e348]: 识别退款、合同、账号安全风险
+                - emphasis [ref=e349]: 成功
+              - button "条件判断 是否需要人工复核 风险分大于 80 或客户为 VIP 正常" [ref=e350] [cursor=pointer]:
+                - generic [ref=e351]: 条件判断
+                - strong [ref=e352]: 是否需要人工复核
+                - generic [ref=e353]: 风险分大于 80 或客户为 VIP
+                - emphasis [ref=e354]: 正常
+              - button "人工处理 主管复核 主管确认回复口径和补偿方案 处理中" [ref=e355] [cursor=pointer]:
+                - generic [ref=e356]: 人工处理
+                - strong [ref=e357]: 主管复核
+                - generic [ref=e358]: 主管确认回复口径和补偿方案
+                - emphasis [ref=e359]: 处理中
+              - button "动作执行 发送回复并写备注 发送合规回复并写入内部备注 正常" [ref=e360] [cursor=pointer]:
+                - generic [ref=e361]: 动作执行
+                - strong [ref=e362]: 发送回复并写备注
+                - generic [ref=e363]: 发送合规回复并写入内部备注
+                - emphasis [ref=e364]: 正常
+              - button "异常处理 异常工单与回滚 失败率超阈值后暂停灰度 异常" [ref=e365] [cursor=pointer]:
+                - generic [ref=e366]: 异常处理
+                - strong [ref=e367]: 异常工单与回滚
+                - generic [ref=e368]: 失败率超阈值后暂停灰度
+                - emphasis [ref=e369]: 异常
+          - complementary [ref=e370]:
+            - generic [ref=e371]:
+              - tablist [ref=e372]:
+                - generic [ref=e374]:
+                  - tab "运行概览" [ref=e376] [cursor=pointer]
+                  - tab "运行记录" [active] [selected] [ref=e378] [cursor=pointer]
+                  - tab "发布管控" [ref=e380] [cursor=pointer]
+              - tabpanel "运行记录" [ref=e422]:
+                - generic [ref=e424] [cursor=pointer]:
+                  - generic [ref=e425]:
+                    - combobox [ref=e427]
+                    - generic: 执行状态
+                  - generic:
+                    - img:
+                      - img
+                - button "客户会话 C-92831 2026-06-30 14:26 成功 AI 风险评分 · 1.6s · TK-20260630-0184" [ref=e428] [cursor=pointer]:
+                  - generic [ref=e429]:
+                    - strong [ref=e430]: 客户会话 C-92831
+                    - generic [ref=e431]: 2026-06-30 14:26
+                  - generic [ref=e432]: 成功
+                  - paragraph [ref=e433]: AI 风险评分 · 1.6s · TK-20260630-0184
+                - button "工单 TK-20260630-0172 2026-06-30 14:18 失败 异常处理节点 · 5.8s · TK-20260630-0172 企业微信通知接口超时，已进入重试队列。" [ref=e434] [cursor=pointer]:
+                  - generic [ref=e435]:
+                    - strong [ref=e436]: 工单 TK-20260630-0172
+                    - generic [ref=e437]: 2026-06-30 14:18
+                  - generic [ref=e438]: 失败
+                  - paragraph [ref=e439]: 异常处理节点 · 5.8s · TK-20260630-0172
+                  - generic [ref=e440]: 企业微信通知接口超时，已进入重试队列。
+                - button "灰度版本监控 2026-06-30 14:05 已回滚 回滚到上一版本 · 2.4s · REL-20260630-042 灰度失败率超过阈值。" [ref=e441] [cursor=pointer]:
+                  - generic [ref=e442]:
+                    - strong [ref=e443]: 灰度版本监控
+                    - generic [ref=e444]: 2026-06-30 14:05
+                  - generic [ref=e445]: 已回滚
+                  - paragraph [ref=e446]: 回滚到上一版本 · 2.4s · REL-20260630-042
+                  - generic [ref=e447]: 灰度失败率超过阈值。
+                - button "客户会话 C-92788 2026-06-30 13:57 处理中 人工兜底节点 · 进行中 · TK-20260630-0161" [ref=e448] [cursor=pointer]:
+                  - generic [ref=e449]:
+                    - strong [ref=e450]: 客户会话 C-92788
+                    - generic [ref=e451]: 2026-06-30 13:57
+                  - generic [ref=e452]: 处理中
+                  - paragraph [ref=e453]: 人工兜底节点 · 进行中 · TK-20260630-0161

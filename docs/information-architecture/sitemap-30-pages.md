@@ -33,9 +33,9 @@
 | 29 | AI Model Center | `/ai/models` | AI Capability Center | `ai:model:view` |
 | 30 | Open Platform | `/system/open-platform` | System Management | `system:open-platform:view` |
 
-## Extension Routes
+## Tenant Management
 
-These routes are planned product extensions and should not change the current 30-page sitemap count until implementation is approved.
+Tenant Management is now a formal governance module. It is listed separately to keep the original 30-page service sitemap stable while making the tenant lifecycle entry explicit in navigation.
 
 | Page | Route | Navigation Group | Permission | Notes |
 | --- | --- | --- | --- | --- |

@@ -1,0 +1,559 @@
+- generic [ref=e1]:
+  - generic [ref=e97]:
+    - complementary [ref=e98]:
+      - generic [ref=e99]:
+        - generic [ref=e100]:
+          - generic [ref=e101]: AI
+          - generic [ref=e102]:
+            - strong [ref=e103]: AI Ticket OS
+            - generic [ref=e104]: 企业级 AI 客服操作系统
+        - menu [ref=e106]:
+          - generic [ref=e107] [cursor=pointer]:
+            - img "dashboard" [ref=e108]:
+              - img [ref=e109]
+            - generic [ref=e113]: 智能工作台
+          - generic [ref=e114] [cursor=pointer]:
+            - img "customer-service" [ref=e115]:
+              - img [ref=e116]
+            - generic [ref=e120]: 服务中心
+          - generic [ref=e121] [cursor=pointer]:
+            - img "inbox" [ref=e122]:
+              - img [ref=e123]
+            - generic [ref=e127]: 全渠道中心
+          - generic [ref=e128] [cursor=pointer]:
+            - img "team" [ref=e129]:
+              - img [ref=e130]
+            - generic [ref=e134]: 坐席运营
+          - list [ref=e135]:
+            - menuitem "team 坐席中心" [ref=e136] [cursor=pointer]:
+              - img "team" [ref=e137]:
+                - img [ref=e138]
+              - generic [ref=e140]: 坐席中心
+            - menuitem "schedule 排班调度" [ref=e141] [cursor=pointer]:
+              - img "schedule" [ref=e142]:
+                - img [ref=e143]
+              - generic [ref=e145]: 排班调度
+            - menuitem "trophy 绩效中心" [ref=e146] [cursor=pointer]:
+              - img "trophy" [ref=e147]:
+                - img [ref=e148]
+              - generic [ref=e150]: 绩效中心
+            - menuitem "safety-certificate AI 质检" [ref=e151] [cursor=pointer]:
+              - img "safety-certificate" [ref=e152]:
+                - img [ref=e153]
+              - generic [ref=e155]: AI 质检
+            - menuitem "read 培训中心" [ref=e156] [cursor=pointer]:
+              - img "read" [ref=e157]:
+                - img [ref=e158]
+              - generic [ref=e160]: 培训中心
+          - generic [ref=e161] [cursor=pointer]:
+            - img "robot" [ref=e162]:
+              - img [ref=e163]
+            - generic [ref=e167]: AI数据中心
+          - generic [ref=e168] [cursor=pointer]:
+            - img "user" [ref=e169]:
+              - img [ref=e170]
+            - generic [ref=e174]: 客户中心
+          - generic [ref=e175] [cursor=pointer]:
+            - img "deployment-unit" [ref=e176]:
+              - img [ref=e177]
+            - generic [ref=e181]: Tenant Management
+          - generic [ref=e182] [cursor=pointer]:
+            - img "book" [ref=e183]:
+              - img [ref=e184]
+            - generic [ref=e188]: 知识中心
+          - generic [ref=e192] [cursor=pointer]: 数据分析
+          - generic [ref=e193] [cursor=pointer]:
+            - img "setting" [ref=e194]:
+              - img [ref=e195]
+            - generic [ref=e199]: 系统管理
+    - generic [ref=e200]:
+      - generic [ref=e201]:
+        - generic [ref=e202]:
+          - button "menu-fold" [ref=e203] [cursor=pointer]:
+            - img "menu-fold" [ref=e204]:
+              - img [ref=e205]
+          - generic [ref=e207]:
+            - generic [ref=e208] [cursor=pointer]:
+              - generic [ref=e209]:
+                - combobox [ref=e211]
+                - generic [ref=e212]: 全球企业
+              - generic:
+                - img:
+                  - img
+            - generic [ref=e213] [cursor=pointer]:
+              - generic [ref=e214]:
+                - combobox [ref=e216]
+                - generic [ref=e217]: 客户体验中心
+              - generic:
+                - img:
+                  - img
+        - generic [ref=e218]:
+          - generic [ref=e219]:
+            - generic [ref=e220]:
+              - img "search" [ref=e222]:
+                - img [ref=e223]
+              - textbox "搜索工单、客户、坐席、流程..." [ref=e225]
+            - button "robot AI 助手" [ref=e226] [cursor=pointer]:
+              - img "robot" [ref=e227]:
+                - img [ref=e228]
+              - generic [ref=e230]: AI 助手
+          - generic [ref=e231]:
+            - button "bell" [ref=e232] [cursor=pointer]:
+              - img "bell" [ref=e233]:
+                - img [ref=e234]
+            - superscript [ref=e236]:
+              - paragraph [ref=e238]: "1"
+              - paragraph [ref=e240]: "1"
+          - button "reload" [ref=e241] [cursor=pointer]:
+            - img "reload" [ref=e242]:
+              - img [ref=e243]
+          - button "dashboard" [ref=e245] [cursor=pointer]:
+            - img "dashboard" [ref=e246]:
+              - img [ref=e247]
+          - button "setting" [ref=e249] [cursor=pointer]:
+            - img "setting" [ref=e250]:
+              - img [ref=e251]
+          - button "林知远" [ref=e253] [cursor=pointer]:
+            - generic [ref=e254]: 林知远
+      - generic [ref=e257]:
+        - tablist [ref=e258]:
+          - generic [ref=e261] [cursor=pointer]:
+            - tab "AI 质检" [selected] [ref=e262]:
+              - generic [ref=e264]: AI 质检
+            - button "remove" [ref=e265]:
+              - img "close" [ref=e266]:
+                - img [ref=e267]
+        - generic:
+          - generic:
+            - tabpanel "AI 质检"
+      - main [ref=e269]:
+        - generic [ref=e270]:
+          - generic [ref=e271]:
+            - generic [ref=e272]:
+              - heading "AI 质检" [level=1] [ref=e273]
+              - paragraph [ref=e274]: 围绕多渠道服务样本完成 AI 初评、证据复核、申诉整改、结果归档和规则优化。
+            - generic [ref=e275]:
+              - generic [ref=e276]:
+                - img "search" [ref=e278]:
+                  - img [ref=e279]
+                - textbox "搜索样本标题、客户、坐席、风险标签" [ref=e281]
+              - generic [ref=e283] [cursor=pointer]:
+                - generic [ref=e284]:
+                  - combobox [ref=e286]
+                  - generic: 渠道
+                - generic:
+                  - img:
+                    - img
+              - generic [ref=e287] [cursor=pointer]:
+                - generic [ref=e288]:
+                  - combobox [ref=e290]
+                  - generic: 坐席
+                - generic:
+                  - img:
+                    - img
+              - generic [ref=e291] [cursor=pointer]:
+                - generic [ref=e292]:
+                  - combobox [ref=e294]
+                  - generic: 状态
+                - generic:
+                  - img:
+                    - img
+              - generic [ref=e295] [cursor=pointer]:
+                - generic [ref=e296]:
+                  - combobox [ref=e298]
+                  - generic: 质检类型
+                - generic:
+                  - img:
+                    - img
+              - generic [ref=e299]:
+                - button "search 查询" [ref=e301] [cursor=pointer]:
+                  - img "search" [ref=e302]:
+                    - img [ref=e303]
+                  - generic [ref=e305]: 查询
+                - button "reload 刷新" [ref=e307] [cursor=pointer]:
+                  - img "reload" [ref=e308]:
+                    - img [ref=e309]
+                  - generic [ref=e311]: 刷新
+                - button "thunderbolt 运行质检" [ref=e313] [cursor=pointer]:
+                  - img "thunderbolt" [ref=e314]:
+                    - img [ref=e315]
+                  - generic [ref=e317]: 运行质检
+          - main [ref=e318]:
+            - generic [ref=e319]:
+              - generic [ref=e320]:
+                - generic [ref=e321]:
+                  - heading "质检样本" [level=2] [ref=e322]
+                  - paragraph [ref=e323]: 覆盖在线客服、呼叫中心、邮件、短信、工单等样本，按风险和复核状态推进闭环。
+                - generic [ref=e324]: 5 条样本
+              - generic [ref=e329]:
+                - table [ref=e331]:
+                  - rowgroup [ref=e345]:
+                    - row "样本标题 渠道 客户 坐席 质检状态 AI 评分 caret-up caret-down 风险等级 命中规则 复核人 更新时间 操作" [ref=e346]:
+                      - columnheader "样本标题" [ref=e347]
+                      - columnheader "渠道" [ref=e348]
+                      - columnheader "客户" [ref=e349]
+                      - columnheader "坐席" [ref=e350]
+                      - columnheader "质检状态" [ref=e351]
+                      - columnheader "AI 评分 caret-up caret-down" [ref=e352] [cursor=pointer]:
+                        - generic [ref=e353]:
+                          - generic [ref=e354]: AI 评分
+                          - generic [ref=e356]:
+                            - generic "caret-up" [ref=e357]:
+                              - img [ref=e358]
+                            - generic "caret-down" [ref=e360]:
+                              - img [ref=e361]
+                      - columnheader "风险等级" [ref=e363]
+                      - columnheader "命中规则" [ref=e364]
+                      - columnheader "复核人" [ref=e365]
+                      - columnheader "更新时间" [ref=e366]
+                      - columnheader "操作" [ref=e367]
+                      - columnheader [ref=e368]
+                - table [ref=e370]:
+                  - rowgroup [ref=e383]:
+                    - row "退款政策解释不完整引发投诉倾向 QC20260623001 / 投诉专项 / 2026-06-23 10:18 在线客服 蓝湖集团 陈沐阳 待复核 76 高风险 服务规范 话术合规 +2 韩清 2026-06-23 11:02 查看 复核 整改" [ref=e384] [cursor=pointer]:
+                      - cell "退款政策解释不完整引发投诉倾向 QC20260623001 / 投诉专项 / 2026-06-23 10:18" [ref=e385]:
+                        - button "退款政策解释不完整引发投诉倾向 QC20260623001 / 投诉专项 / 2026-06-23 10:18" [ref=e386]:
+                          - strong [ref=e387]: 退款政策解释不完整引发投诉倾向
+                          - generic [ref=e388]: QC20260623001 / 投诉专项 / 2026-06-23 10:18
+                      - cell "在线客服" [ref=e389]:
+                        - generic [ref=e390]: 在线客服
+                      - cell "蓝湖集团" [ref=e391]
+                      - cell "陈沐阳" [ref=e392]
+                      - cell "待复核" [ref=e393]:
+                        - generic [ref=e394]: 待复核
+                      - cell "76" [ref=e396]:
+                        - generic [ref=e397]:
+                          - strong [ref=e398]: "76"
+                          - progressbar [ref=e399]
+                      - cell "高风险" [ref=e403]:
+                        - generic [ref=e404]: 高风险
+                      - cell "服务规范 话术合规 +2" [ref=e405]:
+                        - generic [ref=e406]:
+                          - generic [ref=e407]: 服务规范
+                          - generic [ref=e408]: 话术合规
+                          - generic [ref=e409]: "+2"
+                      - cell "韩清" [ref=e410]
+                      - cell "2026-06-23 11:02" [ref=e411]
+                      - cell "查看 复核 整改" [ref=e412]:
+                        - generic [ref=e413]:
+                          - button "查看" [ref=e415]:
+                            - generic [ref=e416]: 查看
+                          - button "复核" [ref=e418]:
+                            - generic [ref=e419]: 复核
+                          - button "整改" [ref=e421]:
+                            - generic [ref=e422]: 整改
+                    - row "呼叫中心催收场景疑似强压话术 QC20260623002 / 合规巡检 / 2026-06-23 09:42 呼叫中心 北辰零售 许宁 申诉中 68 严重风险 业务违规 话术合规 +1 质检主管 2026-06-23 10:46 查看 复核 整改" [ref=e423] [cursor=pointer]:
+                      - cell "呼叫中心催收场景疑似强压话术 QC20260623002 / 合规巡检 / 2026-06-23 09:42" [ref=e424]:
+                        - button "呼叫中心催收场景疑似强压话术 QC20260623002 / 合规巡检 / 2026-06-23 09:42" [ref=e425]:
+                          - strong [ref=e426]: 呼叫中心催收场景疑似强压话术
+                          - generic [ref=e427]: QC20260623002 / 合规巡检 / 2026-06-23 09:42
+                      - cell "呼叫中心" [ref=e428]:
+                        - generic [ref=e429]: 呼叫中心
+                      - cell "北辰零售" [ref=e430]
+                      - cell "许宁" [ref=e431]
+                      - cell "申诉中" [ref=e432]:
+                        - generic [ref=e433]: 申诉中
+                      - cell "68" [ref=e435]:
+                        - generic [ref=e436]:
+                          - strong [ref=e437]: "68"
+                          - progressbar [ref=e438]
+                      - cell "严重风险" [ref=e442]:
+                        - generic [ref=e443]: 严重风险
+                      - cell "业务违规 话术合规 +1" [ref=e444]:
+                        - generic [ref=e445]:
+                          - generic [ref=e446]: 业务违规
+                          - generic [ref=e447]: 话术合规
+                          - generic [ref=e448]: "+1"
+                      - cell "质检主管" [ref=e449]
+                      - cell "2026-06-23 10:46" [ref=e450]
+                      - cell "查看 复核 整改" [ref=e451]:
+                        - generic [ref=e452]:
+                          - button "查看" [ref=e454]:
+                            - generic [ref=e455]: 查看
+                          - button "复核" [ref=e457]:
+                            - generic [ref=e458]: 复核
+                          - button "整改" [ref=e460]:
+                            - generic [ref=e461]: 整改
+                    - row "邮件回复未给出明确 SLA 和责任人 QC20260623003 / 抽检 / 2026-06-22 16:25 邮件 远山物流 林溪 整改中 81 中风险 响应时效 服务规范 周岚 2026-06-23 09:15 查看 复核 整改" [ref=e462] [cursor=pointer]:
+                      - cell "邮件回复未给出明确 SLA 和责任人 QC20260623003 / 抽检 / 2026-06-22 16:25" [ref=e463]:
+                        - button "邮件回复未给出明确 SLA 和责任人 QC20260623003 / 抽检 / 2026-06-22 16:25" [ref=e464]:
+                          - strong [ref=e465]: 邮件回复未给出明确 SLA 和责任人
+                          - generic [ref=e466]: QC20260623003 / 抽检 / 2026-06-22 16:25
+                      - cell "邮件" [ref=e467]:
+                        - generic [ref=e468]: 邮件
+                      - cell "远山物流" [ref=e469]
+                      - cell "林溪" [ref=e470]
+                      - cell "整改中" [ref=e471]:
+                        - generic [ref=e472]: 整改中
+                      - cell "81" [ref=e474]:
+                        - generic [ref=e475]:
+                          - strong [ref=e476]: "81"
+                          - progressbar [ref=e477]
+                      - cell "中风险" [ref=e481]:
+                        - generic [ref=e482]: 中风险
+                      - cell "响应时效 服务规范" [ref=e483]:
+                        - generic [ref=e484]:
+                          - generic [ref=e485]: 响应时效
+                          - generic [ref=e486]: 服务规范
+                      - cell "周岚" [ref=e487]
+                      - cell "2026-06-23 09:15" [ref=e488]
+                      - cell "查看 复核 整改" [ref=e489]:
+                        - generic [ref=e490]:
+                          - button "查看" [ref=e492]:
+                            - generic [ref=e493]: 查看
+                          - button "复核" [ref=e495]:
+                            - generic [ref=e496]: 复核
+                          - button "整改" [ref=e498]:
+                            - generic [ref=e499]: 整改
+                    - row "短信通知模板缺少退订说明 QC20260622018 / 全量质检 / 2026-06-22 14:08 短信 青云会员 系统触达 已归档 88 低风险 话术合规 罗一鸣 2026-06-22 17:30 查看 复核 整改" [ref=e500] [cursor=pointer]:
+                      - cell "短信通知模板缺少退订说明 QC20260622018 / 全量质检 / 2026-06-22 14:08" [ref=e501]:
+                        - button "短信通知模板缺少退订说明 QC20260622018 / 全量质检 / 2026-06-22 14:08" [ref=e502]:
+                          - strong [ref=e503]: 短信通知模板缺少退订说明
+                          - generic [ref=e504]: QC20260622018 / 全量质检 / 2026-06-22 14:08
+                      - cell "短信" [ref=e505]:
+                        - generic [ref=e506]: 短信
+                      - cell "青云会员" [ref=e507]
+                      - cell "系统触达" [ref=e508]
+                      - cell "已归档" [ref=e509]:
+                        - generic [ref=e510]: 已归档
+                      - cell "88" [ref=e512]:
+                        - generic [ref=e513]:
+                          - strong [ref=e514]: "88"
+                          - progressbar [ref=e515]
+                      - cell "低风险" [ref=e519]:
+                        - generic [ref=e520]: 低风险
+                      - cell "话术合规" [ref=e521]:
+                        - generic [ref=e523]: 话术合规
+                      - cell "罗一鸣" [ref=e524]
+                      - cell "2026-06-22 17:30" [ref=e525]
+                      - cell "查看 复核 整改" [ref=e526]:
+                        - generic [ref=e527]:
+                          - button "查看" [ref=e529]:
+                            - generic [ref=e530]: 查看
+                          - button "复核" [ref=e532]:
+                            - generic [ref=e533]: 复核
+                          - button "整改" [ref=e535]:
+                            - generic [ref=e536]: 整改
+                    - row "工单转派后未同步客户处理进度 QC20260622021 / 低分复盘 / 2026-06-22 18:40 工单 星桥科技 赵言 AI 已初评 79 中风险 服务规范 响应时效 +1 待分配 2026-06-23 08:20 查看 复核 整改" [ref=e537] [cursor=pointer]:
+                      - cell "工单转派后未同步客户处理进度 QC20260622021 / 低分复盘 / 2026-06-22 18:40" [ref=e538]:
+                        - button "工单转派后未同步客户处理进度 QC20260622021 / 低分复盘 / 2026-06-22 18:40" [ref=e539]:
+                          - strong [ref=e540]: 工单转派后未同步客户处理进度
+                          - generic [ref=e541]: QC20260622021 / 低分复盘 / 2026-06-22 18:40
+                      - cell "工单" [ref=e542]:
+                        - generic [ref=e543]: 工单
+                      - cell "星桥科技" [ref=e544]
+                      - cell "赵言" [ref=e545]
+                      - cell "AI 已初评" [ref=e546]:
+                        - generic [ref=e547]: AI 已初评
+                      - cell "79" [ref=e549]:
+                        - generic [ref=e550]:
+                          - strong [ref=e551]: "79"
+                          - progressbar [ref=e552]
+                      - cell "中风险" [ref=e556]:
+                        - generic [ref=e557]: 中风险
+                      - cell "服务规范 响应时效 +1" [ref=e558]:
+                        - generic [ref=e559]:
+                          - generic [ref=e560]: 服务规范
+                          - generic [ref=e561]: 响应时效
+                          - generic [ref=e562]: "+1"
+                      - cell "待分配" [ref=e563]
+                      - cell "2026-06-23 08:20" [ref=e564]
+                      - cell "查看 复核 整改" [ref=e565]:
+                        - generic [ref=e566]:
+                          - button "查看" [ref=e568]:
+                            - generic [ref=e569]: 查看
+                          - button "复核" [ref=e571]:
+                            - generic [ref=e572]: 复核
+                          - button "整改" [ref=e574]:
+                            - generic [ref=e575]: 整改
+  - generic [ref=e578]:
+    - generic [ref=e580]:
+      - button "Close" [ref=e581] [cursor=pointer]:
+        - img "close" [ref=e582]:
+          - img [ref=e583]
+      - generic [ref=e585]: 质检详情
+    - generic [ref=e587]:
+      - generic [ref=e588]:
+        - generic [ref=e589]:
+          - generic [ref=e590]:
+            - heading "退款政策解释不完整引发投诉倾向" [level=2] [ref=e591]
+            - generic [ref=e592]: 高风险
+          - paragraph [ref=e593]: 蓝湖集团 / 在线客服 / 陈沐阳 / 2026-06-23 10:18
+        - generic [ref=e594]:
+          - generic [ref=e595]: AI 评分
+          - strong [ref=e596]: "76"
+      - generic [ref=e597]:
+        - generic [ref=e598]:
+          - heading "AI 初评依据" [level=3] [ref=e599]
+          - generic [ref=e600]: 待复核
+        - paragraph [ref=e601]: AI 初评认为坐席在退款限制说明中遗漏关键条件，客户连续表达不满后未及时安抚，存在投诉升级风险。扣分证据来自 00:42 的政策解释和 02:08 的情绪升级片段。
+        - generic [ref=e602]:
+          - article [ref=e603]:
+            - generic [ref=e604]:
+              - strong [ref=e605]: 话术合规
+              - paragraph [ref=e606]: 退款口径缺少“审核周期”和“不可退场景”说明，容易造成客户误解。
+            - generic [ref=e607]: "-8"
+          - article [ref=e608]:
+            - generic [ref=e609]:
+              - strong [ref=e610]: 情绪风险
+              - paragraph [ref=e611]: 客户明确表达“我要投诉”后，坐席未先安抚再解释。
+            - generic [ref=e612]: "-6"
+          - article [ref=e613]:
+            - generic [ref=e614]:
+              - strong [ref=e615]: 服务规范
+              - paragraph [ref=e616]: 结束前未确认客户是否接受后续处理方案。
+            - generic [ref=e617]: "-5"
+      - generic [ref=e618]:
+        - generic [ref=e619]:
+          - heading "证据时间线" [level=3] [ref=e620]
+          - generic [ref=e621]: 按会话和通话时间排序
+        - list [ref=e622]:
+          - listitem [ref=e623]:
+            - generic [ref=e627]:
+              - generic [ref=e628]:
+                - strong [ref=e629]: 00:42 退款政策解释不完整
+                - generic [ref=e630]: 违规话术
+              - paragraph [ref=e631]: 坐席仅说明“需要后台审核”，未同步审核时长和不可退条件。
+              - text: "在线客服会话 #C-82910"
+          - listitem [ref=e632]:
+            - generic [ref=e636]:
+              - generic [ref=e637]:
+                - strong [ref=e638]: 01:35 超过 SLA 响应阈值
+                - generic [ref=e639]: 响应时效
+              - paragraph [ref=e640]: 客户追问后 96 秒无回复，命中高价值客户响应时效规则。
+              - text: 消息间隔检测
+          - listitem [ref=e641]:
+            - generic [ref=e644]:
+              - generic [ref=e645]:
+                - strong [ref=e646]: 02:08 客户提出投诉
+                - generic [ref=e647]: 投诉倾向
+              - paragraph [ref=e648]: 客户表示“这个解释我不能接受，我要投诉你们”。
+              - text: 情绪与意图识别
+      - generic [ref=e649]:
+        - generic [ref=e650]:
+          - heading "命中规则" [level=3] [ref=e651]
+          - generic [ref=e652]: 服务规范、话术合规、响应时效、情绪风险、投诉倾向、业务违规
+        - generic [ref=e653]:
+          - article [ref=e654]:
+            - generic [ref=e655]:
+              - strong [ref=e656]: 服务规范-结束确认
+              - paragraph [ref=e657]: 会话结束前需确认客户是否认可处理方案。
+            - generic [ref=e658]: 91%
+          - article [ref=e659]:
+            - generic [ref=e660]:
+              - strong [ref=e661]: 话术合规-退款政策
+              - paragraph [ref=e662]: 退款口径需包含周期、限制条件和后续动作。
+            - generic [ref=e663]: 94%
+          - article [ref=e664]:
+            - generic [ref=e665]:
+              - strong [ref=e666]: 情绪风险-升级安抚
+              - paragraph [ref=e667]: 客户情绪升高时需先安抚并给出明确承诺。
+            - generic [ref=e668]: 88%
+          - article [ref=e669]:
+            - generic [ref=e670]:
+              - strong [ref=e671]: 投诉倾向-显性投诉
+              - paragraph [ref=e672]: 识别“投诉、监管、曝光”等显性风险表达。
+            - generic [ref=e673]: 96%
+      - generic [ref=e674]:
+        - generic [ref=e675]:
+          - heading "人工复核" [level=3] [ref=e676]
+          - generic [ref=e677]: 确认、调分、备注和提交复核结果
+        - generic [ref=e678]:
+          - generic [ref=e680]:
+            - generic "复核结论" [ref=e682]
+            - generic [ref=e687]:
+              - generic [ref=e688] [cursor=pointer]:
+                - radio "确认 AI 结果" [checked]
+                - generic "确认 AI 结果" [ref=e689]
+              - generic [ref=e690] [cursor=pointer]:
+                - radio "调整评分"
+                - generic "调整评分" [ref=e691]
+              - generic [ref=e692] [cursor=pointer]:
+                - radio "退回复核"
+                - generic "退回复核" [ref=e693]
+              - generic [ref=e694] [cursor=pointer]:
+                - radio "升级主管"
+                - generic "升级主管" [ref=e695]
+          - generic [ref=e696]:
+            - generic [ref=e698]:
+              - generic "调整后评分" [ref=e700]
+              - generic [ref=e704]:
+                - generic [ref=e705]:
+                  - button "Increase Value" [ref=e706] [cursor=pointer]:
+                    - img "up" [ref=e707]:
+                      - img [ref=e708]
+                  - button "Decrease Value" [ref=e710] [cursor=pointer]:
+                    - img "down" [ref=e711]:
+                      - img [ref=e712]
+                - spinbutton [ref=e715]: "76"
+            - generic [ref=e717]:
+              - generic "复核人" [ref=e719]
+              - generic [ref=e723] [cursor=pointer]:
+                - generic [ref=e724]:
+                  - combobox [ref=e726]
+                  - generic [ref=e727]: 韩清
+                - generic:
+                  - img:
+                    - img
+          - generic [ref=e729]:
+            - generic "复核备注" [ref=e731]
+            - textbox "补充复核依据、调整原因或后续动作" [ref=e735]: AI 初评认为坐席在退款限制说明中遗漏关键条件，客户连续表达不满后未及时安抚，存在投诉升级风险。扣分证据来自 00:42 的政策解释和 02:08 的情绪升级片段。
+          - generic [ref=e736]:
+            - button "提交复核" [ref=e738] [cursor=pointer]:
+              - generic [ref=e739]: 提交复核
+            - button "生成整改" [ref=e741] [cursor=pointer]:
+              - generic [ref=e742]: 生成整改
+            - button "归档结果" [ref=e744] [cursor=pointer]:
+              - generic [ref=e745]: 归档结果
+      - generic [ref=e746]:
+        - generic [ref=e747]:
+          - heading "申诉处理" [level=3] [ref=e748]
+          - generic [ref=e749]: 保留坐席申诉、质检员和主管处理记录
+        - generic [ref=e750]:
+          - article [ref=e751]:
+            - generic [ref=e752]:
+              - strong [ref=e753]: 陈沐阳 / 发起申诉
+              - paragraph [ref=e754]: 坐席说明当时后台系统超时，退款周期无法确认，请求复核响应时效扣分。
+            - generic [ref=e755]: 2026-06-23 11:20
+          - article [ref=e756]:
+            - generic [ref=e757]:
+              - strong [ref=e758]: 韩清 / 待补充证据
+              - paragraph [ref=e759]: 已要求补充系统异常截图，话术合规扣分维持。
+            - generic [ref=e760]: 2026-06-23 11:34
+      - generic [ref=e761]:
+        - generic [ref=e762]:
+          - heading "整改任务" [level=3] [ref=e763]
+          - generic [ref=e764]: 关联培训中心、绩效中心、坐席中心
+        - generic [ref=e765]:
+          - article [ref=e766]:
+            - generic [ref=e767]:
+              - strong [ref=e768]: 退款话术专项复训
+              - paragraph [ref=e769]: 培训中心 / 林澈 / 2026-06-26 / 培训中心
+            - generic [ref=e770]: 进行中
+          - article [ref=e771]:
+            - generic [ref=e772]:
+              - strong [ref=e773]: 客户投诉安抚演练
+              - paragraph [ref=e774]: 坐席中心 / 陈沐阳 / 2026-06-25 / 坐席中心
+            - generic [ref=e775]: 待处理
+      - generic [ref=e776]:
+        - generic [ref=e777]:
+          - heading "结果归档与规则优化" [level=3] [ref=e778]
+          - generic [ref=e779]: 沉淀评分、扣分、复核、申诉、整改和规则问题
+        - generic [ref=e780]:
+          - generic [ref=e781]:
+            - generic [ref=e782]: 归档状态
+            - strong [ref=e783]: 待复核完成后归档
+          - generic [ref=e784]:
+            - generic [ref=e785]: 规则优化
+            - strong [ref=e786]: 建议补充“系统异常导致口径不完整”的豁免条件
+        - generic [ref=e787]:
+          - article [ref=e788]:
+            - generic [ref=e789]:
+              - strong [ref=e790]: 完成初评
+              - paragraph [ref=e791]: 命中 4 条规则，初评分 76，建议人工复核。
+            - generic [ref=e792]: AI 质检 / 2026-06-23 10:51
+          - article [ref=e793]:
+            - generic [ref=e794]:
+              - strong [ref=e795]: 进入复核
+              - paragraph [ref=e796]: 已确认投诉倾向证据，等待坐席申诉材料。
+            - generic [ref=e797]: 韩清 / 2026-06-23 11:08

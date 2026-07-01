@@ -12,6 +12,7 @@ import {
 } from '@/mock/ticket';
 import { resolveMockResponse } from '@/mock/core';
 import { http } from '@/utils/http';
+import type { LifecycleTicketStatus } from '@/api/ticket';
 
 export type TicketPriority = 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
 export type TicketStatus = 'NEW' | 'PROCESSING' | 'PENDING' | 'RESOLVED' | 'CLOSED';
@@ -19,10 +20,12 @@ export type TicketStatus = 'NEW' | 'PROCESSING' | 'PENDING' | 'RESOLVED' | 'CLOS
 export interface WorkOrderQueryParams extends PageQuery {
   keyword?: string;
   status?: TicketStatus;
+  lifecycleStatus?: LifecycleTicketStatus;
   priority?: TicketPriority;
   category?: string;
   assigneeId?: ApiId;
   applicantId?: ApiId;
+  slaRisk?: boolean;
 }
 
 export interface WorkOrderItem {
@@ -32,6 +35,7 @@ export interface WorkOrderItem {
   description: string;
   priority: TicketPriority;
   status: TicketStatus;
+  lifecycleStatus?: LifecycleTicketStatus;
   source: Nullable<string>;
   category: Nullable<string>;
   applicantId: Nullable<ApiId>;

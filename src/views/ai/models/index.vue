@@ -1,7 +1,7 @@
 <template>
   <div class="biz-page biz-page--model">
-    <header class="biz-topbar"><p>{{ pageDescription }}</p><a-space><a-button @click="loadData">刷新</a-button><a-button type="primary" @click="openCreate">{{ primaryAction }}</a-button></a-space></header><section class="metric-strip"><article v-for="item in metrics" :key="item.label"><span>{{ item.label }}</span><strong>{{ item.value }}</strong><small>{{ item.hint }}</small></article></section><section class="filter-line"><a-input v-model:value="query.keyword" allow-clear :placeholder="'搜索' + pageTitle + '、客户、负责人'" @press-enter="loadData" /><a-select v-model:value="query.status" allow-clear placeholder="状态" @change="loadData"><a-select-option v-for="item in statusOptions" :key="item.value" :value="item.value">{{ item.label }}</a-select-option></a-select><a-button type="primary" @click="loadData">查询</a-button></section><section class="model-shell"><main><h2>模型路由</h2><article v-for="item in records" :key="item.id"><strong>{{ item.title }}</strong><p>摘要任务 -> 低成本模型 / 高风险 -> 高质量模型</p><a-progress :percent="item.priority === '紧急' ? 42 : 76" /></article></main><aside><h2>成本与延迟</h2><p>P95 184ms</p><p>今日成本 ¥947</p><a-button type="primary">保存路由</a-button></aside></section>
-    <a-drawer v-model:open="detailOpen" width="520" :title="detailRecord?.title"><a-descriptions v-if="detailRecord" bordered :column="1" size="small"><a-descriptions-item label="编号">{{ detailRecord.code }}</a-descriptions-item><a-descriptions-item label="客户">{{ detailRecord.customer }}</a-descriptions-item><a-descriptions-item label="负责人">{{ detailRecord.owner }}</a-descriptions-item><a-descriptions-item label="状态"><a-tag :color="statusColor(detailRecord.status)">{{ detailRecord.status }}</a-tag></a-descriptions-item><a-descriptions-item label="业务指标">{{ detailRecord.metric }}</a-descriptions-item><a-descriptions-item label="AI 建议">{{ detailRecord.aiSuggestion }}</a-descriptions-item></a-descriptions><a-divider>闭环记录</a-divider><a-timeline v-if="detailRecord"><a-timeline-item v-for="item in detailRecord.timeline" :key="item.time + item.action"><strong>{{ item.action }}</strong><p>{{ item.content }}</p><small>{{ item.operator }} / {{ item.time }}</small></a-timeline-item></a-timeline></a-drawer><a-modal v-model:open="createOpen" :title="'新增' + pageTitle" @ok="submitCreate"><a-form layout="vertical"><a-form-item label="标题"><a-input v-model:value="formState.title" /></a-form-item><a-form-item label="客户"><a-input v-model:value="formState.customer" /></a-form-item><a-form-item label="负责人"><a-input v-model:value="formState.owner" /></a-form-item><a-form-item label="说明"><a-textarea v-model:value="formState.description" :rows="3" /></a-form-item></a-form></a-modal>
+    <header class="biz-topbar"><p>{{ pageDescription }}</p><div class="biz-topbar__controls"><div class="topbar-filter"><a-input v-model:value="query.keyword" allow-clear :placeholder="'搜索' + pageTitle + '、客户、负责人'" @press-enter="loadData" /><a-select v-model:value="query.status" allow-clear placeholder="状态" @change="loadData"><a-select-option v-for="item in statusOptions" :key="item.value" :value="item.value">{{ item.label }}</a-select-option></a-select><a-button type="primary" @click="loadData">查询</a-button></div><a-space class="biz-topbar__actions"><a-button @click="loadData">刷新</a-button><a-button type="primary" @click="openCreate">{{ primaryAction }}</a-button></a-space></div></header><section class="model-shell"><main><h2>模型路由</h2><article v-for="item in records" :key="item.id"><strong>{{ item.title }}</strong><p>摘要任务 -> 低成本模型 / 高风险 -> 高质量模型</p><a-progress :percent="item.priority === '紧急' ? 42 : 76" /></article></main><aside><h2>成本与延迟</h2><p>P95 184ms</p><p>今日成本 ¥947</p><a-button type="primary">保存路由</a-button></aside></section>
+    <a-drawer v-model:open="detailOpen" width="520" :title="detailRecord?.title"><a-descriptions v-if="detailRecord" bordered :column="1" size="small"><a-descriptions-item label="编号">{{ detailRecord.code }}</a-descriptions-item><a-descriptions-item label="客户">{{ detailRecord.customer }}</a-descriptions-item><a-descriptions-item label="负责人">{{ detailRecord.owner }}</a-descriptions-item><a-descriptions-item label="状态"><a-tag :color="statusColor(detailRecord.status)">{{ detailRecord.status }}</a-tag></a-descriptions-item><a-descriptions-item label="AI 建议">{{ detailRecord.aiSuggestion }}</a-descriptions-item></a-descriptions><a-divider>闭环记录</a-divider><a-timeline v-if="detailRecord"><a-timeline-item v-for="item in detailRecord.timeline" :key="item.time + item.action"><strong>{{ item.action }}</strong><p>{{ item.content }}</p><small>{{ item.operator }} / {{ item.time }}</small></a-timeline-item></a-timeline></a-drawer><a-modal v-model:open="createOpen" :title="'新增' + pageTitle" @ok="submitCreate"><a-form layout="vertical"><a-form-item label="标题"><a-input v-model:value="formState.title" /></a-form-item><a-form-item label="客户"><a-input v-model:value="formState.customer" /></a-form-item><a-form-item label="负责人"><a-input v-model:value="formState.owner" /></a-form-item><a-form-item label="说明"><a-textarea v-model:value="formState.description" :rows="3" /></a-form-item></a-form></a-modal>
   </div>
 </template>
 
@@ -15,12 +15,6 @@ const moduleName = 'ai-models';
 const pageTitle = '模型中心';
 const pageDescription = '管理模型列表、路由策略、成本、调用量、延迟、失败率、预算和灰度发布。';
 const primaryAction = '更新路由';
-const metrics = [
-  { label: '模型路由', value: '12', hint: '策略' },
-  { label: '调用成本', value: '¥947', hint: '今日' },
-  { label: '评测任务', value: '31', hint: '待完成' },
-  { label: '降级触发', value: '4', hint: '近 24 小时' },
-];
 const statusOptions = [
   { label: '待处理', value: '待处理' },
   { label: '处理中', value: '处理中' },
@@ -44,7 +38,7 @@ const formState = reactive<BusinessRecordPayload>({
   channel: pageTitle,
   status: '待处理',
   priority: '高',
-  metric: metrics[0]?.value ?? '-',
+  metric: '-',
   risk: '中风险',
   description: pageDescription,
   aiSuggestion: '模型中心已生成 AI 建议，请优先处理高风险记录。',
@@ -69,7 +63,7 @@ function openCreate() {
     channel: pageTitle,
     status: '待处理',
     priority: '高',
-    metric: metrics[0]?.value ?? '-',
+    metric: '-',
     risk: '中风险',
     description: pageDescription,
     aiSuggestion: '模型中心已生成 AI 建议，请优先处理高风险记录。',
@@ -96,14 +90,13 @@ onMounted(loadData);
 
 <style scoped lang="scss">
 .biz-page { display: flex; flex-direction: column; gap: 16px; min-width: 1180px; color: var(--app-text); }
-.biz-topbar, .metric-strip article, .filter-line, section > aside, section > main, .call-stage { background: var(--app-surface); border: 1px solid var(--app-border); border-radius: 8px; box-shadow: 0 10px 26px rgba(15,23,42,.06); }
-.biz-topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 14px 18px; }
-.biz-topbar p { margin: 0; color: var(--app-text-secondary); font-weight: 600; line-height: 1.7; }
-.metric-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.metric-strip article { padding: 16px; }
-.metric-strip strong { display: block; margin: 8px 0; font-size: 26px; }
-.metric-strip span, .metric-strip small, p, small { color: var(--app-text-secondary); }
-.filter-line { display: grid; grid-template-columns: minmax(260px, 1fr) 160px auto; gap: 10px; padding: 12px; }
+.biz-topbar, section > aside, section > main, .call-stage { background: var(--app-surface); border: 1px solid var(--app-border); border-radius: 8px; box-shadow: 0 10px 26px rgba(15,23,42,.06); }
+.biz-topbar { display: flex; align-items: center; gap: 18px; padding: 14px 18px; }
+.biz-topbar p { flex: 0 1 420px; min-width: 240px; margin: 0; color: var(--app-text-secondary); font-weight: 600; line-height: 1.7; }
+p, small { color: var(--app-text-secondary); }
+.biz-topbar__controls { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex: 1; min-width: 0; }
+.topbar-filter { display: grid; grid-template-columns: minmax(220px, 1fr) 150px auto; gap: 10px; flex: 1; max-width: 760px; min-width: 0; }
+.biz-topbar__actions { flex: 0 0 auto; }
 .call-shell, .chat-shell, .mail-shell, .sms-shell, .inbox-shell, .agent-shell, .schedule-shell, .performance-shell, .quality-shell, .training-shell, .customer-shell, .journey-shell, .ai-agent-shell, .workflow-shell, .prompt-shell, .model-shell, .analytics-shell, .bi-shell, .cockpit-shell, .sla-shell, .risk-shell, .monitor-shell, .alert-shell, .permission-shell, .audit-shell, .settings-shell, .platform-shell, .ticket-shell { display: grid; gap: 16px; }
 .call-shell { grid-template-columns: 300px minmax(0, 1fr) 300px; } .chat-shell { grid-template-columns: 280px minmax(0, 1fr) 320px; } .mail-shell { grid-template-columns: 320px minmax(0, 1fr) 300px; }
 .sms-shell, .performance-shell, .training-shell, .journey-shell, .ai-agent-shell, .model-shell, .cockpit-shell, .sla-shell, .risk-shell, .monitor-shell, .audit-shell, .platform-shell, .ticket-shell { grid-template-columns: minmax(0, 1fr) 320px; }

@@ -38,9 +38,6 @@
           <span class="refresh-indicator" />
           {{ refreshStatus }}
         </div>
-        <button class="screen-action" type="button" title="返回系统" aria-label="返回系统" @click="returnWorkbench">
-          <ArrowLeftOutlined />
-        </button>
         <button class="screen-action" type="button" :title="fullscreenButtonTitle" :aria-label="fullscreenButtonTitle" @click="toggleFullscreen">
           <FullscreenExitOutlined v-if="isScreenFullscreen" />
           <FullscreenOutlined v-else />
@@ -182,29 +179,31 @@
 
           <div class="situation-stage">
             <div class="situation-orbit">
-              <div class="orbit-ring orbit-ring--outer" />
-              <div class="orbit-ring orbit-ring--middle" />
-              <div class="orbit-ring orbit-ring--inner" />
-              <div class="situation-core" :class="{ 'is-changing': moduleRefreshing.liveSituation }">
-                <span>压力指数</span>
-                <strong>{{ pressureScore }}</strong>
-                <em>{{ pressureLabel }}</em>
+              <div class="situation-orbit-map">
+                <div class="orbit-ring orbit-ring--outer" />
+                <div class="orbit-ring orbit-ring--middle" />
+                <div class="orbit-ring orbit-ring--inner" />
+                <div class="situation-core">
+                  <span>压力指数</span>
+                  <strong>{{ pressureScore }}</strong>
+                  <em>{{ pressureLabel }}</em>
+                </div>
+                <article
+                  v-for="node in mockDashboardData.opsConstellation"
+                  :key="node.key"
+                  class="constellation-node"
+                  :class="`constellation-node--${node.level}`"
+                  :style="{
+                    '--node-x': `${node.x}%`,
+                    '--node-y': `${node.y}%`,
+                    '--node-color': node.color,
+                    '--pulse-duration': `${node.pulse}s`,
+                  }"
+                >
+                  <strong>{{ node.value }}</strong>
+                  <span>{{ node.label }}</span>
+                </article>
               </div>
-              <article
-                v-for="node in mockDashboardData.opsConstellation"
-                :key="node.key"
-                class="constellation-node"
-                :class="`constellation-node--${node.level}`"
-                :style="{
-                  '--node-x': `${node.x}%`,
-                  '--node-y': `${node.y}%`,
-                  '--node-color': node.color,
-                  '--pulse-duration': `${node.pulse}s`,
-                }"
-              >
-                <strong>{{ node.value }}</strong>
-                <span>{{ node.label }}</span>
-              </article>
             </div>
 
             <div class="situation-grid">
@@ -408,7 +407,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeftOutlined, FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons-vue';
+import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons-vue';
 import * as echarts from 'echarts';
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -623,12 +622,12 @@ const mockDashboardData = reactive({
     ] satisfies SituationMetric[],
   },
   opsConstellation: [
-    { key: 'voice', label: '语音识别', value: '92%', level: 'stable', x: 18, y: 24, color: '#2ff8ff', pulse: 4.8 },
-    { key: 'vip', label: 'VIP呼入', value: '9', level: 'hot', x: 75, y: 22, color: '#ffb020', pulse: 3.2 },
-    { key: 'robot', label: '机器人接管', value: '1.8k', level: 'stable', x: 82, y: 62, color: '#29d98f', pulse: 5.2 },
-    { key: 'dispatch', label: '智能分派', value: '87%', level: 'watch', x: 24, y: 70, color: '#6c5cff', pulse: 4.1 },
-    { key: 'sentiment', label: '负向情绪', value: '31', level: 'hot', x: 52, y: 15, color: '#ff5c93', pulse: 3.6 },
-    { key: 'knowledge', label: '知识命中', value: '94%', level: 'stable', x: 50, y: 82, color: '#9dff6a', pulse: 5.6 },
+    { key: 'voice', label: '语音识别', value: '92%', level: 'stable', x: 18, y: 25, color: '#2ff8ff', pulse: 4.8 },
+    { key: 'vip', label: 'VIP呼入', value: '9', level: 'hot', x: 82, y: 25, color: '#ffb020', pulse: 3.2 },
+    { key: 'robot', label: '机器人接管', value: '1.8k', level: 'stable', x: 82, y: 65, color: '#29d98f', pulse: 5.2 },
+    { key: 'dispatch', label: '智能分派', value: '87%', level: 'watch', x: 18, y: 65, color: '#6c5cff', pulse: 4.1 },
+    { key: 'sentiment', label: '负向情绪', value: '31', level: 'hot', x: 50, y: 6, color: '#ff5c93', pulse: 3.6 },
+    { key: 'knowledge', label: '知识命中', value: '94%', level: 'stable', x: 50, y: 94, color: '#9dff6a', pulse: 5.6 },
   ] satisfies OpsConstellationNode[],
   trend: {
     labels: ['15:50', '15:55', '16:00', '16:05', '16:10', '16:15', '16:20', '16:25', '16:30', '16:35', '16:40', '16:45'],
@@ -679,7 +678,7 @@ const mockDashboardData = reactive({
   riskAlerts: [
     { id: 'r-001', title: '核心系统无法登录且多次回拨未接通', ticketNo: 'WO202605120381', level: 'urgent', department: '平台运维部', createdAt: '16:42' },
     { id: 'r-002', title: 'VIP客户连续投诉发票同步失败', ticketNo: 'WO202605120367', level: 'high', department: '财务系统组', createdAt: '16:37' },
-    { id: 'r-003', title: '超时未处理：录音文件缺失影响质检', ticketNo: 'WO202605120329', level: 'timeout', department: '呼叫中心', createdAt: '16:21' },
+    { id: 'r-003', title: '超时未处理：录音文件缺失影响质检', ticketNo: 'WO202605120329', level: 'timeout', department: '客户联络中心', createdAt: '16:21' },
     { id: 'r-004', title: 'AI识别异常：同号码重复生成工单', ticketNo: 'WO202605120288', level: 'abnormal', department: 'AI中台', createdAt: '16:08' },
     { id: 'r-005', title: '售后退款链路失败出现重复投诉', ticketNo: 'WO202605120251', level: 'high', department: '售后服务部', createdAt: '15:58' },
     { id: 'r-006', title: '知识库命中低：新政策问题集中涌入', ticketNo: 'WO202605120244', level: 'abnormal', department: '知识运营组', createdAt: '15:47' },
@@ -697,11 +696,11 @@ const mockDashboardData = reactive({
     { key: 'vip', label: 'VIP专线', owner: '客户成功部', percent: 86, remaining: '14m', status: 'danger' },
     { key: 'payment', label: '支付链路', owner: '财务系统组', percent: 68, remaining: '31m', status: 'watch' },
     { key: 'ops', label: '平台故障', owner: '平台运维部', percent: 58, remaining: '46m', status: 'watch' },
-    { key: 'routine', label: '常规咨询', owner: '呼叫中心', percent: 32, remaining: '2h', status: 'safe' },
+    { key: 'routine', label: '常规咨询', owner: '客户联络中心', percent: 32, remaining: '2h', status: 'safe' },
   ] satisfies SlaLane[],
   departmentRanking: [
     { name: '平台运维部', owner: '待办压力高', todoCount: 86, percent: 94, trend: '+12', trendType: 'up' },
-    { name: '呼叫中心', owner: '通话量峰值', todoCount: 74, percent: 82, trend: '+8', trendType: 'up' },
+    { name: '客户联络中心', owner: '通话量峰值', todoCount: 74, percent: 82, trend: '+8', trendType: 'up' },
     { name: '售后服务部', owner: '投诉集中', todoCount: 52, percent: 64, trend: '-5', trendType: 'down' },
     { name: '财务系统组', owner: '发票问题', todoCount: 39, percent: 51, trend: '+3', trendType: 'up' },
     { name: 'AI中台', owner: '识别复核', todoCount: 23, percent: 38, trend: '-2', trendType: 'down' },
@@ -898,14 +897,6 @@ async function enterFullscreen() {
   isScreenFullscreen.value = true;
   scheduleResizeCharts();
   await screenRef.value?.requestFullscreen?.().catch(() => undefined);
-}
-
-async function returnWorkbench() {
-  if (document.fullscreenElement) {
-    await document.exitFullscreen().catch(() => undefined);
-  }
-
-  router.push(WORKBENCH_PATH);
 }
 
 async function exitFullscreenToWorkbench() {
@@ -1394,7 +1385,7 @@ function createQueueEntry(): QueueEntry {
 function createRiskAlert(): RiskAlert {
   ticketSequence += randomInt(1, 4);
   const templates = [
-    { title: '等待超时：客户连续呼入未完成接听', department: '呼叫中心', level: 'timeout' },
+    { title: '等待超时：客户连续呼入未完成接听', department: '客户联络中心', level: 'timeout' },
     { title: 'VIP客户触发服务升级规则', department: '客户成功部', level: 'urgent' },
     { title: 'AI识别置信度异常需人工复核', department: 'AI中台', level: 'abnormal' },
     { title: '核心业务系统工单集中升高', department: '平台运维部', level: 'high' },
@@ -2478,15 +2469,27 @@ function getViewportHeight() {
 }
 
 .situation-orbit {
+  --orbit-map-height: 190px;
+  --orbit-map-width: 320px;
+  --orbit-ring-size: 190px;
   position: relative;
+  display: grid;
+  place-items: center;
   min-width: 0;
-  min-height: 132px;
+  min-height: var(--orbit-map-height);
   overflow: hidden;
   background:
     linear-gradient(180deg, rgb(47 248 255 / 10%), transparent 64%),
     rgb(7 24 49 / 54%);
   border: 1px solid rgb(47 248 255 / 18%);
   border-radius: 8px;
+}
+
+.situation-orbit-map {
+  position: relative;
+  width: var(--orbit-map-width);
+  height: var(--orbit-map-height);
+  flex: 0 0 auto;
 }
 
 .orbit-ring {
@@ -2498,21 +2501,21 @@ function getViewportHeight() {
 }
 
 .orbit-ring--outer {
-  width: 86%;
+  width: var(--orbit-ring-size);
   aspect-ratio: 1;
   border-style: dashed;
   animation: orbitRotate 26s linear infinite;
 }
 
 .orbit-ring--middle {
-  width: 62%;
+  width: calc(var(--orbit-ring-size) * 0.72);
   aspect-ratio: 1;
   border-color: rgb(47 248 255 / 26%);
   animation: orbitRotate 18s linear infinite reverse;
 }
 
 .orbit-ring--inner {
-  width: 38%;
+  width: calc(var(--orbit-ring-size) * 0.44);
   aspect-ratio: 1;
   border-color: rgb(255 176 32 / 22%);
 }
@@ -2557,12 +2560,16 @@ function getViewportHeight() {
 }
 
 .constellation-node {
+  box-sizing: border-box;
   position: absolute;
   top: var(--node-y);
   left: var(--node-x);
   display: grid;
-  min-width: 60px;
+  place-items: center;
+  width: 76px;
+  height: 42px;
   padding: 5px 7px;
+  overflow: hidden;
   color: #effdff;
   background: rgb(6 20 43 / 78%);
   border: 1px solid color-mix(in srgb, var(--node-color) 44%, transparent);
@@ -2585,18 +2592,29 @@ function getViewportHeight() {
 }
 
 .constellation-node strong {
+  display: block;
+  width: 100%;
+  overflow: hidden;
   color: #ffffff;
   font-size: 16px;
   font-weight: 900;
   font-variant-numeric: tabular-nums;
   line-height: 1;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .constellation-node span {
+  display: block;
+  width: 100%;
   margin-top: 3px;
+  overflow: hidden;
   color: color-mix(in srgb, var(--node-color) 72%, #d9f8ff 28%);
   font-size: 10px;
   line-height: 1.1;
+  text-align: center;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -3847,12 +3865,12 @@ function getViewportHeight() {
   0%,
   100% {
     filter: brightness(1);
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%);
   }
 
   50% {
     filter: brightness(1.18);
-    transform: translate(-50%, -50%) scale(1.04);
+    transform: translate(-50%, -50%);
   }
 }
 

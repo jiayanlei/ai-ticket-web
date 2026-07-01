@@ -439,10 +439,12 @@ function filterWorkOrders(params: WorkOrderQueryParams, deleted: boolean) {
         item.deleted === deleted &&
         matchesKeyword([item.ticketNo, item.title, item.description, item.category, item.applicantName, item.assigneeName], params.keyword) &&
         (!params.status || item.status === params.status) &&
+        (!params.lifecycleStatus || item.lifecycleStatus === params.lifecycleStatus) &&
         (!params.priority || item.priority === params.priority) &&
         (!params.category || item.category === params.category) &&
         (!params.assigneeId || String(item.assigneeId) === String(params.assigneeId)) &&
-        (!params.applicantId || String(item.applicantId) === String(params.applicantId)),
+        (!params.applicantId || String(item.applicantId) === String(params.applicantId)) &&
+        (!params.slaRisk || item.priority === 'URGENT' || item.aiRiskLevel === 'HIGH' || item.aiRiskLevel === 'URGENT'),
     ),
     (item) => item.updateTime,
   ).map(toWorkOrderItem);
@@ -561,7 +563,10 @@ function toWorkOrderItem(record: MockWorkOrderRecord): WorkOrderItem {
   void callbackRequired;
   void ccEmails;
   void tags;
-  return rest;
+  return {
+    ...rest,
+    lifecycleStatus,
+  };
 }
 
 function toLifecycleDetail(record: MockWorkOrderRecord): LifecycleTicketDetail {

@@ -1,7 +1,7 @@
 <template>
   <div class="biz-page biz-page--settings">
-    <header class="biz-topbar"><p>{{ pageDescription }}</p><a-space><a-button @click="loadData">刷新</a-button><a-button type="primary" @click="openCreate">{{ primaryAction }}</a-button></a-space></header><section class="metric-strip"><article v-for="item in metrics" :key="item.label"><span>{{ item.label }}</span><strong>{{ item.value }}</strong><small>{{ item.hint }}</small></article></section><section class="settings-shell"><aside><h2>配置分组</h2><span>组织</span><span>参数</span><span>字典</span><span>业务开关</span></aside><main><h2>业务开关</h2><article v-for="item in records" :key="item.id"><strong>{{ item.title }}</strong><a-switch :checked="item.status !== '已暂停'" /><p>{{ item.description }}</p></article></main><aside><h2>变更影响</h2><p>{{ active?.aiSuggestion }}</p></aside></section>
-    <a-drawer v-model:open="detailOpen" width="520" :title="detailRecord?.title"><a-descriptions v-if="detailRecord" bordered :column="1" size="small"><a-descriptions-item label="编号">{{ detailRecord.code }}</a-descriptions-item><a-descriptions-item label="客户">{{ detailRecord.customer }}</a-descriptions-item><a-descriptions-item label="负责人">{{ detailRecord.owner }}</a-descriptions-item><a-descriptions-item label="状态"><a-tag :color="statusColor(detailRecord.status)">{{ detailRecord.status }}</a-tag></a-descriptions-item><a-descriptions-item label="业务指标">{{ detailRecord.metric }}</a-descriptions-item><a-descriptions-item label="AI 建议">{{ detailRecord.aiSuggestion }}</a-descriptions-item></a-descriptions><a-divider>闭环记录</a-divider><a-timeline v-if="detailRecord"><a-timeline-item v-for="item in detailRecord.timeline" :key="item.time + item.action"><strong>{{ item.action }}</strong><p>{{ item.content }}</p><small>{{ item.operator }} / {{ item.time }}</small></a-timeline-item></a-timeline></a-drawer><a-modal v-model:open="createOpen" :title="'新增' + pageTitle" @ok="submitCreate"><a-form layout="vertical"><a-form-item label="标题"><a-input v-model:value="formState.title" /></a-form-item><a-form-item label="客户"><a-input v-model:value="formState.customer" /></a-form-item><a-form-item label="负责人"><a-input v-model:value="formState.owner" /></a-form-item><a-form-item label="说明"><a-textarea v-model:value="formState.description" :rows="3" /></a-form-item></a-form></a-modal>
+    <header class="biz-topbar"><p>{{ pageDescription }}</p><a-space><a-button @click="loadData">刷新</a-button><a-button type="primary" @click="openCreate">{{ primaryAction }}</a-button></a-space></header><section class="settings-shell"><aside><h2>配置分组</h2><span>组织</span><span>参数</span><span>字典</span><span>业务开关</span></aside><main><h2>业务开关</h2><article v-for="item in records" :key="item.id"><strong>{{ item.title }}</strong><a-switch :checked="item.status !== '已暂停'" /><p>{{ item.description }}</p></article></main><aside><h2>变更影响</h2><p>{{ active?.aiSuggestion }}</p></aside></section>
+    <a-drawer v-model:open="detailOpen" width="520" :title="detailRecord?.title"><a-descriptions v-if="detailRecord" bordered :column="1" size="small"><a-descriptions-item label="编号">{{ detailRecord.code }}</a-descriptions-item><a-descriptions-item label="客户">{{ detailRecord.customer }}</a-descriptions-item><a-descriptions-item label="负责人">{{ detailRecord.owner }}</a-descriptions-item><a-descriptions-item label="状态"><a-tag :color="statusColor(detailRecord.status)">{{ detailRecord.status }}</a-tag></a-descriptions-item><a-descriptions-item label="AI 建议">{{ detailRecord.aiSuggestion }}</a-descriptions-item></a-descriptions><a-divider>闭环记录</a-divider><a-timeline v-if="detailRecord"><a-timeline-item v-for="item in detailRecord.timeline" :key="item.time + item.action"><strong>{{ item.action }}</strong><p>{{ item.content }}</p><small>{{ item.operator }} / {{ item.time }}</small></a-timeline-item></a-timeline></a-drawer><a-modal v-model:open="createOpen" :title="'新增' + pageTitle" @ok="submitCreate"><a-form layout="vertical"><a-form-item label="标题"><a-input v-model:value="formState.title" /></a-form-item><a-form-item label="客户"><a-input v-model:value="formState.customer" /></a-form-item><a-form-item label="负责人"><a-input v-model:value="formState.owner" /></a-form-item><a-form-item label="说明"><a-textarea v-model:value="formState.description" :rows="3" /></a-form-item></a-form></a-modal>
   </div>
 </template>
 
@@ -15,12 +15,6 @@ const moduleName = 'system-management';
 const pageTitle = '系统管理';
 const pageDescription = '管理组织、部门、用户、系统参数、字典、业务开关和基础平台配置。';
 const primaryAction = '保存配置';
-const metrics = [
-  { label: '配置变更', value: '12', hint: '本周' },
-  { label: '字典项', value: '316', hint: '启用' },
-  { label: '系统开关', value: '72', hint: '已配置' },
-  { label: '待审批', value: '5', hint: '高风险' },
-];
 const loading = ref(false);
 const records = ref<BusinessRecord[]>([]);
 const active = ref<BusinessRecord>();
@@ -36,7 +30,7 @@ const formState = reactive<BusinessRecordPayload>({
   channel: pageTitle,
   status: '待处理',
   priority: '高',
-  metric: metrics[0]?.value ?? '-',
+  metric: '-',
   risk: '中风险',
   description: pageDescription,
   aiSuggestion: '系统管理已生成 AI 建议，请优先处理高风险记录。',
@@ -61,7 +55,7 @@ function openCreate() {
     channel: pageTitle,
     status: '待处理',
     priority: '高',
-    metric: metrics[0]?.value ?? '-',
+    metric: '-',
     risk: '中风险',
     description: pageDescription,
     aiSuggestion: '系统管理已生成 AI 建议，请优先处理高风险记录。',
@@ -88,13 +82,10 @@ onMounted(loadData);
 
 <style scoped lang="scss">
 .biz-page { display: flex; flex-direction: column; gap: 16px; min-width: 1180px; color: var(--app-text); }
-.biz-topbar, .metric-strip article, .filter-line, section > aside, section > main, .call-stage { background: var(--app-surface); border: 1px solid var(--app-border); border-radius: 8px; box-shadow: 0 10px 26px rgba(15,23,42,.06); }
+.biz-topbar, .filter-line, section > aside, section > main, .call-stage { background: var(--app-surface); border: 1px solid var(--app-border); border-radius: 8px; box-shadow: 0 10px 26px rgba(15,23,42,.06); }
 .biz-topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 14px 18px; }
 .biz-topbar p { margin: 0; color: var(--app-text-secondary); font-weight: 600; line-height: 1.7; }
-.metric-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.metric-strip article { padding: 16px; }
-.metric-strip strong { display: block; margin: 8px 0; font-size: 26px; }
-.metric-strip span, .metric-strip small, p, small { color: var(--app-text-secondary); }
+p, small { color: var(--app-text-secondary); }
 .filter-line { display: grid; grid-template-columns: minmax(260px, 1fr) 160px auto; gap: 10px; padding: 12px; }
 .call-shell, .chat-shell, .mail-shell, .sms-shell, .inbox-shell, .agent-shell, .schedule-shell, .performance-shell, .quality-shell, .training-shell, .customer-shell, .journey-shell, .ai-agent-shell, .workflow-shell, .prompt-shell, .model-shell, .analytics-shell, .bi-shell, .cockpit-shell, .sla-shell, .risk-shell, .monitor-shell, .alert-shell, .permission-shell, .audit-shell, .settings-shell, .platform-shell, .ticket-shell { display: grid; gap: 16px; }
 .call-shell { grid-template-columns: 300px minmax(0, 1fr) 300px; } .chat-shell { grid-template-columns: 280px minmax(0, 1fr) 320px; } .mail-shell { grid-template-columns: 320px minmax(0, 1fr) 300px; }

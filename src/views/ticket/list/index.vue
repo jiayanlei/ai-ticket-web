@@ -1,11 +1,5 @@
 <template>
   <div class="page-view">
-    <div class="stat-grid">
-      <a-card v-for="item in statusStats" :key="item.status" :bordered="false" :loading="statsLoading">
-        <a-statistic :title="item.label" :value="item.count" suffix="件" />
-      </a-card>
-    </div>
-
     <a-card :bordered="false">
       <div class="ticket-list__filters">
         <a-input-search
@@ -219,7 +213,6 @@ type StatusTabKey = 'ALL' | TicketStatus;
 
 const router = useRouter();
 const loading = ref(false);
-const statsLoading = ref(false);
 const detailLoading = ref(false);
 const saving = ref(false);
 const detailOpen = ref(false);
@@ -230,7 +223,6 @@ const tickets = ref<WorkOrderItem[]>([]);
 const currentTicket = ref<WorkOrderItem>();
 const total = ref(0);
 const activeStatus = ref<StatusTabKey>('ALL');
-const statusStats = ref(ticketStatusOptions.map((item) => ({ ...item, status: item.value, count: 0 })));
 const query = reactive<WorkOrderQueryParams>({
   pageNum: 1,
   pageSize: 10,
@@ -268,9 +260,7 @@ const statusSelectOptions = computed(() =>
   })),
 );
 
-onMounted(async () => {
-  await Promise.all([loadTickets(), loadStatusStats()]);
-});
+onMounted(loadTickets);
 
 async function loadTickets() {
   loading.value = true;
@@ -288,25 +278,6 @@ async function loadTickets() {
     message.error(getErrorMessage(error, '工单列表加载失败'));
   } finally {
     loading.value = false;
-  }
-}
-
-async function loadStatusStats() {
-  statsLoading.value = true;
-
-  try {
-    const pages = await Promise.all(
-      ticketStatusOptions.map((item) => getWorkOrderListApi({ pageNum: 1, pageSize: 1, status: item.value })),
-    );
-    statusStats.value = ticketStatusOptions.map((item, index) => ({
-      ...item,
-      status: item.value,
-      count: pages[index]?.total ?? 0,
-    }));
-  } catch (error) {
-    message.warning(getErrorMessage(error, '工单统计加载失败'));
-  } finally {
-    statsLoading.value = false;
   }
 }
 
@@ -372,7 +343,7 @@ async function submitEdit() {
     await updateWorkOrderApi(editingId.value, formState);
     message.success('工单已更新');
     editOpen.value = false;
-    await Promise.all([loadTickets(), loadStatusStats()]);
+    await loadTickets();
   } catch (error) {
     message.error(getErrorMessage(error, '更新工单失败'));
   } finally {
@@ -389,7 +360,6 @@ async function handleStatusChange(record: WorkOrderItem, status: TicketStatus) {
     await updateWorkOrderApi(record.id, toWorkOrderUpdatePayload(record, { status }));
     record.status = status;
     message.success('工单状态已更新');
-    await loadStatusStats();
   } catch (error) {
     message.error(getErrorMessage(error, '更新工单状态失败'));
   }
@@ -411,7 +381,7 @@ async function handleDelete(id: ApiId) {
   try {
     await deleteWorkOrderApi(id);
     message.success('工单已删除');
-    await Promise.all([loadTickets(), loadStatusStats()]);
+    await loadTickets();
   } catch (error) {
     message.error(getErrorMessage(error, '删除工单失败'));
   }

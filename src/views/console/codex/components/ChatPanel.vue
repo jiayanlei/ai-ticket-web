@@ -11,7 +11,15 @@
       </div>
     </header>
 
-    <a-alert v-if="error" class="chat-panel__error" type="warning" show-icon :message="error" />
+    <a-alert
+      v-if="showErrorAlert && error"
+      class="chat-panel__error"
+      type="warning"
+      closable
+      show-icon
+      :message="error"
+      @close="showErrorAlert = false"
+    />
 
     <div ref="messageListRef" class="chat-panel__messages">
       <MessageItem v-for="item in messages" :key="item.id" :message-item="item" />
@@ -60,6 +68,7 @@ const emit = defineEmits<{
 }>();
 
 const messageListRef = ref<HTMLElement>();
+const showErrorAlert = ref(true);
 
 const draftModel = computed({
   get: () => props.draft,
@@ -70,6 +79,13 @@ watch(
   () => [props.messages.length, props.loading],
   () => {
     scrollToBottom();
+  },
+);
+
+watch(
+  () => props.error,
+  () => {
+    showErrorAlert.value = true;
   },
 );
 

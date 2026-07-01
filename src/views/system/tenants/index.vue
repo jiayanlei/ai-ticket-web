@@ -1,13 +1,5 @@
 <template>
   <div class="page-view tenant-page">
-    <section class="tenant-page__stats">
-      <a-card v-for="item in statCards" :key="item.label" :bordered="false" class="tenant-stat-card">
-        <span>{{ item.label }}</span>
-        <strong>{{ item.value }}</strong>
-        <small>{{ item.description }}</small>
-      </a-card>
-    </section>
-
     <a-card :bordered="false">
       <div class="system-page__filters">
         <a-input v-model:value="query.keyword" allow-clear placeholder="租户名称 / 编码 / 管理员" @press-enter="handleSearch" />
@@ -354,19 +346,6 @@ const tablePagination = computed<TablePaginationConfig>(() => ({
   showTotal: (value) => `共 ${value} 条`,
 }));
 
-const statCards = computed(() => {
-  const enabled = tenants.value.filter((item) => item.status === 'ENABLED').length;
-  const frozen = tenants.value.filter((item) => item.status === 'FROZEN').length;
-  const warning = tenants.value.filter((item) => item.serviceStatus !== 'NORMAL').length;
-
-  return [
-    { label: '租户总数', value: total.value, description: '当前可管理租户' },
-    { label: '启用租户', value: enabled, description: '可正常进入业务模块' },
-    { label: '冻结租户', value: frozen, description: '需管理员复核' },
-    { label: '资源预警', value: warning, description: '资源或服务状态异常' },
-  ];
-});
-
 onMounted(loadTenants);
 
 async function loadTenants() {
@@ -558,28 +537,6 @@ function getResourcePercent(item: TenantResourceUsage) {
 .tenant-page {
   display: grid;
   gap: 16px;
-
-  &__stats {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 16px;
-  }
-}
-
-.tenant-stat-card {
-  span,
-  small {
-    display: block;
-    color: var(--app-text-secondary);
-  }
-
-  strong {
-    display: block;
-    margin: 8px 0 4px;
-    color: var(--app-text);
-    font-size: 28px;
-    line-height: 1;
-  }
 }
 
 .tenant-name {
@@ -633,15 +590,4 @@ function getResourcePercent(item: TenantResourceUsage) {
   }
 }
 
-@media (max-width: 1100px) {
-  .tenant-page__stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .tenant-page__stats {
-    grid-template-columns: 1fr;
-  }
-}
 </style>
