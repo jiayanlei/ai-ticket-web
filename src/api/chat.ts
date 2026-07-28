@@ -1,14 +1,18 @@
-import { envConfig } from '@/config';
-import { getMockConversationRecords, type ConversationRecordItem } from '@/mock/chat';
-import { resolveMockResponse } from '@/mock/core';
+import type { AiAgentTaskType } from '@/api/aiAgent';
 import { http } from '@/utils/http';
 
-export type { ConversationRecordItem } from '@/mock/chat';
+export interface ConversationRecordItem {
+  id: string;
+  sessionId: string;
+  title: string;
+  taskType: AiAgentTaskType;
+  userName: string;
+  lastMessage: string;
+  status: 'completed' | 'waiting' | 'warning';
+  messageCount: number;
+  updatedAt: string;
+}
 
 export function getConversationRecordListApi(): Promise<ConversationRecordItem[]> {
-  if (envConfig.useMock) {
-    return resolveMockResponse(getMockConversationRecords());
-  }
-
   return http.get<ConversationRecordItem[], ConversationRecordItem[]>('/ai-agent/conversations');
 }

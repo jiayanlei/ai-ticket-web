@@ -1,16 +1,5 @@
 import type { ApiId, Nullable, PageQuery, PageResult } from '@/api/types';
 import { cleanPayload, cleanQuery, normalizePageResult } from '@/api/types';
-import { envConfig } from '@/config';
-import {
-  createMockWorkOrder,
-  deleteMockWorkOrder,
-  getMockRecycleWorkOrderList,
-  getMockWorkOrderDetail,
-  getMockWorkOrderList,
-  restoreMockWorkOrder,
-  updateMockWorkOrder,
-} from '@/mock/ticket';
-import { resolveMockResponse } from '@/mock/core';
 import { http } from '@/utils/http';
 import type { LifecycleTicketStatus } from '@/api/ticket';
 
@@ -81,11 +70,6 @@ export interface UpdateWorkOrderPayload {
 }
 
 export async function getWorkOrderListApi(params: WorkOrderQueryParams = {}): Promise<PageResult<WorkOrderItem>> {
-  if (envConfig.useMock) {
-    const page = await resolveMockResponse(getMockWorkOrderList(params));
-    return normalizePageResult(page);
-  }
-
   const page = await http.get<PageResult<WorkOrderItem>, PageResult<WorkOrderItem>>('/tickets', {
     params: cleanQuery(params),
   });
@@ -94,21 +78,12 @@ export async function getWorkOrderListApi(params: WorkOrderQueryParams = {}): Pr
 }
 
 export function createWorkOrderApi(data: CreateWorkOrderPayload): Promise<ApiId> {
-  if (envConfig.useMock) {
-    return resolveMockResponse(createMockWorkOrder(data));
-  }
-
   return http.post<ApiId, ApiId>('/tickets', cleanPayload(data));
 }
 
 export async function getRecycleWorkOrderListApi(
   params: WorkOrderQueryParams = {},
 ): Promise<PageResult<WorkOrderItem>> {
-  if (envConfig.useMock) {
-    const page = await resolveMockResponse(getMockRecycleWorkOrderList(params));
-    return normalizePageResult(page);
-  }
-
   const page = await http.get<PageResult<WorkOrderItem>, PageResult<WorkOrderItem>>('/tickets/recycle-bin', {
     params: cleanQuery(params),
   });
@@ -117,34 +92,18 @@ export async function getRecycleWorkOrderListApi(
 }
 
 export function getWorkOrderDetailApi(id: ApiId): Promise<WorkOrderItem> {
-  if (envConfig.useMock) {
-    return resolveMockResponse(getMockWorkOrderDetail(id));
-  }
-
   return http.get<WorkOrderItem, WorkOrderItem>(`/tickets/${id}`);
 }
 
 export function updateWorkOrderApi(id: ApiId, data: UpdateWorkOrderPayload): Promise<void> {
-  if (envConfig.useMock) {
-    return resolveMockResponse(updateMockWorkOrder(id, data)).then(() => undefined);
-  }
-
   return http.put<void, void>(`/tickets/${id}`, cleanPayload(data));
 }
 
 export function deleteWorkOrderApi(id: ApiId): Promise<void> {
-  if (envConfig.useMock) {
-    return resolveMockResponse(deleteMockWorkOrder(id)).then(() => undefined);
-  }
-
   return http.delete<void, void>(`/tickets/${id}`);
 }
 
 export function restoreWorkOrderApi(id: ApiId): Promise<void> {
-  if (envConfig.useMock) {
-    return resolveMockResponse(restoreMockWorkOrder(id)).then(() => undefined);
-  }
-
   return http.patch<void, void>(`/tickets/${id}/restore`);
 }
 

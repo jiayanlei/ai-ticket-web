@@ -36,7 +36,7 @@ import type { ProjectStatus } from '../types';
 
 defineProps<{
   status: ProjectStatus;
-  source: 'api' | 'mock';
+  source: 'api' | 'error';
   loading: boolean;
 }>();
 </script>

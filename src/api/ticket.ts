@@ -1,16 +1,6 @@
 import type { ApiId } from '@/api/types';
-import {
-  addMockTicketComment,
-  analyzeMockTicketByAi,
-  createLifecycleTicket,
-  getMockLifecycleDetail,
-  getMockTicketAttachments,
-  getMockTicketComments,
-  getMockTicketFlowRecords,
-  getMockTicketOperationLogs,
-  updateLifecycleTicketStatus,
-} from '@/mock/ticket';
-import { resolveMockResponse } from '@/mock/core';
+import { cleanPayload } from '@/api/types';
+import { http } from '@/utils/http';
 
 export type LifecycleTicketStatus =
   | 'DRAFT'
@@ -128,106 +118,82 @@ export interface TicketOperationLog {
 }
 
 export function createTicket(data: LifecycleTicketPayload): Promise<LifecycleTicketDetail> {
-  return resolveMockResponse(createLifecycleTicket(data, 'DRAFT'));
+  return http.post<LifecycleTicketDetail, LifecycleTicketDetail>('/tickets/lifecycle', cleanPayload(data));
 }
 
 export function saveTicketDraft(data: LifecycleTicketPayload): Promise<LifecycleTicketDetail> {
-  return resolveMockResponse(createLifecycleTicket(data, 'DRAFT'));
+  return http.post<LifecycleTicketDetail, LifecycleTicketDetail>('/tickets/lifecycle/drafts', cleanPayload(data));
 }
 
 export function submitTicket(data: LifecycleTicketPayload): Promise<LifecycleTicketDetail> {
-  return resolveMockResponse(createLifecycleTicket(data, 'PENDING_ACCEPT'));
+  return http.post<LifecycleTicketDetail, LifecycleTicketDetail>('/tickets/lifecycle/submit', cleanPayload(data));
 }
 
 export async function acceptTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus; acceptedTime: string }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'ACCEPTED', { acceptedTime: new Date().toISOString().slice(0, 19).replace('T', ' ') }));
-  return { id: detail.id, status: detail.status, acceptedTime: detail.acceptedTime || detail.updateTime };
+  return http.patch(`/tickets/lifecycle/${id}/accept`);
 }
 
 export async function startProcessTicket(
   id: ApiId,
 ): Promise<{ id: ApiId; status: LifecycleTicketStatus; startProcessTime: string }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PROCESSING', { startProcessTime: new Date().toISOString().slice(0, 19).replace('T', ' ') }));
-  return { id: detail.id, status: detail.status, startProcessTime: detail.startProcessTime || detail.updateTime };
+  return http.patch(`/tickets/lifecycle/${id}/start-process`);
 }
 
 export async function finishProcessTicket(
   id: ApiId,
 ): Promise<{ id: ApiId; status: LifecycleTicketStatus; finishTime: string }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'WAIT_CONFIRM', { finishTime: new Date().toISOString().slice(0, 19).replace('T', ' ') }));
-  return { id: detail.id, status: detail.status, finishTime: detail.finishTime || detail.updateTime };
+  return http.patch(`/tickets/lifecycle/${id}/finish-process`);
 }
 
 export async function confirmTicket(
   id: ApiId,
 ): Promise<{ id: ApiId; status: LifecycleTicketStatus; completedTime: string; processingDuration: string }> {
-  const detail = await resolveMockResponse(
-    updateLifecycleTicketStatus(id, 'COMPLETED', {
-      completedTime: new Date().toISOString().slice(0, 19).replace('T', ' '),
-      processingDuration: '3小时20分钟',
-    }),
-  );
-
-  return {
-    id: detail.id,
-    status: detail.status,
-    completedTime: detail.completedTime || detail.updateTime,
-    processingDuration: detail.processingDuration || '3小时20分钟',
-  };
+  return http.patch(`/tickets/lifecycle/${id}/confirm`);
 }
 
 export async function reopenTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PROCESSING'));
-  return { id: detail.id, status: detail.status };
+  return http.patch(`/tickets/lifecycle/${id}/reopen`);
 }
 
 export async function suspendTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PENDING'));
-  return { id: detail.id, status: detail.status };
+  return http.patch(`/tickets/lifecycle/${id}/suspend`);
 }
 
 export async function resumeTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PROCESSING'));
-  return { id: detail.id, status: detail.status };
+  return http.patch(`/tickets/lifecycle/${id}/resume`);
 }
 
 export async function transferTicket(
   id: ApiId,
   assignee: { assigneeId?: ApiId; assigneeName?: string },
 ): Promise<{ id: ApiId; status: LifecycleTicketStatus; assigneeId?: ApiId; assigneeName?: string }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PENDING_ACCEPT', assignee));
-  return {
-    id: detail.id,
-    status: detail.status,
-    assigneeId: detail.assigneeId,
-    assigneeName: detail.assigneeName,
-  };
+  return http.patch(`/tickets/lifecycle/${id}/transfer`, cleanPayload(assignee));
 }
 
 export function getTicketDetail(id: ApiId): Promise<LifecycleTicketDetail> {
-  return resolveMockResponse(getMockLifecycleDetail(id));
+  return http.get<LifecycleTicketDetail, LifecycleTicketDetail>(`/tickets/lifecycle/${id}`);
 }
 
 export function getTicketFlowRecords(id: ApiId): Promise<TicketFlowRecord[]> {
-  return resolveMockResponse(getMockTicketFlowRecords(id));
+  return http.get<TicketFlowRecord[], TicketFlowRecord[]>(`/tickets/lifecycle/${id}/flow-records`);
 }
 
 export function getTicketComments(id: ApiId): Promise<TicketComment[]> {
-  return resolveMockResponse(getMockTicketComments(id));
+  return http.get<TicketComment[], TicketComment[]>(`/tickets/lifecycle/${id}/comments`);
 }
 
 export function addTicketComment(id: ApiId, content: string): Promise<TicketComment> {
-  return resolveMockResponse(addMockTicketComment(id, content));
+  return http.post<TicketComment, TicketComment>(`/tickets/lifecycle/${id}/comments`, { content });
 }
 
 export function getTicketAttachments(id: ApiId): Promise<TicketAttachment[]> {
-  return resolveMockResponse(getMockTicketAttachments(id));
+  return http.get<TicketAttachment[], TicketAttachment[]>(`/tickets/lifecycle/${id}/attachments`);
 }
 
 export function getTicketOperationLogs(id: ApiId): Promise<TicketOperationLog[]> {
-  return resolveMockResponse(getMockTicketOperationLogs(id));
+  return http.get<TicketOperationLog[], TicketOperationLog[]>(`/tickets/lifecycle/${id}/operation-logs`);
 }
 
 export function analyzeTicketByAi(data: LifecycleTicketPayload): Promise<TicketAiAnalysis> {
-  return resolveMockResponse(analyzeMockTicketByAi(data), 380);
+  return http.post<TicketAiAnalysis, TicketAiAnalysis>('/tickets/lifecycle/ai-analysis', cleanPayload(data));
 }
