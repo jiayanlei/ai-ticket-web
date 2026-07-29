@@ -39,20 +39,19 @@ function createMenuItem(input: MenuSeedInput): MenuItem {
 }
 
 const domainSeeds: MenuSeedInput[] = [
-  { id: 'm-smart-workspace', i18nKey: 'menu.smartWorkspace', parentId: 0, menuName: 'Smart Workspace', menuType: 'DIR', sortOrder: 1, icon: 'dashboard' },
   { id: 'm-service-center', i18nKey: 'menu.serviceCenter', parentId: 0, menuName: 'Service Center', menuType: 'DIR', sortOrder: 2, icon: 'customer-service' },
   { id: 'm-omnichannel-center', i18nKey: 'menu.omnichannelCenter', parentId: 0, menuName: 'Omnichannel Center', menuType: 'DIR', sortOrder: 3, icon: 'inbox' },
   { id: 'm-agent-operations', i18nKey: 'menu.agentOperations', parentId: 0, menuName: 'Agent Operations', menuType: 'DIR', sortOrder: 4, icon: 'team' },
   { id: 'm-ai-capability', i18nKey: 'menu.aiCapability', parentId: 0, menuName: 'AI数据中心', menuType: 'DIR', sortOrder: 5, icon: 'robot' },
   { id: 'm-customer-center', i18nKey: 'menu.customerCenter', parentId: 0, menuName: 'Customer Center', menuType: 'DIR', sortOrder: 6, icon: 'user' },
-  { id: 'm-tenant-center', parentId: 0, menuName: 'Tenant Management', menuType: 'DIR', sortOrder: 7, icon: 'deployment-unit' },
+  { id: 'm-tenant-center', i18nKey: 'menu.tenantManagement', parentId: 0, menuName: 'Tenant Management', menuType: 'DIR', sortOrder: 7, icon: 'deployment-unit' },
   { id: 'm-knowledge-center', i18nKey: 'menu.knowledgeCenter', parentId: 0, menuName: 'Knowledge Center', menuType: 'DIR', sortOrder: 8, icon: 'book' },
   { id: 'm-analytics', i18nKey: 'menu.analytics', parentId: 0, menuName: 'Analytics', menuType: 'DIR', sortOrder: 9, icon: 'bar-chart' },
   { id: 'm-system-management', i18nKey: 'menu.systemManagement', parentId: 0, menuName: 'System Management', menuType: 'DIR', sortOrder: 10, icon: 'setting' },
 ];
 
 const pageSeedInputs: MenuSeedInput[] = [
-  { id: 'm-dashboard-workbench', i18nKey: 'menu.dashboard', parentId: 'm-smart-workspace', menuName: 'Dashboard', path: '/dashboard/workbench', component: 'dashboard/workbench/index', perms: 'dashboard:workbench:view', icon: 'dashboard', sortOrder: 1, menuType: 'MENU' },
+  { id: 'm-dashboard-workbench', i18nKey: 'menu.dashboard', parentId: 0, menuName: 'Dashboard', path: '/dashboard/workbench', component: 'dashboard/workbench/index', perms: 'dashboard:workbench:view', icon: 'dashboard', sortOrder: 1, menuType: 'MENU' },
 
   { id: 'm-service-tickets', i18nKey: 'menu.ticketCenter', parentId: 'm-service-center', menuName: 'Ticket Center', path: '/service/tickets', component: 'service/tickets/index', perms: 'service:ticket:view', icon: 'ticket', sortOrder: 1, menuType: 'MENU' },
   { id: 'm-service-ticket-create', i18nKey: 'menu.legacyTicketCreate', parentId: 'm-service-center', menuName: '创建工单', path: '/service/tickets/create', component: 'ticket/create/index', perms: 'service:ticket:create', icon: 'plus-circle', sortOrder: 2, menuType: 'MENU', visible: false },
@@ -68,7 +67,7 @@ const pageSeedInputs: MenuSeedInput[] = [
   { id: 'm-ops-quality', i18nKey: 'menu.aiQualityInspection', parentId: 'm-agent-operations', menuName: 'AI Quality Inspection', path: '/operations/quality', component: 'operations/quality/index', perms: 'operations:quality:view', icon: 'safety', sortOrder: 4, menuType: 'MENU' },
   { id: 'm-ops-training', i18nKey: 'menu.trainingCenter', parentId: 'm-agent-operations', menuName: 'Training Center', path: '/operations/training', component: 'operations/training/index', perms: 'operations:training:view', icon: 'read', sortOrder: 5, menuType: 'MENU' },
 
-  { id: 'm-ai-chat', parentId: 'm-ai-capability', menuName: 'AI 问答', path: '/ai/chat', component: 'console/codex/index', perms: 'ai:assistant:chat', icon: 'robot', sortOrder: 1, menuType: 'MENU' },
+  { id: 'm-ai-chat', parentId: 'm-ai-capability', menuName: 'AI 问答', path: '/ai/chat', component: 'console/codex/index', perms: 'ai:agent:chat', icon: 'robot', sortOrder: 1, menuType: 'MENU' },
   { id: 'm-ai-workflows', i18nKey: 'menu.aiWorkflowCenter', parentId: 'm-ai-capability', menuName: '工作流中心', path: '/ai/workflows', component: 'ai/workflows/index', perms: 'ai:workflow:view', icon: 'branches', sortOrder: 3, menuType: 'MENU' },
   { id: 'm-ai-prompts', i18nKey: 'menu.aiPromptCenter', parentId: 'm-ai-capability', menuName: '提示词中心', path: '/ai/prompts', component: 'ai/prompts/index', perms: 'ai:prompt:view', icon: 'code', sortOrder: 4, menuType: 'MENU' },
   { id: 'm-ai-models', i18nKey: 'menu.aiModelCenter', parentId: 'm-ai-capability', menuName: '模型中心', path: '/ai/models', component: 'ai/models/index', perms: 'ai:model:view', icon: 'experiment', sortOrder: 5, menuType: 'MENU' },
@@ -90,7 +89,7 @@ const pageSeedInputs: MenuSeedInput[] = [
   { id: 'm-analytics-monitoring', i18nKey: 'menu.systemMonitoring', parentId: 'm-analytics', menuName: 'System Monitoring', path: '/analytics/monitoring', component: 'analytics/monitoring/index', perms: 'analytics:monitoring:view', icon: 'monitor', sortOrder: 6, menuType: 'MENU' },
   { id: 'm-analytics-alerts', i18nKey: 'menu.alertCenter', parentId: 'm-analytics', menuName: 'Alert Center', path: '/analytics/alerts', component: 'analytics/alerts/index', perms: 'analytics:alert:view', icon: 'alert', sortOrder: 7, menuType: 'MENU' },
 
-  { id: 'm-tenant-center-page', parentId: 'm-tenant-center', menuName: 'Tenant Center', path: '/tenants', component: 'system/tenants/index', perms: 'tenant:center:view', icon: 'deployment-unit', sortOrder: 1, menuType: 'MENU' },
+  { id: 'm-tenant-center-page', i18nKey: 'menu.tenantCenter', parentId: 'm-tenant-center', menuName: 'Tenant Center', path: '/tenants', component: 'system/tenants/index', perms: 'tenant:center:view', icon: 'deployment-unit', sortOrder: 1, menuType: 'MENU' },
 
   { id: 'm-system-permissions', i18nKey: 'menu.permissionCenter', parentId: 'm-system-management', menuName: 'Permission Center', path: '/system/permissions', component: 'system/permissions/index', perms: 'system:permission:view', icon: 'shield', sortOrder: 1, menuType: 'MENU' },
   { id: 'm-system-audit', i18nKey: 'menu.auditCenter', parentId: 'm-system-management', menuName: 'Audit Center', path: '/system/audit', component: 'system/audit/index', perms: 'system:audit:view', icon: 'file-search', sortOrder: 2, menuType: 'MENU' },

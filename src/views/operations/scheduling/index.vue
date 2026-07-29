@@ -644,7 +644,7 @@ const scheduleToday = new Date(2026, 5, 30);
 const editableScheduleStart = new Date(2026, 5, 30).getTime();
 const editableScheduleEnd = new Date(2026, 6, 30).getTime();
 const weekLabels = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-const monthOptions = buildMonthOptions(new Date(scheduleToday.getFullYear() - 1, scheduleToday.getMonth(), 1), new Date(scheduleToday.getFullYear(), scheduleToday.getMonth() + 1, 1));
+const monthOptions = buildMonthOptions(new Date(scheduleToday.getFullYear(), scheduleToday.getMonth() - 1, 1), new Date(scheduleToday.getFullYear(), scheduleToday.getMonth() + 1, 1));
 const baseChannelOptions = ['交通委值守', '热线接听', '工单回访', '市网格', '首环办', '交委体验单渠道'];
 const genericShiftTypes = ['正常', '休息'];
 const officeShiftTypes: Record<string, string[]> = {
@@ -1396,8 +1396,88 @@ function applyShiftStatus(action: ShiftAction) {
   if (snapshots.length) {
     shiftUndoStack.value.push(snapshots);
   }
+  const syncedLeaveCount = action.type === 'leave' ? syncLeaveRowsFromShiftSnapshots(snapshots) : 0;
   closeShiftMenu();
-  message.success(`已修改 ${keys.length} 个班次状态`);
+  message.success(`已修改 ${keys.length} 个班次状态${syncedLeaveCount ? `，已同步 ${syncedLeaveCount} 条请假记录` : ''}`);
+}
+
+function syncLeaveRowsFromShiftSnapshots(snapshots: ShiftSnapshot[]) {
+  let syncedCount = 0;
+  snapshots.forEach((snapshot) => {
+    const row = rosterRows.value[snapshot.rowIndex];
+    const day = monthDays.value[snapshot.colIndex];
+    if (!row || !day) return;
+    const timeRange = getLeaveTimeRange(day.fullDate, snapshot.shift.label);
+    const existing = leaveRows.value.find((item) => item.name === row.name && item.startTime.slice(0, 10) === day.fullDate);
+    const leaveRecord: LeaveRow = {
+      id: existing?.id || getNextLeaveId(),
+      type: '排班请假',
+      name: row.name,
+      department: scheduleQuery.department,
+      group: row.group,
+      office: scheduleQuery.office,
+      status: '已通过',
+      startTime: timeRange.startTime,
+      endTime: timeRange.endTime,
+      duration: timeRange.duration,
+      impactShift: snapshot.shift.label || '暂无排班',
+      coverage: '待补位',
+      remark: '由排班表右键标记请假同步生成。',
+    };
+    if (existing) {
+      Object.assign(existing, leaveRecord);
+    } else {
+      leaveRows.value.unshift(leaveRecord);
+    }
+    syncedCount += 1;
+  });
+  return syncedCount;
+}
+
+function getNextLeaveId() {
+  return `L-${String(leaveRows.value.length + 1).padStart(3, '0')}`;
+}
+
+function getLeaveTimeRange(date: string, shiftLabel: string) {
+  if (shiftLabel.includes('夜')) {
+    return {
+      startTime: `${date} 22:00`,
+      endTime: `${getNextDateText(date)} 08:00`,
+      duration: '10h',
+    };
+  }
+  if (shiftLabel.includes('晚班')) {
+    return {
+      startTime: `${date} 14:00`,
+      endTime: `${date} 22:00`,
+      duration: '8h',
+    };
+  }
+  if (shiftLabel.includes('中班')) {
+    return {
+      startTime: `${date} 05:00`,
+      endTime: `${date} 16:30`,
+      duration: '11.5h',
+    };
+  }
+  if (shiftLabel.includes('早+晚')) {
+    return {
+      startTime: `${date} 09:00`,
+      endTime: `${date} 21:00`,
+      duration: '12h',
+    };
+  }
+  return {
+    startTime: `${date} 09:00`,
+    endTime: `${date} 18:00`,
+    duration: '9h',
+  };
+}
+
+function getNextDateText(date: string) {
+  const nextDate = new Date(`${date}T00:00:00`);
+  nextDate.setDate(nextDate.getDate() + 1);
+  return `${nextDate.getFullYear()}-${String(nextDate.getMonth() + 1).padStart(2, '0')}-${String(nextDate.getDate()).padStart(2, '0')}`;
 }
 
 function undoShiftChange() {

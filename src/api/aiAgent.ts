@@ -28,6 +28,8 @@ export type AiAgentMessageRole = 'user' | 'assistant' | 'system' | 'log' | 'warn
 export interface AiAgentAffectedFile {
   path: string;
   operation: AiAgentFileOperation;
+  filePath?: string;
+  changeType?: AiAgentFileOperation;
 }
 
 export interface AiAgentPlan {
@@ -44,8 +46,10 @@ export interface AiAgentProjectStatus {
   backendProject: string;
   branch: string;
   environment: string;
+  env?: string;
   hasUncommittedChanges: boolean;
   latestCommit: string;
+  lastCommit?: string;
   latestCommitTime?: string;
 }
 
@@ -61,6 +65,11 @@ export interface AiAgentLog {
   level: AiAgentLogLevel;
   content: string;
   time?: string;
+}
+
+interface AiAgentRecentLogResult {
+  type?: string;
+  logs?: string[] | AiAgentLog[];
 }
 
 export interface AiAgentChatPayload {
@@ -104,7 +113,11 @@ export function getAiAgentProjectStatus(): Promise<AiAgentProjectStatus> {
     return resolveMockResponse(mockGetAiAgentProjectStatus(), 120);
   }
 
-  return http.get<AiAgentProjectStatus, AiAgentProjectStatus>('/ai-agent/project/status');
+  return http.get<AiAgentProjectStatus, AiAgentProjectStatus>('/ai-agent/project/status').then((status) => ({
+    ...status,
+    environment: status.environment || status.env || '-',
+    latestCommit: status.latestCommit || status.lastCommit || '-',
+  }));
 }
 
 export function getAiAgentRecentLogs(): Promise<AiAgentLog[]> {
@@ -112,7 +125,25 @@ export function getAiAgentRecentLogs(): Promise<AiAgentLog[]> {
     return resolveMockResponse(mockGetAiAgentRecentLogs(), 120);
   }
 
-  return http.get<AiAgentLog[], AiAgentLog[]>('/ai-agent/logs/recent');
+  return http.get<AiAgentLog[] | AiAgentRecentLogResult, AiAgentLog[] | AiAgentRecentLogResult>('/ai-agent/logs/recent').then(
+    (result) => {
+      if (Array.isArray(result)) {
+        return result;
+      }
+
+      return (result.logs ?? []).map((item, index) => {
+        if (typeof item !== 'string') {
+          return item;
+        }
+
+        return {
+          id: `backend-log-${index}`,
+          level: item.includes('ERROR') ? 'error' : item.includes('WARN') ? 'warning' : 'info',
+          content: item,
+        } satisfies AiAgentLog;
+      });
+    },
+  );
 }
 
 export function confirmAiAgentAction(data: AiAgentConfirmPayload): Promise<AiAgentConfirmResult> {

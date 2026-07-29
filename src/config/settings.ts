@@ -43,7 +43,7 @@ export const appSettings = Object.freeze({
   cache: {
     cachePrefix: 'AI_TICKET_',
     versionCacheKey: 'APP_CACHE_VERSION',
-    cacheVersion: '2026-06-17-tenant-management',
+    cacheVersion: '2026-07-28-fixed-dashboard-tab',
     tabsCacheKey: 'TABS_CACHE',
     layoutCacheKey: 'LAYOUT_SETTINGS',
     themeCacheKey: 'THEME_MODE',

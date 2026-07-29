@@ -284,10 +284,23 @@ function normalizePlan(source: AiAgentPlan, taskType: AiAgentTaskType): ActionPl
     riskLevel,
     scope: Array.isArray(source.scope) && source.scope.length ? source.scope : fallback.scope,
     affectedFiles:
-      Array.isArray(source.affectedFiles) && source.affectedFiles.length ? source.affectedFiles : fallback.affectedFiles,
+      Array.isArray(source.affectedFiles) && source.affectedFiles.length
+        ? source.affectedFiles.map((file) => ({
+            path: file.path || file.filePath || '未指定文件',
+            operation: normalizeFileOperation(file.operation || file.changeType),
+          }))
+        : fallback.affectedFiles,
     steps: Array.isArray(source.steps) && source.steps.length ? source.steps : fallback.steps,
     needConfirm: Boolean(source.needConfirm),
   };
+}
+
+function normalizeFileOperation(operation?: string) {
+  if (operation === 'CHECK' || operation === 'CREATE' || operation === 'UPDATE' || operation === 'DELETE') {
+    return operation;
+  }
+
+  return 'CHECK';
 }
 
 function normalizeLogs(source: AiAgentLog[]): ExecutionLogItem[] {

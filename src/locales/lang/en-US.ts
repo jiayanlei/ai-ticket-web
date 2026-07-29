@@ -98,6 +98,8 @@ export default {
     agentOperations: 'Agent Operations',
     aiCapability: 'AI Data Center',
     customerCenter: 'Customer Center',
+    tenantManagement: 'Tenant Management',
+    tenantCenter: 'Tenant Center',
     knowledgeCenter: 'Knowledge Center',
     analytics: 'Analytics',
     systemManagement: 'System Management',

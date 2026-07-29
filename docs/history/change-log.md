@@ -17,6 +17,51 @@
 
 ## 记录
 
+## 2026-07-28 - 优化客户 360 首屏闭环显示
+
+- 类型：fix
+- 范围：`src/views/customers/360/index.vue`
+- 摘要：根据反馈取消“风险与证据”模块，收紧客户切换、客户概览和时间线间距，并将状态推进操作并入时间线头部，保证“互动与闭环时间线”和操作模块能够完整进入当前工作流视野。
+- 文件：`src/views/customers/360/index.vue`、`docs/history/change-log.md`
+- 验证：`npm run type-check` 通过；`npm run build` 通过；Playwright 登录后访问 `/customers/360`，时间线和操作区首屏可见，截图已保存。
+- 相关：用户反馈风险证据模块不需要，时间线与操作模块未完整显示。
+
+## 2026-07-28 - 实现客户 360 纵向闭环 UI
+
+- 类型：feature
+- 范围：`src/views/customers/360/index.vue`
+- 摘要：按 Figma 和可落地 UI 文档，将客户 360 从三栏占位结构改为纵向闭环工作台，包含顶部操作条、客户切换、客户状态总览、风险证据、互动时间线和底部行动条；复用现有 `BusinessRecord` 数据结构和状态更新接口。
+- 文件：`src/views/customers/360/index.vue`、`output/playwright/customer-360-landable-ui.png`
+- 验证：`npm run type-check` 通过；`npm run build` 通过；Playwright 登录后访问 `/customers/360`，无控制台错误，截图已保存。
+- 相关：Figma 文件 `https://www.figma.com/design/3XGwkzufnJrBHoTQlpXtr1`
+
+## 2026-07-28 - 创建客户 360 Figma UI 画布
+
+- 类型：docs
+- 范围：Figma、`docs/modules/`
+- 摘要：在 Figma 中创建客户 360 可落地 UI 方案画布，采用非三栏纵向工作流：顶部操作条、客户切换、客户状态总览、风险证据、互动时间线和底部行动条。
+- 文件：Figma 文件 `https://www.figma.com/design/3XGwkzufnJrBHoTQlpXtr1`
+- 验证：Figma `use_figma` 写入成功并返回画布截图，未修改页面代码。
+- 相关：用户要求继续往 Figma 中生成客户 360 UI。
+
+## 2026-07-28 - 新增客户 360 可落地 UI 方案
+
+- 类型：docs
+- 范围：`docs/modules/`
+- 摘要：基于客户 360 优化探索文档，新增一版不采用三栏、可直接按现有 Vue 页面和 `BusinessRecord` 数据结构落地的 UI 方案，覆盖布局、组件拆分、数据映射、交互、状态和验收清单。
+- 文件：`docs/modules/customer-360-landable-ui-design.md`、`docs/modules/customer-360-optimization-detail.md`
+- 验证：文档已创建并修正上一份文档中的残留字段说明，未修改页面代码。
+- 相关：用户要求根据文档设计一版可落地且不复杂的 UI。
+
+## 2026-07-28 - 新增客户 360 优化探索文档
+
+- 类型：docs
+- 范围：`docs/modules/`
+- 摘要：分析客户 360 当前页面、现有数据模型和设计约束，形成简洁可闭环的优化方向文档；根据反馈明确不采用三栏布局，建议首轮改为“客户切换、状态总览、风险证据、互动时间线、底部行动”的纵向闭环。
+- 文件：`docs/modules/customer-360-optimization-detail.md`
+- 验证：文档已创建，未修改页面代码。
+- 相关：用户要求先不动代码，生成客户 360 页面优化详细文档。
+
 ## 2026-07-27 - 建立文档管理结构
 
 - 类型：docs

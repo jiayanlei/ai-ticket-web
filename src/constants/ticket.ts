@@ -2,10 +2,16 @@ import type { TicketPriority, TicketStatus } from '@/api/workOrder';
 
 export const ticketStatusOptions: { label: string; value: TicketStatus; color: string }[] = [
   { label: '新建', value: 'NEW', color: 'orange' },
+  { label: '草稿', value: 'DRAFT', color: 'orange' },
+  { label: '待受理', value: 'PENDING_ACCEPT', color: 'purple' },
+  { label: '已受理', value: 'ACCEPTED', color: 'cyan' },
   { label: '处理中', value: 'PROCESSING', color: 'blue' },
   { label: '挂起', value: 'PENDING', color: 'gold' },
   { label: '已解决', value: 'RESOLVED', color: 'green' },
+  { label: '待确认', value: 'WAIT_CONFIRM', color: 'green' },
+  { label: '已完成', value: 'COMPLETED', color: 'green' },
   { label: '已关闭', value: 'CLOSED', color: 'default' },
+  { label: '已驳回', value: 'REJECTED', color: 'red' },
 ];
 
 export const ticketPriorityOptions: { label: string; value: TicketPriority; color: string }[] = [

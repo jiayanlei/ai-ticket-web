@@ -9,7 +9,7 @@
         @edit="handleEdit"
         @change="handleChange"
       >
-        <a-tab-pane v-for="(tab, index) in tabsStore.tabs" :key="tab.path">
+        <a-tab-pane v-for="(tab, index) in tabsStore.tabs" :key="tab.path" :closable="!isFixedTabPath(tab.path)">
           <template #tab>
             <a-dropdown trigger="contextmenu">
               <span class="app-tabs__trigger">
@@ -26,23 +26,23 @@
                     {{ t('tabs.fullscreen') }}
                   </a-menu-item>
                   <a-menu-divider />
-                  <a-menu-item key="closeCurrent">
+                  <a-menu-item key="closeCurrent" :disabled="isFixedTabPath(tab.path)">
                     <template #icon><CloseOutlined /></template>
                     {{ t('tabs.closeCurrent') }}
                   </a-menu-item>
-                  <a-menu-item key="closeOther" :disabled="tabsStore.tabs.length <= 1">
+                  <a-menu-item key="closeOther" :disabled="!hasOtherClosableTabs(tab.path)">
                     <template #icon><CloseCircleOutlined /></template>
                     {{ t('tabs.closeOther') }}
                   </a-menu-item>
-                  <a-menu-item key="closeLeft" :disabled="index === 0">
+                  <a-menu-item key="closeLeft" :disabled="!hasClosableTabs('left', index)">
                     <template #icon><VerticalRightOutlined /></template>
                     {{ t('tabs.closeLeft') }}
                   </a-menu-item>
-                  <a-menu-item key="closeRight" :disabled="index === tabsStore.tabs.length - 1">
+                  <a-menu-item key="closeRight" :disabled="!hasClosableTabs('right', index)">
                     <template #icon><VerticalLeftOutlined /></template>
                     {{ t('tabs.closeRight') }}
                   </a-menu-item>
-                  <a-menu-item key="closeAll">
+                  <a-menu-item key="closeAll" :disabled="!hasClosableTabs()">
                     <template #icon><MinusCircleOutlined /></template>
                     {{ t('tabs.closeAll') }}
                   </a-menu-item>
@@ -78,7 +78,7 @@ import { appSettings } from '@/config';
 import AppTenantSelector from '@/layouts/components/AppTenantSelector.vue';
 import { useAppStore } from '@/stores/app';
 import type { AppTab } from '@/stores/tabs';
-import { useTabsStore } from '@/stores/tabs';
+import { isFixedTabPath, useTabsStore } from '@/stores/tabs';
 
 const route = useRoute();
 const router = useRouter();
@@ -165,6 +165,9 @@ async function handleContextMenuClick(info: MenuInfo, tab: AppTab) {
   }
 
   if (key === 'closeCurrent') {
+    if (isFixedTabPath(tab.path)) {
+      return;
+    }
     await router.push(tabsStore.removeTab(tab.path) || appSettings.app.defaultHomePath);
     return;
   }
@@ -188,6 +191,21 @@ async function handleContextMenuClick(info: MenuInfo, tab: AppTab) {
     tabsStore.clearTabs();
     await router.push(appSettings.app.defaultHomePath);
   }
+}
+
+function hasOtherClosableTabs(path: string) {
+  return tabsStore.tabs.some((tab) => tab.path !== path && !isFixedTabPath(tab.path));
+}
+
+function hasClosableTabs(direction?: 'left' | 'right', index = 0) {
+  const targetTabs =
+    direction === 'left'
+      ? tabsStore.tabs.slice(0, index)
+      : direction === 'right'
+        ? tabsStore.tabs.slice(index + 1)
+        : tabsStore.tabs;
+
+  return targetTabs.some((tab) => !isFixedTabPath(tab.path));
 }
 
 async function refreshTab(path: string) {

@@ -619,8 +619,10 @@ function getLifecycleStatusMeta(status?: LifecycleTicketStatus | '-') {
 
 function getPriorityMeta(priority: LifecycleTicketPriority) {
   const map: Record<LifecycleTicketPriority, { label: string; color: string }> = {
+    LOW: { label: '低', color: 'green' },
     NORMAL: { label: '普通', color: 'blue' },
     IMPORTANT: { label: '重要', color: 'orange' },
+    HIGH: { label: '高', color: 'orange' },
     URGENT: { label: '紧急', color: 'red' },
   };
   return map[priority] ?? { label: priority, color: 'default' };

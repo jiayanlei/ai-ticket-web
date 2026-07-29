@@ -460,6 +460,7 @@ function lifecycleStatusLabel(status: LifecycleTicketStatus) {
     WAIT_CONFIRM: '待确认',
     COMPLETED: '已完成',
     CLOSED: '已关闭',
+    REJECTED: '已驳回',
   };
 
   return labels[status];

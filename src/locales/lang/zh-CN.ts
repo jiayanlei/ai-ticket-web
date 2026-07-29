@@ -98,6 +98,8 @@ export default {
     agentOperations: '坐席运营',
     aiCapability: 'AI数据中心',
     customerCenter: '客户中心',
+    tenantManagement: '租户管理',
+    tenantCenter: '租户中心',
     knowledgeCenter: '知识中心',
     analytics: '数据分析',
     systemManagement: '系统管理',

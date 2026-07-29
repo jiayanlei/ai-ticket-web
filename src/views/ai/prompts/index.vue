@@ -1,18 +1,18 @@
 <template>
   <div class="prompt-page">
-    <header class="prompt-command-bar">
-      <div class="command-intro">
+    <header class="prompt-toolbar">
+      <div class="toolbar-title">
         <h1>提示词中心</h1>
-        <p>管理客服 AI 提示词的发现、评测、发布、观测和回滚闭环，确保线上回复可控、可测、可追踪。</p>
+        <p>按问题、资产、评测、发布和反馈管理客服 Prompt。</p>
       </div>
 
-      <div class="command-controls">
+      <div class="toolbar-controls">
         <a-segmented v-model:value="environment" :options="environmentOptions" />
         <a-input
           v-model:value="query.keyword"
           allow-clear
-          class="command-search"
-          placeholder="搜索 Prompt / 场景 / 负责人 / Agent / Workflow"
+          class="toolbar-search"
+          placeholder="搜索 Prompt、场景、负责人"
           @press-enter="applySearch"
         >
           <template #prefix><SearchOutlined /></template>
@@ -23,7 +23,7 @@
         <a-select v-model:value="query.risk" allow-clear placeholder="风险等级" @change="applySearch">
           <a-select-option v-for="item in riskOptions" :key="item" :value="item">{{ item }}</a-select-option>
         </a-select>
-        <a-space wrap>
+        <a-space>
           <a-button @click="resetFilters">
             <template #icon><ReloadOutlined /></template>
             重置
@@ -38,307 +38,194 @@
           </a-button>
         </a-space>
       </div>
-
-      <div v-if="activeFilterTags.length" class="active-filter-row">
-        <a-tag v-for="item in activeFilterTags" :key="item" closable @close.prevent="clearFilter(item)">{{ item }}</a-tag>
-      </div>
     </header>
 
-    <main class="prompt-console">
-      <section class="prompt-section problem-radar">
-        <div class="section-heading">
+    <main class="prompt-workspace">
+      <section class="prompt-panel">
+        <div class="panel-heading">
           <div>
-            <h2>问题雷达</h2>
-            <p>从线上日志、评测集、投诉和护栏里收敛真正需要处理的 Prompt 问题。</p>
+            <h2>Prompt 列表</h2>
+            <p>先定位需要处理的 Prompt，再进入评测和发布。</p>
           </div>
-          <a-space>
-            <a-badge status="processing" text="每 5 分钟刷新" />
-            <a-button size="small" @click="message.info('已刷新问题雷达')">刷新</a-button>
-          </a-space>
+          <a-tabs v-model:active-key="activeLifecycle" class="status-tabs">
+            <a-tab-pane v-for="item in lifecycleTabs" :key="item" :tab="statusTabLabel(item)" />
+          </a-tabs>
         </div>
 
-        <div class="health-strip">
-          <button
-            v-for="item in healthMetrics"
-            :key="item.label"
-            class="metric-card"
-            type="button"
-            @click="focusMetric(item)"
-          >
+        <div class="summary-strip">
+          <button v-for="item in healthMetrics" :key="item.label" type="button" @click="focusMetric(item)">
             <span>{{ item.label }}</span>
             <strong>{{ item.value }}</strong>
             <em :class="`tone-${item.tone}`">{{ item.delta }}</em>
           </button>
         </div>
 
-        <div class="radar-grid">
-          <article v-for="lane in issueLanes" :key="lane.key" class="issue-lane">
-            <div class="lane-head">
-              <h3>{{ lane.title }}</h3>
-              <a-tag :color="lane.color">{{ lane.items.length }}</a-tag>
-            </div>
-            <button
-              v-for="issue in lane.items"
-              :key="issue.id"
-              :class="['issue-card', { active: activeIssue?.id === issue.id }]"
-              type="button"
-              @click="selectIssue(issue)"
-            >
-              <div class="issue-card__top">
-                <a-tag :color="severityColor(issue.severity)">{{ issue.severity }}</a-tag>
-                <span>{{ issue.source }}</span>
-              </div>
-              <strong>{{ issue.title }}</strong>
-              <p>{{ issue.summary }}</p>
-              <div class="issue-card__meta">
-                <span>{{ issue.promptName }}</span>
-                <b>{{ issue.impact }}</b>
-              </div>
-            </button>
-          </article>
-
-          <aside class="ai-insight">
-            <div class="ai-insight__icon"><RobotOutlined /></div>
-            <div>
-              <h3>AI 审稿建议</h3>
-              <p>{{ activeIssue?.suggestion ?? aiInsight }}</p>
-              <a-space wrap>
-                <a-button size="small" type="primary" @click="enterEvaluationFromIssue">进入评测</a-button>
-                <a-button size="small" @click="addFailedSamples">样本入库</a-button>
-              </a-space>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section class="prompt-section asset-pool">
-        <div class="section-heading">
-          <div>
-            <h2>Prompt 资产池</h2>
-            <p>按生命周期管理版本、健康分、调用链路和影响范围，定位应该改哪一个 Prompt。</p>
-          </div>
-          <a-space wrap>
-            <a-segmented v-model:value="assetView" :options="assetViewOptions" />
-            <a-button type="primary" @click="clonePrompt(activePrompt)">克隆新版本</a-button>
-          </a-space>
-        </div>
-
-        <a-tabs v-model:active-key="activeLifecycle" class="lifecycle-tabs">
-          <a-tab-pane v-for="item in lifecycleTabs" :key="item" :tab="item" />
-        </a-tabs>
-
-        <div class="asset-layout">
-          <a-table
-            v-if="assetView === '表格'"
-            class="prompt-table"
-            :columns="promptColumns"
-            :data-source="filteredPrompts"
-            :pagination="false"
-            :scroll="{ x: 1360, y: 332 }"
-            row-key="id"
-            size="small"
-          >
-            <template #bodyCell="{ column, record }">
-              <template v-if="column.key === 'name'">
-                <button
-                  :class="['prompt-name-cell', { active: activePrompt?.id === record.id }]"
-                  type="button"
-                  @click="selectPrompt(record)"
-                >
-                  <strong>{{ record.name }}</strong>
-                  <span>{{ record.scenario }} / {{ record.channel }} / {{ record.description }}</span>
-                </button>
-              </template>
-              <template v-else-if="column.key === 'status'">
-                <a-tag :color="promptStatusColor(record.status)">{{ record.status }}</a-tag>
-              </template>
-              <template v-else-if="column.key === 'health'">
-                <div class="score-cell">
-                  <strong>{{ record.health }}</strong>
-                  <a-progress :percent="record.health" :show-info="false" size="small" :status="record.health < 70 ? 'exception' : 'normal'" />
-                </div>
-              </template>
-              <template v-else-if="column.key === 'risk'">
-                <a-tag :color="riskColor(record.risk)">{{ record.risk }}</a-tag>
-              </template>
-              <template v-else-if="column.key === 'dependencies'">
-                <a-space wrap :size="[4, 4]">
-                  <a-tag v-for="item in record.dependencies.slice(0, 3)" :key="item">{{ item }}</a-tag>
-                </a-space>
-              </template>
-              <template v-else-if="column.key === 'actions'">
-                <a-space>
-                  <a-button size="small" type="link" @click="openPromptDetail(record)">详情</a-button>
-                  <a-button size="small" type="link" @click="clonePrompt(record)">克隆</a-button>
-                  <a-button size="small" type="link" @click="openDiff(record)">Diff</a-button>
-                </a-space>
-              </template>
+        <a-table
+          class="prompt-table"
+          :columns="promptColumns"
+          :data-source="filteredPrompts"
+          :pagination="false"
+          :scroll="{ y: 366 }"
+          row-key="id"
+          size="small"
+          @row="tableRow"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.key === 'name'">
+              <button
+                :class="['prompt-name-cell', { active: activePrompt?.id === record.id }]"
+                type="button"
+                @click.stop="selectPrompt(record)"
+              >
+                <strong>{{ record.name }}</strong>
+                <span>{{ record.scenario }} / {{ record.channel }}</span>
+              </button>
             </template>
-          </a-table>
+            <template v-else-if="column.key === 'status'">
+              <a-tag :color="promptStatusColor(record.status)">{{ record.status }}</a-tag>
+            </template>
+            <template v-else-if="column.key === 'health'">
+              <div class="score-cell">
+                <strong>{{ record.health }}</strong>
+                <a-progress
+                  :percent="record.health"
+                  :show-info="false"
+                  size="small"
+                  :status="record.health < 70 ? 'exception' : 'normal'"
+                />
+              </div>
+            </template>
+            <template v-else-if="column.key === 'risk'">
+              <a-tag :color="riskColor(record.risk)">{{ record.risk }}</a-tag>
+            </template>
+            <template v-else-if="column.key === 'actions'">
+              <a-space>
+                <a-button size="small" type="link" @click.stop="openPromptDetail(record)">详情</a-button>
+                <a-button size="small" type="link" @click.stop="clonePrompt(record)">克隆</a-button>
+                <a-button size="small" type="link" @click.stop="openDiff(record)">Diff</a-button>
+              </a-space>
+            </template>
+          </template>
+        </a-table>
+      </section>
 
-          <div v-else class="prompt-card-grid">
-            <button
-              v-for="item in filteredPrompts"
-              :key="item.id"
-              :class="['prompt-asset-card', { active: activePrompt?.id === item.id }]"
-              type="button"
-              @click="selectPrompt(item)"
-            >
-              <div class="asset-card-head">
-                <strong>{{ item.name }}</strong>
-                <a-tag :color="promptStatusColor(item.status)">{{ item.status }}</a-tag>
-              </div>
-              <p>{{ item.description }}</p>
-              <div class="asset-card-metrics">
-                <span>健康分 <b>{{ item.health }}</b></span>
-                <span>调用 <b>{{ item.calls }}</b></span>
-                <span>版本 <b>{{ item.version }}</b></span>
-              </div>
-              <div class="asset-card-tags">
-                <a-tag>{{ item.scenario }}</a-tag>
-                <a-tag :color="riskColor(item.risk)">{{ item.risk }}</a-tag>
-              </div>
-            </button>
+      <aside class="detail-panel">
+        <div class="panel-heading compact">
+          <div>
+            <h2>处理面板</h2>
+            <p>{{ activePrompt?.name }} / {{ activePrompt?.version }}</p>
           </div>
+          <a-tag :color="promptStatusColor(activePrompt?.status ?? '草稿中')">{{ activePrompt?.status }}</a-tag>
+        </div>
 
-          <aside class="dependency-panel">
-            <div class="dependency-head">
-              <h3>影响范围</h3>
-              <a-tag :color="riskColor(activePrompt?.risk ?? '中')">{{ activePrompt?.risk ?? '中' }}风险</a-tag>
+        <div class="prompt-detail-card">
+          <div class="detail-card-head">
+            <div>
+              <h3>{{ activePrompt?.name }}</h3>
+              <p>{{ activePrompt?.description }}</p>
             </div>
-            <strong>{{ activePrompt?.name }}</strong>
-            <p>{{ activePrompt?.description }}</p>
-            <div class="dependency-chain">
-              <span v-for="item in dependencyChain" :key="item.label">
-                <b>{{ item.label }}</b>
-                {{ item.value }}
-              </span>
+            <strong>{{ activePrompt?.health }}</strong>
+          </div>
+          <dl>
+            <div>
+              <dt>负责人</dt>
+              <dd>{{ activePrompt?.owner }}</dd>
             </div>
-            <a-alert
-              v-if="activePrompt?.risk === '高' || activePrompt?.risk === '严重'"
-              class="dependency-alert"
-              type="warning"
-              show-icon
-              message="共享 Prompt 影响多个 Agent，发布或回滚前需要确认灰度范围。"
+            <div>
+              <dt>7日调用</dt>
+              <dd>{{ activePrompt?.calls }}</dd>
+            </div>
+            <div>
+              <dt>最近变更</dt>
+              <dd>{{ activePrompt?.updatedAt }}</dd>
+            </div>
+            <div>
+              <dt>影响范围</dt>
+              <dd>{{ dependencyText }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="issue-box">
+          <div>
+            <span>当前问题</span>
+            <h3>{{ relatedIssue?.title ?? '暂无高优先级问题' }}</h3>
+            <p>{{ relatedIssue?.summary ?? '该 Prompt 当前没有关联异常，可按常规流程克隆或评测。' }}</p>
+          </div>
+          <a-tag v-if="relatedIssue" :color="severityColor(relatedIssue.severity)">{{ relatedIssue.severity }}</a-tag>
+        </div>
+
+        <div class="release-flow">
+          <button
+            v-for="step in releaseSteps"
+            :key="step.label"
+            :class="{ active: step.active, done: step.done }"
+            type="button"
+            @click="handleFlowStep(step.label)"
+          >
+            <span>{{ step.label }}</span>
+            <strong>{{ step.value }}</strong>
+          </button>
+        </div>
+
+        <div class="evaluation-list">
+          <article v-for="item in evaluationMetrics" :key="item.label">
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.score }}</strong>
+            </div>
+            <a-progress
+              :percent="item.score"
+              :show-info="false"
+              size="small"
+              :status="item.score < item.threshold ? 'exception' : 'normal'"
             />
-          </aside>
-        </div>
-      </section>
-
-      <section class="lower-workbench">
-        <div class="prompt-section evaluation-desk">
-          <div class="section-heading">
-            <div>
-              <h2>评测发布台</h2>
-              <p>把候选版本跑过变量模拟、历史工单回放、评测矩阵和审批灰度。</p>
-            </div>
-            <a-tag :color="candidateStatusColor(candidate.status)">{{ candidate.status }}</a-tag>
-          </div>
-
-          <div class="candidate-card">
-            <div>
-              <span>当前 Prompt</span>
-              <strong>{{ activePrompt?.name }}</strong>
-            </div>
-            <div>
-              <span>生产版本</span>
-              <strong>{{ activePrompt?.version }}</strong>
-            </div>
-            <div>
-              <span>候选版本</span>
-              <strong>{{ candidate.version }}</strong>
-            </div>
-            <div>
-              <span>变更原因</span>
-              <strong>{{ candidate.reason }}</strong>
-            </div>
-          </div>
-
-          <div class="editor-summary">
-            <div>
-              <h3>Prompt 结构摘要</h3>
-              <p>{{ activePrompt?.template }}</p>
-            </div>
-            <a-button size="small" @click="editorOpen = true">打开编辑器</a-button>
-          </div>
-
-          <div class="variable-grid">
-            <button v-for="item in variables" :key="item.name" type="button" @click="message.info(`${item.name} 已填入模拟器`)">
-              <span>{{ item.name }}</span>
-              <strong>{{ item.value }}</strong>
-            </button>
-          </div>
-
-          <div class="evaluation-matrix">
-            <article v-for="item in evaluationMetrics" :key="item.label">
-              <div>
-                <span>{{ item.label }}</span>
-                <b>{{ item.score }}</b>
-              </div>
-              <a-progress :percent="item.score" :show-info="false" size="small" :status="item.score < item.threshold ? 'exception' : 'normal'" />
-              <small>阈值 {{ item.threshold }} / 失败样本 {{ item.failed }}</small>
-            </article>
-          </div>
-
-          <div class="release-actions">
-            <a-button @click="openDiff(activePrompt)">查看版本 Diff</a-button>
-            <a-button :disabled="!evaluationPassed" @click="approvalOpen = true">发起审批</a-button>
-            <a-button :disabled="!evaluationPassed" type="primary" @click="grayRelease">灰度发布 10%</a-button>
-          </div>
+            <small>阈值 {{ item.threshold }} / 失败 {{ item.failed }}</small>
+          </article>
         </div>
 
-        <div class="prompt-section feedback-board">
-          <div class="section-heading">
-            <div>
-              <h2>线上反馈板</h2>
-              <p>上线后的指标、A/B 结果和异常样本回流到问题雷达，形成持续改进。</p>
-            </div>
-            <a-button size="small" danger @click="rollbackOpen = true">回滚</a-button>
-          </div>
-
-          <div class="feedback-trends">
-            <article v-for="item in feedbackMetrics" :key="item.label">
-              <div class="trend-head">
-                <span>{{ item.label }}</span>
-                <strong :class="`tone-${item.tone}`">{{ item.value }}</strong>
-              </div>
-              <div class="sparkline">
-                <i v-for="bar in item.points" :key="bar" :style="{ height: `${bar}%` }" />
-              </div>
-              <small>{{ item.note }}</small>
-            </article>
-          </div>
-
-          <div class="ab-result">
-            <div>
-              <span>A/B 灰度结果</span>
-              <strong>v12 vs v13-draft</strong>
-              <p>v13 在投诉安抚场景解决率提升 5.8%，但退款到账承诺仍有 3 个失败样本。</p>
-            </div>
-            <a-tag color="orange">建议延长灰度</a-tag>
-          </div>
-
-          <div class="exception-clusters">
-            <button v-for="item in exceptionClusters" :key="item.title" type="button" @click="handleCluster(item)">
-              <span>{{ item.title }}</span>
-              <strong>{{ item.count }}</strong>
-              <em>{{ item.action }}</em>
-            </button>
-          </div>
-
-          <div class="closed-loop-actions">
-            <a-button @click="addFailedSamples">加入评测集</a-button>
-            <a-button @click="createIssue">创建问题</a-button>
-            <a-button type="primary" @click="promoteStable">提升为稳定版本</a-button>
-          </div>
+        <div class="panel-actions">
+          <a-button @click="editorOpen = true">编辑草稿</a-button>
+          <a-button @click="openDiff(activePrompt)">查看 Diff</a-button>
+          <a-button :disabled="!evaluationPassed" @click="approvalOpen = true">发起审批</a-button>
+          <a-button :disabled="!evaluationPassed" type="primary" @click="grayRelease">灰度发布</a-button>
         </div>
-      </section>
+      </aside>
     </main>
 
-    <a-drawer v-model:open="detailOpen" width="860" :title="activePrompt?.name">
+    <section class="feedback-panel">
+      <div class="panel-heading">
+        <div>
+          <h2>发布反馈</h2>
+          <p>观察灰度结果，把异常样本回流到评测集。</p>
+        </div>
+        <a-button danger @click="rollbackOpen = true">回滚</a-button>
+      </div>
+
+      <div class="feedback-grid">
+        <article v-for="item in feedbackMetrics" :key="item.label" class="feedback-card">
+          <span>{{ item.label }}</span>
+          <strong :class="`tone-${item.tone}`">{{ item.value }}</strong>
+          <small>{{ item.note }}</small>
+        </article>
+        <button v-for="item in exceptionClusters" :key="item.title" class="sample-card" type="button" @click="handleCluster(item)">
+          <span>{{ item.title }}</span>
+          <strong>{{ item.count }}</strong>
+          <em>{{ item.action }}</em>
+        </button>
+      </div>
+
+      <div class="feedback-actions">
+        <a-button @click="addFailedSamples">加入评测集</a-button>
+        <a-button @click="createIssue">创建问题</a-button>
+        <a-button type="primary" @click="promoteStable">提升为稳定版本</a-button>
+      </div>
+    </section>
+
+    <a-drawer v-model:open="detailOpen" width="760" :title="activePrompt?.name">
       <template v-if="activePrompt">
         <section class="drawer-section">
-          <h3>Prompt 健康护照</h3>
+          <h3>Prompt 健康信息</h3>
           <div class="passport-grid">
             <article v-for="item in passportMetrics" :key="item.label">
               <span>{{ item.label }}</span>
@@ -348,7 +235,7 @@
           </div>
         </section>
         <section class="drawer-section">
-          <h3>版本时间线</h3>
+          <h3>版本记录</h3>
           <a-timeline>
             <a-timeline-item v-for="item in activePrompt.history" :key="item.version">
               <strong>{{ item.version }} / {{ item.action }}</strong>
@@ -360,7 +247,7 @@
       </template>
     </a-drawer>
 
-    <a-drawer v-model:open="editorOpen" width="980" title="Prompt 编辑器">
+    <a-drawer v-model:open="editorOpen" width="920" title="Prompt 编辑器">
       <a-form layout="vertical">
         <a-form-item label="System Instruction">
           <a-textarea v-model:value="editorState.system" :rows="5" />
@@ -381,7 +268,7 @@
       </template>
     </a-drawer>
 
-    <a-drawer v-model:open="diffOpen" width="860" title="版本 Diff">
+    <a-drawer v-model:open="diffOpen" width="760" title="版本 Diff">
       <section class="drawer-section">
         <h3>语义变化</h3>
         <div class="diff-list">
@@ -399,12 +286,12 @@
         <a-form-item label="变更说明">
           <a-textarea v-model:value="approvalReason" :rows="4" />
         </a-form-item>
-        <a-alert type="success" show-icon message="评测矩阵已通过，审批后可进入 10% 灰度。" />
+        <a-alert type="success" show-icon message="评测矩阵已通过，审批后可进入灰度。" />
       </a-form>
     </a-modal>
 
-    <a-modal v-model:open="rollbackOpen" title="确认回滚" ok-text="回滚到 v11" ok-type="danger" @ok="confirmRollback">
-      <p>当前候选版本仍有合规失败样本。回滚后将恢复到上一个稳定版本，并把异常样本重新推入问题雷达。</p>
+    <a-modal v-model:open="rollbackOpen" title="确认回滚" ok-text="确认回滚" ok-type="danger" @ok="confirmRollback">
+      <p>回滚后将恢复到上一个稳定版本，并把异常样本重新加入评测集。</p>
       <a-textarea v-model:value="rollbackReason" :rows="3" placeholder="请输入回滚原因" />
     </a-modal>
   </div>
@@ -413,23 +300,16 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue';
 import { message } from 'ant-design-vue';
-import {
-  ExperimentOutlined,
-  ImportOutlined,
-  ReloadOutlined,
-  RobotOutlined,
-  SearchOutlined,
-} from '@ant-design/icons-vue';
+import { ExperimentOutlined, ImportOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons-vue';
 
 type Environment = '生产' | '灰度' | '预发' | '草稿';
-type Tone = 'green' | 'red' | 'amber' | 'blue' | 'cyan';
+type Tone = 'green' | 'red' | 'amber' | 'blue';
 type Severity = 'Critical' | 'High' | 'Warning' | 'Info';
 type RiskLevel = '低' | '中' | '高' | '严重';
 type PromptStatus = '草稿中' | '待评测' | '待审批' | '灰度中' | '生产中' | '需回滚' | '已归档';
 
 interface Issue {
   id: string;
-  lane: string;
   severity: Severity;
   title: string;
   summary: string;
@@ -466,16 +346,14 @@ interface PromptAsset {
 
 const environment = ref<Environment>('生产');
 const environmentOptions: Environment[] = ['生产', '灰度', '预发', '草稿'];
-const assetView = ref('表格');
-const assetViewOptions = ['表格', '卡片'];
 const activeLifecycle = ref('全部');
-const lifecycleTabs = ['全部', '草稿中', '待评测', '待审批', '灰度中', '生产中', '需回滚', '已归档'];
+const lifecycleTabs = ['全部', '草稿中', '待评测', '待审批', '灰度中', '生产中', '需回滚'];
 const detailOpen = ref(false);
 const editorOpen = ref(false);
 const diffOpen = ref(false);
 const approvalOpen = ref(false);
 const rollbackOpen = ref(false);
-const approvalReason = ref('v13 候选版本已通过核心评测，申请进入 10% 灰度。');
+const approvalReason = ref('候选版本已通过核心评测，申请进入灰度。');
 const rollbackReason = ref('');
 
 const query = reactive({
@@ -574,7 +452,6 @@ const prompts = ref<PromptAsset[]>([
 const issues = ref<Issue[]>([
   {
     id: 'issue-refund-compliance',
-    lane: 'compliance',
     severity: 'Critical',
     title: '退款回复合规通过率下降',
     summary: '最近 24 小时出现 12 个承诺到账时间样本，合规评测同步下降。',
@@ -586,7 +463,6 @@ const issues = ref<Issue[]>([
   },
   {
     id: 'issue-vip-handoff',
-    lane: 'business',
     severity: 'High',
     title: 'VIP 投诉转人工升高',
     summary: '升级判断偏保守，VIP 客户连续投诉场景被过早转主管。',
@@ -598,7 +474,6 @@ const issues = ref<Issue[]>([
   },
   {
     id: 'issue-logistics-citation',
-    lane: 'model',
     severity: 'Warning',
     title: '物流回复引用缺失',
     summary: '邮件回复中缺少承运商节点引用，导致客户追问率上升。',
@@ -610,10 +485,9 @@ const issues = ref<Issue[]>([
   },
   {
     id: 'issue-gray-negative',
-    lane: 'release',
     severity: 'High',
     title: '灰度版本差评升高',
-    summary: '售后补偿建议 v9-gray 在 10% 灰度流量中差评增加 17 起。',
+    summary: '售后补偿建议 v9-gray 在灰度流量中差评增加 17 起。',
     promptId: 'compensation-suggestion',
     promptName: '售后补偿建议 v9-gray',
     impact: '差评 +17',
@@ -622,29 +496,27 @@ const issues = ref<Issue[]>([
   },
 ]);
 
-const activeIssueId = ref(issues.value[0].id);
 const activePromptId = ref(prompts.value[0].id);
-
-const activeIssue = computed(() => issues.value.find((item) => item.id === activeIssueId.value));
 const activePrompt = computed(() => prompts.value.find((item) => item.id === activePromptId.value) ?? prompts.value[0]);
+const relatedIssue = computed(() => issues.value.find((item) => item.promptId === activePrompt.value?.id));
 
 const healthMetrics = [
-  { label: '评测通过率', value: '90.1%', delta: '-6.3%', tone: 'red' as Tone },
-  { label: '护栏触发', value: '316', delta: '+8.4%', tone: 'amber' as Tone },
-  { label: '转人工率', value: '18.7%', delta: '+3.2%', tone: 'red' as Tone },
-  { label: '差评关联', value: '72', delta: '+12', tone: 'amber' as Tone },
-  { label: '灰度异常', value: '4', delta: '需处理', tone: 'cyan' as Tone },
+  { label: '待处理问题', value: '4', delta: '2 个高优先级', tone: 'red' as Tone },
+  { label: '评测通过率', value: '90.1%', delta: '-6.3%', tone: 'amber' as Tone },
+  { label: '灰度中', value: '1', delta: '需观察', tone: 'blue' as Tone },
+  { label: '可回滚版本', value: '3', delta: '已记录', tone: 'green' as Tone },
 ];
 
-const aiInsight =
-  'AI 检测到退款、售后和物流场景的失败样本正在聚集，优先处理高风险共享 Prompt 可以降低转人工和合规触发。';
-
-const issueLanes = computed(() => [
-  { key: 'compliance', title: '合规风险', color: 'red', items: issues.value.filter((item) => item.lane === 'compliance') },
-  { key: 'business', title: '业务效果下降', color: 'orange', items: issues.value.filter((item) => item.lane === 'business') },
-  { key: 'model', title: '模型输出异常', color: 'blue', items: issues.value.filter((item) => item.lane === 'model') },
-  { key: 'release', title: '发布阻塞', color: 'purple', items: issues.value.filter((item) => item.lane === 'release') },
-]);
+const promptColumns = [
+  { title: 'Prompt', dataIndex: 'name', key: 'name', width: 250 },
+  { title: '版本', dataIndex: 'version', key: 'version', width: 86 },
+  { title: '状态', dataIndex: 'status', key: 'status', width: 100 },
+  { title: '健康分', dataIndex: 'health', key: 'health', width: 112 },
+  { title: '风险', dataIndex: 'risk', key: 'risk', width: 82 },
+  { title: '负责人', dataIndex: 'owner', key: 'owner', width: 96 },
+  { title: '最近变更', dataIndex: 'updatedAt', key: 'updatedAt', width: 112 },
+  { title: '操作', key: 'actions', width: 156 },
+];
 
 const filteredPrompts = computed(() =>
   prompts.value.filter((item) => {
@@ -661,32 +533,30 @@ const filteredPrompts = computed(() =>
   }),
 );
 
-const activeFilterTags = computed(() => [query.keyword, query.scenario, query.risk].filter(Boolean) as string[]);
+const statusCounts = computed(() =>
+  prompts.value.reduce<Record<string, number>>(
+    (result, item) => {
+      result.全部 += 1;
+      result[item.status] = (result[item.status] ?? 0) + 1;
+      return result;
+    },
+    { 全部: 0 },
+  ),
+);
 
-const promptColumns = [
-  { title: 'Prompt', dataIndex: 'name', key: 'name', width: 280, fixed: 'left' },
-  { title: '生产版本', dataIndex: 'version', key: 'version', width: 110 },
-  { title: '状态', dataIndex: 'status', key: 'status', width: 110 },
-  { title: '健康分', dataIndex: 'health', key: 'health', width: 120 },
-  { title: '风险', dataIndex: 'risk', key: 'risk', width: 90 },
-  { title: '7日调用', dataIndex: 'calls', key: 'calls', width: 110 },
-  { title: '负责人', dataIndex: 'owner', key: 'owner', width: 120 },
-  { title: '依赖', dataIndex: 'dependencies', key: 'dependencies', width: 240 },
-  { title: '最近变更', dataIndex: 'updatedAt', key: 'updatedAt', width: 120 },
-  { title: '操作', key: 'actions', width: 180, fixed: 'right' },
-];
+const dependencyText = computed(() => activePrompt.value?.dependencies.join(' / ') ?? '-');
 
-const dependencyChain = computed(() => [
-  { label: 'AI Agent', value: activePrompt.value?.dependencies[0] ?? '-' },
-  { label: 'Workflow', value: activePrompt.value?.dependencies[1] ?? '-' },
-  { label: 'Channel', value: activePrompt.value?.dependencies[2] ?? '-' },
-  { label: 'Knowledge', value: activePrompt.value?.dependencies[3] ?? '-' },
+const releaseSteps = computed(() => [
+  { label: '发现问题', value: relatedIssue.value?.impact ?? '无异常', done: Boolean(relatedIssue.value), active: Boolean(relatedIssue.value) },
+  { label: '克隆草稿', value: candidate.version, done: candidate.status !== '草稿中', active: candidate.status === '草稿中' },
+  { label: '运行评测', value: evaluationPassed.value ? '通过' : '未通过', done: evaluationPassed.value, active: candidate.status === '待评测' },
+  { label: '审批灰度', value: candidate.status, done: ['灰度中', '生产中'].includes(candidate.status), active: ['待审批', '灰度中'].includes(candidate.status) },
+  { label: '反馈回流', value: '样本 68', done: false, active: candidate.status === '灰度中' },
 ]);
 
 const candidate = reactive({
   version: 'v13-draft',
-  reason: '补充承诺边界与引用要求',
-  status: '评测通过',
+  status: '待评测',
 });
 
 const editorState = reactive({
@@ -695,29 +565,20 @@ const editorState = reactive({
   schema: '{ "reply": "string", "risk": "low|medium|high", "citations": ["string"], "nextAction": "string" }',
 });
 
-const variables = [
-  { name: '{客户等级}', value: 'VIP / 普通 / 投诉客户' },
-  { name: '{工单类型}', value: '退款争议 / 物流延迟 / 售后补偿' },
-  { name: '{订单状态}', value: '已支付 / 已发货 / 已退款' },
-  { name: '{政策条款}', value: '退款政策 / 补偿边界' },
-];
-
 const evaluationMetrics = ref([
   { label: '准确性', score: 93, threshold: 88, failed: 2 },
   { label: '合规', score: 86, threshold: 90, failed: 5 },
   { label: '语气', score: 95, threshold: 85, failed: 1 },
   { label: '引用质量', score: 91, threshold: 88, failed: 3 },
-  { label: '解决率', score: 89, threshold: 86, failed: 4 },
-  { label: '回归风险', score: 92, threshold: 90, failed: 2 },
 ]);
 
 const evaluationPassed = computed(() => evaluationMetrics.value.every((item) => item.score >= item.threshold));
 
 const feedbackMetrics = [
-  { label: '满意度', value: '+2.8%', tone: 'green' as Tone, note: 'v13 灰度后轻微改善', points: [35, 42, 48, 52, 57, 62, 66, 71] },
-  { label: '转人工', value: '-1.6%', tone: 'green' as Tone, note: '投诉场景下降', points: [76, 70, 68, 62, 56, 51, 49, 45] },
-  { label: '护栏触发', value: '+3', tone: 'amber' as Tone, note: '退款到账承诺仍需处理', points: [24, 28, 32, 36, 54, 40, 38, 45] },
-  { label: '重复咨询', value: '-4.2%', tone: 'green' as Tone, note: '引用质量提升后下降', points: [62, 58, 55, 51, 47, 44, 39, 35] },
+  { label: '满意度', value: '+2.8%', tone: 'green' as Tone, note: '灰度后轻微改善' },
+  { label: '转人工', value: '-1.6%', tone: 'green' as Tone, note: '投诉场景下降' },
+  { label: '护栏触发', value: '+3', tone: 'amber' as Tone, note: '退款承诺仍需处理' },
+  { label: '重复咨询', value: '-4.2%', tone: 'green' as Tone, note: '引用质量提升后下降' },
 ];
 
 const exceptionClusters = [
@@ -730,7 +591,7 @@ const exceptionClusters = [
 const passportMetrics = computed(() => [
   { label: '线上调用', value: activePrompt.value?.calls ?? '-', note: '最近 7 天' },
   { label: '评测通过', value: `${activePrompt.value?.health ?? 0}%`, note: '核心评测集' },
-  { label: '护栏触发', value: activePrompt.value?.risk === '高' ? '42' : '9', note: '最近 24 小时' },
+  { label: '风险等级', value: activePrompt.value?.risk ?? '-', note: '当前版本' },
   { label: '稳定版本', value: activePrompt.value?.history[1]?.version ?? activePrompt.value?.version ?? '-', note: '可回滚目标' },
 ]);
 
@@ -739,6 +600,16 @@ const diffItems = [
   { type: '调整', color: 'orange', title: '加强引用要求', detail: '回复必须包含政策来源和订单状态，缺失时转人工确认。' },
   { type: '风险', color: 'red', title: '承诺语仍需收紧', detail: '失败样本中仍出现“马上到账”的近义表达，需要补充护栏词。' },
 ];
+
+function tableRow(record: PromptAsset) {
+  return {
+    onClick: () => selectPrompt(record),
+  };
+}
+
+function statusTabLabel(status: string) {
+  return `${status} ${statusCounts.value[status] ?? 0}`;
+}
 
 function applySearch() {
   message.success('筛选条件已应用');
@@ -751,23 +622,12 @@ function resetFilters() {
   activeLifecycle.value = '全部';
 }
 
-function clearFilter(tag: string) {
-  if (query.keyword === tag) query.keyword = '';
-  if (query.scenario === tag) query.scenario = undefined;
-  if (query.risk === tag) query.risk = undefined;
-}
-
-function selectIssue(issue: Issue) {
-  activeIssueId.value = issue.id;
-  activePromptId.value = issue.promptId;
-}
-
 function selectPrompt(prompt: PromptAsset) {
   activePromptId.value = prompt.id;
 }
 
 function focusMetric(item: { label: string }) {
-  message.info(`已聚焦「${item.label}」相关 Prompt`);
+  message.info(`已聚焦「${item.label}」`);
 }
 
 function openPromptDetail(prompt: PromptAsset) {
@@ -791,19 +651,13 @@ function openDiff(prompt?: PromptAsset) {
 }
 
 function runEvaluation() {
-  candidate.status = '评测通过';
-  message.success('评测已完成，合规项仍需关注');
-}
-
-function enterEvaluationFromIssue() {
-  if (activeIssue.value) {
-    message.success(`已载入「${activeIssue.value.title}」的失败样本`);
-  }
+  candidate.status = evaluationPassed.value ? '评测通过' : '待评测';
+  message.success(evaluationPassed.value ? '评测已完成' : '评测未通过，请处理失败样本');
 }
 
 function grayRelease() {
   candidate.status = '灰度中';
-  message.success('候选版本已进入 10% 灰度');
+  message.success('候选版本已进入灰度');
 }
 
 function saveDraft() {
@@ -821,7 +675,7 @@ function submitApproval() {
 function confirmRollback() {
   rollbackOpen.value = false;
   candidate.status = '需回滚';
-  message.warning('已回滚到 v11，并将异常样本重新推入问题雷达');
+  message.warning('已回滚到上一个稳定版本，异常样本已加入评测集');
 }
 
 function openImportSamples() {
@@ -829,11 +683,11 @@ function openImportSamples() {
 }
 
 function addFailedSamples() {
-  message.success('失败样本已加入退款争议评测集');
+  message.success('失败样本已加入评测集');
 }
 
 function createIssue() {
-  message.success('已从线上异常创建问题卡片');
+  message.success('已从线上异常创建问题');
 }
 
 function promoteStable() {
@@ -843,6 +697,10 @@ function promoteStable() {
 
 function handleCluster(item: { title: string; action: string }) {
   message.info(`${item.title}：${item.action}`);
+}
+
+function handleFlowStep(label: string) {
+  message.info(`当前步骤：${label}`);
 }
 
 function severityColor(severity: Severity) {
@@ -877,176 +735,165 @@ function promptStatusColor(status: PromptStatus) {
   };
   return map[status];
 }
-
-function candidateStatusColor(status: string) {
-  if (status.includes('通过') || status === '生产中') return 'green';
-  if (status.includes('回滚')) return 'red';
-  if (status.includes('灰度')) return 'cyan';
-  if (status.includes('审批')) return 'gold';
-  return 'blue';
-}
 </script>
 
 <style scoped lang="scss">
 .prompt-page {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   min-width: 980px;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   color: var(--app-text);
 }
 
-.prompt-command-bar,
-.prompt-section {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.72)),
-    var(--app-surface);
+.prompt-toolbar,
+.prompt-panel,
+.detail-panel,
+.feedback-panel {
+  background: var(--app-surface);
   border: 1px solid var(--app-border);
   border-radius: 8px;
-  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
 }
 
-:global(html.dark) .prompt-command-bar,
-:global(html.dark) .prompt-section {
-  background:
-    linear-gradient(180deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.86)),
-    var(--app-surface);
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
-}
-
-.prompt-command-bar {
+.prompt-toolbar {
   display: grid;
-  grid-template-columns: minmax(260px, 0.9fr) minmax(700px, 1.8fr);
-  gap: 14px;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(680px, 1.6fr);
+  gap: 16px;
+  align-items: center;
   padding: 14px 16px;
 }
 
-.command-intro h1,
-.section-heading h2,
-.lane-head h3,
-.ai-insight h3,
-.dependency-panel h3,
-.editor-summary h3,
+.toolbar-title h1,
+.panel-heading h2,
+.prompt-detail-card h3,
+.issue-box h3,
 .drawer-section h3 {
   margin: 0;
   color: var(--app-text);
 }
 
-.command-intro h1 {
+.toolbar-title h1 {
   font-size: 22px;
   font-weight: 700;
   line-height: 1.25;
 }
 
-.command-intro p,
-.section-heading p,
-.issue-card p,
-.dependency-panel p,
-.editor-summary p,
-.ab-result p,
-.drawer-section p {
-  margin: 6px 0 0;
+.toolbar-title p,
+.panel-heading p,
+.prompt-detail-card p,
+.issue-box p,
+.drawer-section p,
+.diff-list p {
+  margin: 5px 0 0;
   color: var(--app-text-secondary);
   font-size: 13px;
   line-height: 1.55;
 }
 
-.command-controls {
+.toolbar-controls {
   display: grid;
-  grid-template-columns: auto minmax(280px, 1fr) 136px 120px auto;
+  grid-template-columns: auto minmax(260px, 1fr) 124px 112px auto;
   gap: 10px;
   align-items: center;
 }
 
-.command-search {
-  min-width: 260px;
+.toolbar-search {
+  min-width: 240px;
 }
 
-.active-filter-row {
-  grid-column: 1 / -1;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+.prompt-workspace {
+  display: grid;
+  grid-template-columns: minmax(620px, 1fr) 430px;
+  gap: 14px;
+  flex: 0 0 auto;
+  min-height: 520px;
 }
 
-.prompt-console {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  gap: 16px;
-  min-height: 0;
-  overflow: auto;
-  padding-right: 2px;
-}
-
-.prompt-section {
-  padding: 16px;
+.prompt-panel,
+.detail-panel,
+.feedback-panel {
   min-width: 0;
+  padding: 16px;
 }
 
-.section-heading {
+.prompt-panel,
+.detail-panel {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panel-heading {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: 14px;
   margin-bottom: 14px;
 }
 
-.section-heading h2 {
+.panel-heading.compact {
+  align-items: center;
+}
+
+.panel-heading h2 {
   font-size: 17px;
   font-weight: 700;
 }
 
-.health-strip {
+.status-tabs {
+  max-width: 100%;
+  margin-top: -10px;
+}
+
+.summary-strip {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 14px;
 }
 
-.metric-card,
-.issue-card,
-.prompt-asset-card,
-.variable-grid button,
-.exception-clusters button {
+.summary-strip button,
+.release-flow button,
+.sample-card,
+.prompt-name-cell {
   cursor: pointer;
   font: inherit;
   text-align: left;
 }
 
-.metric-card {
+.summary-strip button {
   display: grid;
-  gap: 6px;
-  min-height: 78px;
+  gap: 5px;
+  min-height: 74px;
   padding: 12px;
+  color: var(--app-text);
   background: var(--app-surface-muted);
   border: 1px solid var(--app-border);
   border-radius: 8px;
-  color: var(--app-text);
 }
 
-.metric-card span,
-.candidate-card span,
-.feedback-trends span,
-.variable-grid span,
-.dependency-chain b,
-.asset-card-metrics span,
+.summary-strip span,
+.prompt-detail-card dt,
+.issue-box span,
+.release-flow span,
+.evaluation-list span,
+.feedback-card span,
+.sample-card span,
 .passport-grid span {
   color: var(--app-text-secondary);
   font-size: 12px;
 }
 
-.metric-card strong {
-  font-size: 24px;
+.summary-strip strong {
+  font-size: 22px;
   line-height: 1;
 }
 
-.metric-card em,
-.exception-clusters em {
-  font-style: normal;
+.summary-strip em,
+.sample-card em {
   font-size: 12px;
+  font-style: normal;
 }
 
 .tone-green {
@@ -1065,143 +912,26 @@ function candidateStatusColor(status: string) {
   color: var(--app-primary);
 }
 
-.tone-cyan {
-  color: var(--app-accent);
-}
-
-.radar-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) 1.2fr;
-  gap: 12px;
-}
-
-.issue-lane,
-.ai-insight,
-.dependency-panel,
-.candidate-card,
-.editor-summary,
-.evaluation-matrix article,
-.feedback-trends article,
-.ab-result,
-.passport-grid article,
-.diff-list article {
-  background: var(--app-surface-muted);
-  border: 1px solid var(--app-border);
-  border-radius: 8px;
-}
-
-.issue-lane {
-  min-height: 196px;
-  padding: 12px;
-}
-
-.lane-head,
-.issue-card__top,
-.issue-card__meta,
-.asset-card-head,
-.dependency-head,
-.trend-head,
-.ab-result,
-.candidate-card,
-.editor-summary,
-.release-actions,
-.closed-loop-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.lane-head {
-  margin-bottom: 10px;
-}
-
-.lane-head h3,
-.ai-insight h3,
-.dependency-panel h3,
-.editor-summary h3,
-.drawer-section h3 {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.issue-card {
-  display: grid;
-  gap: 8px;
-  width: 100%;
-  min-height: 132px;
-  padding: 10px;
-  margin-bottom: 10px;
-  color: var(--app-text);
-  background: rgba(255, 255, 255, 0.58);
-  border: 1px solid transparent;
-  border-radius: 8px;
-}
-
-:global(html.dark) .issue-card {
-  background: rgba(15, 23, 42, 0.46);
-}
-
-.issue-card.active,
-.prompt-name-cell.active,
-.prompt-asset-card.active {
-  border-color: rgba(79, 123, 255, 0.72);
-  box-shadow: inset 3px 0 0 var(--app-primary);
-}
-
-.issue-card strong {
-  font-size: 13px;
-}
-
-.issue-card__top span,
-.issue-card__meta span,
-.issue-card__meta b {
-  color: var(--app-text-secondary);
-  font-size: 12px;
-}
-
-.issue-card__meta b {
-  color: var(--app-danger);
-}
-
-.ai-insight {
-  display: grid;
-  grid-template-columns: 38px minmax(0, 1fr);
-  gap: 12px;
-  padding: 14px;
-  min-height: 196px;
-}
-
-.ai-insight__icon {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  color: #fff;
-  background: linear-gradient(135deg, var(--app-primary), var(--app-accent));
-  border-radius: 8px;
-}
-
-.asset-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: 14px;
-  min-height: 360px;
-}
-
-.lifecycle-tabs {
-  margin-top: -8px;
+.prompt-table {
+  :deep(.ant-table-row) {
+    cursor: pointer;
+  }
 }
 
 .prompt-name-cell {
   display: grid;
   gap: 4px;
   width: 100%;
-  padding: 8px;
+  padding: 7px 8px;
   color: var(--app-text);
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
+}
+
+.prompt-name-cell.active {
+  border-color: rgba(79, 123, 255, 0.6);
+  box-shadow: inset 3px 0 0 var(--app-primary);
 }
 
 .prompt-name-cell strong {
@@ -1218,211 +948,169 @@ function candidateStatusColor(status: string) {
   gap: 4px;
 }
 
-.prompt-card-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.detail-panel {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
+  overflow: auto;
 }
 
-.prompt-asset-card {
-  display: grid;
-  gap: 10px;
-  min-height: 166px;
-  padding: 14px;
-  color: var(--app-text);
+.prompt-detail-card,
+.issue-box,
+.evaluation-list article,
+.feedback-card,
+.sample-card,
+.passport-grid article,
+.diff-list article {
   background: var(--app-surface-muted);
   border: 1px solid var(--app-border);
   border-radius: 8px;
 }
 
-.prompt-asset-card p {
-  min-height: 40px;
-  margin: 0;
-  color: var(--app-text-secondary);
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.asset-card-metrics,
-.asset-card-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.dependency-panel {
-  align-self: stretch;
+.prompt-detail-card {
   padding: 14px;
 }
 
-.dependency-panel > strong {
-  display: block;
-  margin-top: 10px;
-}
-
-.dependency-chain {
-  display: grid;
-  gap: 8px;
-  margin-top: 14px;
-}
-
-.dependency-chain span {
-  display: grid;
-  gap: 3px;
-  padding: 9px 10px;
-  background: rgba(255, 255, 255, 0.54);
-  border-radius: 8px;
-}
-
-:global(html.dark) .dependency-chain span {
-  background: rgba(15, 23, 42, 0.46);
-}
-
-.dependency-alert {
-  margin-top: 14px;
-}
-
-.lower-workbench {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(420px, 0.9fr);
+.detail-card-head {
+  display: flex;
+  justify-content: space-between;
   gap: 16px;
 }
 
-.candidate-card {
-  flex-wrap: wrap;
-  padding: 12px;
+.detail-card-head h3,
+.issue-box h3,
+.drawer-section h3 {
+  font-size: 15px;
+  font-weight: 700;
 }
 
-.candidate-card div {
+.detail-card-head > strong {
+  color: var(--app-primary);
+  font-size: 32px;
+  line-height: 1;
+}
+
+.prompt-detail-card dl {
   display: grid;
-  gap: 4px;
-  min-width: 132px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 14px 0 0;
 }
 
-.candidate-card strong {
+.prompt-detail-card dt,
+.prompt-detail-card dd {
+  margin: 0;
+}
+
+.prompt-detail-card dd {
+  margin-top: 4px;
+  color: var(--app-text);
   font-size: 13px;
 }
 
-.editor-summary {
-  margin-top: 12px;
-  padding: 12px;
+.issue-box {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
 }
 
-.variable-grid {
+.release-flow {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 12px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
 }
 
-.variable-grid button {
+.release-flow button {
   display: grid;
-  gap: 6px;
+  gap: 5px;
+  min-height: 66px;
   padding: 10px;
   color: var(--app-text);
-  background: var(--app-surface-muted);
+  background: var(--app-surface);
   border: 1px solid var(--app-border);
   border-radius: 8px;
 }
 
-.variable-grid strong {
+.release-flow button.done {
+  border-color: rgba(34, 197, 94, 0.45);
+}
+
+.release-flow button.active {
+  border-color: rgba(79, 123, 255, 0.55);
+  background: rgba(79, 123, 255, 0.08);
+}
+
+.release-flow strong {
+  overflow: hidden;
   font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.evaluation-matrix {
+.evaluation-list {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin-top: 12px;
 }
 
-.evaluation-matrix article {
+.evaluation-list article {
   padding: 10px;
 }
 
-.evaluation-matrix article > div {
+.evaluation-list article > div {
   display: flex;
   justify-content: space-between;
+  gap: 10px;
   margin-bottom: 8px;
 }
 
-.evaluation-matrix small,
-.feedback-trends small,
+.evaluation-list small,
+.feedback-card small,
 .passport-grid small {
   color: var(--app-text-secondary);
   font-size: 12px;
 }
 
-.release-actions,
-.closed-loop-actions {
+.panel-actions,
+.feedback-actions {
+  display: flex;
   justify-content: flex-end;
-  margin-top: 14px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
-.feedback-trends {
+.feedback-panel {
+  flex: 0 0 auto;
+}
+
+.feedback-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 10px;
 }
 
-.feedback-trends article {
+.feedback-card,
+.sample-card {
+  display: grid;
+  gap: 5px;
+  min-height: 78px;
   padding: 12px;
 }
 
-.trend-head strong {
-  font-size: 18px;
-}
-
-.sparkline {
-  display: flex;
-  align-items: end;
-  gap: 5px;
-  height: 54px;
-  margin: 10px 0;
-}
-
-.sparkline i {
-  flex: 1;
-  min-width: 6px;
-  background: linear-gradient(180deg, var(--app-accent), var(--app-primary));
-  border-radius: 5px 5px 2px 2px;
-  opacity: 0.86;
-}
-
-.ab-result {
-  margin-top: 12px;
-  padding: 12px;
-}
-
-.ab-result > div {
-  min-width: 0;
-}
-
-.ab-result strong {
-  display: block;
-  margin-top: 4px;
-}
-
-.exception-clusters {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.exception-clusters button {
-  display: grid;
-  gap: 5px;
-  padding: 10px;
+.sample-card {
   color: var(--app-text);
-  background: var(--app-surface-muted);
-  border: 1px solid var(--app-border);
-  border-radius: 8px;
+  background: var(--app-surface);
 }
 
-.exception-clusters strong {
+.feedback-card strong,
+.sample-card strong {
   font-size: 20px;
+  line-height: 1.1;
+}
+
+.feedback-actions {
+  margin-top: 12px;
 }
 
 .drawer-section + .drawer-section {
@@ -1436,7 +1124,8 @@ function candidateStatusColor(status: string) {
   margin-top: 12px;
 }
 
-.passport-grid article {
+.passport-grid article,
+.diff-list article {
   display: grid;
   gap: 6px;
   padding: 12px;
@@ -1452,60 +1141,36 @@ function candidateStatusColor(status: string) {
   margin-top: 12px;
 }
 
-.diff-list article {
-  display: grid;
-  gap: 8px;
-  padding: 12px;
-}
-
-.diff-list p {
-  margin: 0;
-  color: var(--app-text-secondary);
-}
-
 @media (max-width: 1500px) {
-  .prompt-command-bar,
-  .radar-grid,
-  .lower-workbench {
+  .prompt-toolbar,
+  .prompt-workspace {
     grid-template-columns: 1fr;
   }
 
-  .command-controls {
+  .toolbar-controls {
     display: flex;
     flex-wrap: wrap;
   }
 
-  .command-controls > * {
-    flex: 0 0 auto;
+  .toolbar-search {
+    flex: 1 1 320px;
   }
 
-  .command-controls .command-search {
-    flex: 1 1 360px;
-  }
-
-  .health-strip {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .asset-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .dependency-panel {
-    min-height: 0;
+  .feedback-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 1200px) {
-  .variable-grid,
-  .exception-clusters,
+  .summary-strip,
+  .release-flow,
+  .feedback-grid,
   .passport-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .evaluation-matrix,
-  .feedback-trends,
-  .prompt-card-grid {
+  .evaluation-list,
+  .prompt-detail-card dl {
     grid-template-columns: 1fr;
   }
 }

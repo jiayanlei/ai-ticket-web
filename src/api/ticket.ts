@@ -1,4 +1,6 @@
 import type { ApiId } from '@/api/types';
+import { cleanPayload } from '@/api/types';
+import { envConfig } from '@/config';
 import {
   addMockTicketComment,
   analyzeMockTicketByAi,
@@ -11,6 +13,7 @@ import {
   updateLifecycleTicketStatus,
 } from '@/mock/ticket';
 import { resolveMockResponse } from '@/mock/core';
+import { http } from '@/utils/http';
 
 export type LifecycleTicketStatus =
   | 'DRAFT'
@@ -20,9 +23,10 @@ export type LifecycleTicketStatus =
   | 'PENDING'
   | 'WAIT_CONFIRM'
   | 'COMPLETED'
-  | 'CLOSED';
+  | 'CLOSED'
+  | 'REJECTED';
 
-export type LifecycleTicketPriority = 'NORMAL' | 'IMPORTANT' | 'URGENT';
+export type LifecycleTicketPriority = 'LOW' | 'NORMAL' | 'IMPORTANT' | 'HIGH' | 'URGENT';
 export type LifecycleTicketSource =
   | 'SMS'
   | 'EMAIL'
@@ -127,107 +131,431 @@ export interface TicketOperationLog {
   time: string;
 }
 
+interface TicketOrderVO {
+  id: ApiId;
+  ticketNo: string;
+  title: string;
+  description: string;
+  status: LifecycleTicketStatus;
+  priority: LifecycleTicketPriority;
+  source?: string | null;
+  category?: string | null;
+  applicantId?: ApiId | null;
+  applicantName?: string | null;
+  handlerId?: ApiId | null;
+  handlerName?: string | null;
+  assigneeId?: ApiId | null;
+  assigneeName?: string | null;
+  expectedFinishTime?: string | null;
+  dueTime?: string | null;
+  acceptTime?: string | null;
+  acceptedTime?: string | null;
+  startProcessTime?: string | null;
+  finishTime?: string | null;
+  closeTime?: string | null;
+  completedTime?: string | null;
+  aiCategory?: string | null;
+  aiRiskLevel?: string | null;
+  aiRecommendDept?: string | null;
+  aiRecommendHandler?: string | null;
+  aiEstimatedTime?: string | null;
+  aiSummary?: string | null;
+  aiSuggestion?: string | null;
+  createTime: string;
+  updateTime: string;
+}
+
+interface TicketOrderDetailResponse {
+  ticket: TicketOrderVO;
+  flowRecords?: TicketFlowRecordVO[];
+  comments?: TicketCommentVO[];
+  attachments?: TicketAttachmentVO[];
+  aiAnalysis?: TicketAiAnalysisVO | null;
+}
+
+interface TicketFlowRecordVO {
+  id: ApiId;
+  operatorName?: string | null;
+  action?: string | null;
+  actionName?: string | null;
+  beforeStatus?: LifecycleTicketStatus | null;
+  afterStatus?: LifecycleTicketStatus | null;
+  remark?: string | null;
+  createTime?: string | null;
+}
+
+interface TicketCommentVO {
+  id: ApiId;
+  userName?: string | null;
+  content: string;
+  createTime?: string | null;
+}
+
+interface TicketAttachmentVO {
+  id: ApiId;
+  fileName?: string | null;
+  fileSize?: number | string | null;
+  uploadUserName?: string | null;
+  createTime?: string | null;
+}
+
+interface TicketAiAnalysisVO {
+  aiCategory?: string | null;
+  aiRiskLevel?: string | null;
+  aiRecommendDept?: string | null;
+  aiRecommendHandler?: string | null;
+  aiEstimatedTime?: string | null;
+  aiSummary?: string | null;
+  aiSuggestion?: string | null;
+}
+
+interface TicketActionResult {
+  id: ApiId;
+  status: LifecycleTicketStatus;
+  assigneeId?: ApiId | null;
+  assigneeName?: string | null;
+  acceptedTime?: string | null;
+  startProcessTime?: string | null;
+  finishTime?: string | null;
+  completedTime?: string | null;
+  updateTime?: string | null;
+}
+
 export function createTicket(data: LifecycleTicketPayload): Promise<LifecycleTicketDetail> {
-  return resolveMockResponse(createLifecycleTicket(data, 'DRAFT'));
+  if (envConfig.useMock) {
+    return resolveMockResponse(createLifecycleTicket(data, 'DRAFT'));
+  }
+
+  return createDraftAndLoad(data);
 }
 
 export function saveTicketDraft(data: LifecycleTicketPayload): Promise<LifecycleTicketDetail> {
-  return resolveMockResponse(createLifecycleTicket(data, 'DRAFT'));
+  if (envConfig.useMock) {
+    return resolveMockResponse(createLifecycleTicket(data, 'DRAFT'));
+  }
+
+  return createDraftAndLoad(data);
 }
 
-export function submitTicket(data: LifecycleTicketPayload): Promise<LifecycleTicketDetail> {
-  return resolveMockResponse(createLifecycleTicket(data, 'PENDING_ACCEPT'));
+export async function submitTicket(data: LifecycleTicketPayload): Promise<LifecycleTicketDetail> {
+  if (envConfig.useMock) {
+    return resolveMockResponse(createLifecycleTicket(data, 'PENDING_ACCEPT'));
+  }
+
+  const detail = await createDraftAndLoad(data);
+  await http.post<TicketActionResult, TicketActionResult>(`/tickets/${detail.id}/submit`, {});
+  return getTicketDetail(detail.id);
 }
 
 export async function acceptTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus; acceptedTime: string }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'ACCEPTED', { acceptedTime: new Date().toISOString().slice(0, 19).replace('T', ' ') }));
-  return { id: detail.id, status: detail.status, acceptedTime: detail.acceptedTime || detail.updateTime };
+  if (envConfig.useMock) {
+    const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'ACCEPTED', { acceptedTime: nowText() }));
+    return { id: detail.id, status: detail.status, acceptedTime: detail.acceptedTime || detail.updateTime };
+  }
+
+  const result = await http.post<TicketActionResult, TicketActionResult>(`/tickets/${id}/accept`, {});
+  return { id: result.id, status: result.status, acceptedTime: result.acceptedTime || result.updateTime || nowText() };
 }
 
 export async function startProcessTicket(
   id: ApiId,
 ): Promise<{ id: ApiId; status: LifecycleTicketStatus; startProcessTime: string }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PROCESSING', { startProcessTime: new Date().toISOString().slice(0, 19).replace('T', ' ') }));
-  return { id: detail.id, status: detail.status, startProcessTime: detail.startProcessTime || detail.updateTime };
+  if (envConfig.useMock) {
+    const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PROCESSING', { startProcessTime: nowText() }));
+    return { id: detail.id, status: detail.status, startProcessTime: detail.startProcessTime || detail.updateTime };
+  }
+
+  const result = await http.post<TicketActionResult, TicketActionResult>(`/tickets/${id}/start-process`, {});
+  return { id: result.id, status: result.status, startProcessTime: result.startProcessTime || result.updateTime || nowText() };
 }
 
 export async function finishProcessTicket(
   id: ApiId,
 ): Promise<{ id: ApiId; status: LifecycleTicketStatus; finishTime: string }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'WAIT_CONFIRM', { finishTime: new Date().toISOString().slice(0, 19).replace('T', ' ') }));
-  return { id: detail.id, status: detail.status, finishTime: detail.finishTime || detail.updateTime };
+  if (envConfig.useMock) {
+    const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'WAIT_CONFIRM', { finishTime: nowText() }));
+    return { id: detail.id, status: detail.status, finishTime: detail.finishTime || detail.updateTime };
+  }
+
+  const result = await http.post<TicketActionResult, TicketActionResult>(`/tickets/${id}/finish`, {});
+  return { id: result.id, status: result.status, finishTime: result.finishTime || result.updateTime || nowText() };
 }
 
 export async function confirmTicket(
   id: ApiId,
 ): Promise<{ id: ApiId; status: LifecycleTicketStatus; completedTime: string; processingDuration: string }> {
-  const detail = await resolveMockResponse(
-    updateLifecycleTicketStatus(id, 'COMPLETED', {
-      completedTime: new Date().toISOString().slice(0, 19).replace('T', ' '),
-      processingDuration: '3小时20分钟',
-    }),
-  );
+  if (envConfig.useMock) {
+    const detail = await resolveMockResponse(
+      updateLifecycleTicketStatus(id, 'COMPLETED', {
+        completedTime: nowText(),
+        processingDuration: '3小时20分钟',
+      }),
+    );
 
+    return {
+      id: detail.id,
+      status: detail.status,
+      completedTime: detail.completedTime || detail.updateTime,
+      processingDuration: detail.processingDuration || '3小时20分钟',
+    };
+  }
+
+  const result = await http.post<TicketActionResult, TicketActionResult>(`/tickets/${id}/confirm`, {});
   return {
-    id: detail.id,
-    status: detail.status,
-    completedTime: detail.completedTime || detail.updateTime,
-    processingDuration: detail.processingDuration || '3小时20分钟',
+    id: result.id,
+    status: result.status,
+    completedTime: result.completedTime || result.updateTime || nowText(),
+    processingDuration: '',
   };
 }
 
 export async function reopenTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PROCESSING'));
-  return { id: detail.id, status: detail.status };
+  if (envConfig.useMock) {
+    const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PROCESSING'));
+    return { id: detail.id, status: detail.status };
+  }
+
+  const result = await http.post<TicketActionResult, TicketActionResult>(`/tickets/${id}/reopen`, {});
+  return { id: result.id, status: result.status };
 }
 
 export async function suspendTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PENDING'));
-  return { id: detail.id, status: detail.status };
+  if (envConfig.useMock) {
+    const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PENDING'));
+    return { id: detail.id, status: detail.status };
+  }
+
+  const result = await http.post<TicketActionResult, TicketActionResult>(`/tickets/${id}/suspend`, {});
+  return { id: result.id, status: result.status };
 }
 
 export async function resumeTicket(id: ApiId): Promise<{ id: ApiId; status: LifecycleTicketStatus }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PROCESSING'));
-  return { id: detail.id, status: detail.status };
+  if (envConfig.useMock) {
+    const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PROCESSING'));
+    return { id: detail.id, status: detail.status };
+  }
+
+  const result = await http.post<TicketActionResult, TicketActionResult>(`/tickets/${id}/resume`, {});
+  return { id: result.id, status: result.status };
 }
 
 export async function transferTicket(
   id: ApiId,
   assignee: { assigneeId?: ApiId; assigneeName?: string },
 ): Promise<{ id: ApiId; status: LifecycleTicketStatus; assigneeId?: ApiId; assigneeName?: string }> {
-  const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PENDING_ACCEPT', assignee));
+  if (envConfig.useMock) {
+    const detail = await resolveMockResponse(updateLifecycleTicketStatus(id, 'PENDING_ACCEPT', assignee));
+    return {
+      id: detail.id,
+      status: detail.status,
+      assigneeId: detail.assigneeId,
+      assigneeName: detail.assigneeName,
+    };
+  }
+
+  const result = await http.post<TicketActionResult, TicketActionResult>(`/tickets/${id}/transfer`, {
+    handlerId: assignee.assigneeId,
+    handlerName: assignee.assigneeName,
+  });
   return {
-    id: detail.id,
-    status: detail.status,
-    assigneeId: detail.assigneeId,
-    assigneeName: detail.assigneeName,
+    id: result.id,
+    status: result.status,
+    assigneeId: result.assigneeId ?? assignee.assigneeId,
+    assigneeName: result.assigneeName ?? assignee.assigneeName,
   };
 }
 
-export function getTicketDetail(id: ApiId): Promise<LifecycleTicketDetail> {
-  return resolveMockResponse(getMockLifecycleDetail(id));
+export async function getTicketDetail(id: ApiId): Promise<LifecycleTicketDetail> {
+  if (envConfig.useMock) {
+    return resolveMockResponse(getMockLifecycleDetail(id));
+  }
+
+  const data = await http.get<TicketOrderDetailResponse, TicketOrderDetailResponse>(`/tickets/${id}`);
+  return normalizeLifecycleDetail(data);
 }
 
-export function getTicketFlowRecords(id: ApiId): Promise<TicketFlowRecord[]> {
-  return resolveMockResponse(getMockTicketFlowRecords(id));
+export async function getTicketFlowRecords(id: ApiId): Promise<TicketFlowRecord[]> {
+  if (envConfig.useMock) {
+    return resolveMockResponse(getMockTicketFlowRecords(id));
+  }
+
+  const records = await http.get<TicketFlowRecordVO[], TicketFlowRecordVO[]>(`/tickets/${id}/flow-records`);
+  return records.map(normalizeFlowRecord);
 }
 
-export function getTicketComments(id: ApiId): Promise<TicketComment[]> {
-  return resolveMockResponse(getMockTicketComments(id));
+export async function getTicketComments(id: ApiId): Promise<TicketComment[]> {
+  if (envConfig.useMock) {
+    return resolveMockResponse(getMockTicketComments(id));
+  }
+
+  const comments = await http.get<TicketCommentVO[], TicketCommentVO[]>(`/tickets/${id}/comments`);
+  return comments.map(normalizeComment);
 }
 
-export function addTicketComment(id: ApiId, content: string): Promise<TicketComment> {
-  return resolveMockResponse(addMockTicketComment(id, content));
+export async function addTicketComment(id: ApiId, content: string): Promise<TicketComment> {
+  if (envConfig.useMock) {
+    return resolveMockResponse(addMockTicketComment(id, content));
+  }
+
+  const commentId = await http.post<ApiId, ApiId>(`/tickets/${id}/comments`, { content });
+  return {
+    id: commentId,
+    userName: '',
+    content,
+    time: nowText(),
+  };
 }
 
-export function getTicketAttachments(id: ApiId): Promise<TicketAttachment[]> {
-  return resolveMockResponse(getMockTicketAttachments(id));
+export async function getTicketAttachments(id: ApiId): Promise<TicketAttachment[]> {
+  if (envConfig.useMock) {
+    return resolveMockResponse(getMockTicketAttachments(id));
+  }
+
+  const attachments = await http.get<TicketAttachmentVO[], TicketAttachmentVO[]>(`/tickets/${id}/attachments`);
+  return attachments.map(normalizeAttachment);
 }
 
-export function getTicketOperationLogs(id: ApiId): Promise<TicketOperationLog[]> {
-  return resolveMockResponse(getMockTicketOperationLogs(id));
+export async function getTicketOperationLogs(id: ApiId): Promise<TicketOperationLog[]> {
+  if (envConfig.useMock) {
+    return resolveMockResponse(getMockTicketOperationLogs(id));
+  }
+
+  const records = await getTicketFlowRecords(id);
+  return records.map((record) => ({
+    id: record.id,
+    operator: record.operator,
+    action: record.title,
+    beforeStatus: '-',
+    afterStatus: record.status,
+    time: record.time,
+  }));
 }
 
-export function analyzeTicketByAi(data: LifecycleTicketPayload): Promise<TicketAiAnalysis> {
-  return resolveMockResponse(analyzeMockTicketByAi(data), 380);
+export async function analyzeTicketByAi(data: LifecycleTicketPayload): Promise<TicketAiAnalysis> {
+  if (envConfig.useMock) {
+    return resolveMockResponse(analyzeMockTicketByAi(data), 380);
+  }
+
+  const id = (data as LifecycleTicketPayload & { id?: ApiId }).id;
+  if (!id) {
+    return resolveMockResponse(analyzeMockTicketByAi(data), 120);
+  }
+
+  const result = await http.post<TicketAiAnalysisVO, TicketAiAnalysisVO>(`/tickets/${id}/ai/analyze`);
+  return normalizeAiAnalysis(result);
+}
+
+async function createDraftAndLoad(data: LifecycleTicketPayload) {
+  const id = await http.post<ApiId, ApiId>('/tickets/draft', cleanPayload(toTicketPayload(data)));
+  return getTicketDetail(id);
+}
+
+function toTicketPayload(data: LifecycleTicketPayload) {
+  return {
+    title: data.title,
+    description: data.description || data.customerRequirement || data.title,
+    priority: normalizePriority(data.priority),
+    source: data.source,
+    category: data.category,
+    applicantId: data.applicantId,
+    applicantName: data.applicantName || data.customerName,
+    handlerId: data.assigneeId,
+    handlerName: data.assigneeName,
+    expectedFinishTime: data.dueTime,
+  };
+}
+
+function normalizeLifecycleDetail(data: TicketOrderDetailResponse): LifecycleTicketDetail {
+  const ticket = data.ticket;
+  return {
+    id: ticket.id,
+    ticketNo: ticket.ticketNo,
+    title: ticket.title,
+    description: ticket.description,
+    priority: ticket.priority,
+    source: (ticket.source || 'WEB') as LifecycleTicketSource,
+    category: ticket.category || '',
+    applicantId: ticket.applicantId ?? undefined,
+    applicantName: ticket.applicantName ?? undefined,
+    assigneeId: ticket.assigneeId ?? ticket.handlerId ?? undefined,
+    assigneeName: ticket.assigneeName ?? ticket.handlerName ?? undefined,
+    dueTime: ticket.dueTime ?? ticket.expectedFinishTime ?? undefined,
+    status: ticket.status,
+    createTime: ticket.createTime,
+    updateTime: ticket.updateTime,
+    acceptedTime: ticket.acceptedTime ?? ticket.acceptTime ?? undefined,
+    startProcessTime: ticket.startProcessTime ?? undefined,
+    finishTime: ticket.finishTime ?? undefined,
+    completedTime: ticket.completedTime ?? ticket.closeTime ?? undefined,
+    aiAnalysis: data.aiAnalysis ? normalizeAiAnalysis(data.aiAnalysis) : normalizeAiAnalysis(ticket),
+  };
+}
+
+function normalizeFlowRecord(record: TicketFlowRecordVO): TicketFlowRecord {
+  return {
+    id: record.id,
+    title: record.actionName || record.action || '-',
+    operator: record.operatorName || '-',
+    description: record.remark || '',
+    status: record.afterStatus || 'DRAFT',
+    time: record.createTime || '',
+  };
+}
+
+function normalizeComment(comment: TicketCommentVO): TicketComment {
+  return {
+    id: comment.id,
+    userName: comment.userName || '',
+    content: comment.content,
+    time: comment.createTime || '',
+  };
+}
+
+function normalizeAttachment(attachment: TicketAttachmentVO): TicketAttachment {
+  return {
+    id: attachment.id,
+    name: attachment.fileName || '',
+    size: formatFileSize(attachment.fileSize),
+    uploader: attachment.uploadUserName || '',
+    uploadTime: attachment.createTime || '',
+  };
+}
+
+function normalizeAiAnalysis(data: TicketAiAnalysisVO | TicketOrderVO): TicketAiAnalysis {
+  const suggestion = data.aiSuggestion || '';
+  return {
+    category: data.aiCategory || '',
+    riskLevel: data.aiRiskLevel || '',
+    recommendedDepartment: data.aiRecommendDept || '',
+    recommendedHandler: data.aiRecommendHandler || '',
+    estimatedDuration: data.aiEstimatedTime || '',
+    similarTickets: [],
+    suggestions: suggestion ? [suggestion] : [],
+    summary: data.aiSummary || '',
+  };
+}
+
+function normalizePriority(priority?: LifecycleTicketPriority): 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT' {
+  if (priority === 'IMPORTANT') {
+    return 'HIGH';
+  }
+  return priority || 'NORMAL';
+}
+
+function formatFileSize(size?: number | string | null) {
+  const value = Number(size ?? 0);
+  if (!Number.isFinite(value) || value <= 0) {
+    return '';
+  }
+  if (value < 1024) {
+    return `${value}B`;
+  }
+  if (value < 1024 * 1024) {
+    return `${(value / 1024).toFixed(1)}KB`;
+  }
+  return `${(value / 1024 / 1024).toFixed(1)}MB`;
+}
+
+function nowText() {
+  return new Date().toISOString().slice(0, 19).replace('T', ' ');
 }

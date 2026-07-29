@@ -578,6 +578,7 @@ const statusMetaMap: Record<LifecycleTicketStatus, { label: string; color: strin
   WAIT_CONFIRM: { label: '待确认', color: 'purple' },
   COMPLETED: { label: '已完成', color: 'green' },
   CLOSED: { label: '已关闭', color: 'default' },
+  REJECTED: { label: '已驳回', color: 'red' },
 };
 
 const flowSteps = [
@@ -598,6 +599,7 @@ const stepIndexMap: Record<LifecycleTicketStatus, number> = {
   WAIT_CONFIRM: 4,
   COMPLETED: 5,
   CLOSED: 5,
+  REJECTED: 5,
 };
 
 const attachmentColumns = [
