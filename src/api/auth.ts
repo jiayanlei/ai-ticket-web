@@ -1,8 +1,5 @@
 import type { ApiId, CommonStatus, Nullable } from '@/api/types';
 import type { MenuItem } from '@/api/menu';
-import { envConfig } from '@/config';
-import { mockGetUserInfo, mockLogin, mockLogout } from '@/mock/auth';
-import { resolveMockResponse } from '@/mock/core';
 import { http } from '@/utils/http';
 
 export interface LoginParams {
@@ -51,29 +48,15 @@ interface LoginVO {
 }
 
 export async function loginApi(params: LoginParams): Promise<LoginResult> {
-  if (envConfig.useMock) {
-    const response = mockLogin(params);
-    return response instanceof Promise ? response : resolveMockResponse(response);
-  }
-
   const data = await http.post<LoginVO, LoginVO>('/auth/login', params);
   return normalizeLoginVO(data);
 }
 
 export async function logoutApi(): Promise<void> {
-  if (envConfig.useMock) {
-    await resolveMockResponse(mockLogout(), 120);
-    return;
-  }
-
   await http.post<void, void>('/auth/logout');
 }
 
 export async function getUserInfoApi(): Promise<UserInfo> {
-  if (envConfig.useMock) {
-    return resolveMockResponse(mockGetUserInfo());
-  }
-
   const data = await http.get<LoginVO, LoginVO>('/auth/me');
   return normalizeLoginVO(data);
 }

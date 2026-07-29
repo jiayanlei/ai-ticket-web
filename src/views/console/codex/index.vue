@@ -57,9 +57,6 @@ import QuickTaskList from './components/QuickTaskList.vue';
 import {
   createDefaultMessages,
   createDefaultPlan,
-  createMockAiReply,
-  mockLogs,
-  mockProjectStatus,
   quickTasks,
   taskTypeTextMap,
 } from './mock';
@@ -72,10 +69,10 @@ defineOptions({
 const activeSessionId = ref('session-default');
 const activeTaskType = ref<AiAgentTaskType>('CHANGE_PLAN');
 const messages = ref<ChatMessage[]>(deepClone(createDefaultMessages()));
-const logs = ref<ExecutionLogItem[]>(deepClone(mockLogs));
+const logs = ref<ExecutionLogItem[]>([]);
 const plan = ref<ActionPlan>(deepClone(createDefaultPlan()));
-const projectStatus = ref<ProjectStatus>(deepClone(mockProjectStatus));
-const statusSource = ref<'api' | 'mock'>('mock');
+const projectStatus = ref<ProjectStatus>(createEmptyProjectStatus());
+const statusSource = ref<'api' | 'error'>('error');
 const statusLoading = ref(false);
 const chatLoading = ref(false);
 const confirming = ref(false);
@@ -181,10 +178,11 @@ async function confirmTask() {
     messages.value.push(createMessage('success', result.message || '后端确认接口已记录确认。第一阶段不会直接执行危险操作。'));
     appendLog('success', '确认执行已提交到 AI Agent');
     message.success('已记录确认');
-  } catch {
-    messages.value.push(createMessage('warning', '确认接口暂不可用，已使用本地 mock 记录确认；不会执行发布、删除或数据库变更。'));
-    appendLog('warning', '后端确认接口不可用，已记录 mock 确认');
-    message.warning('已使用 mock 记录确认，不会执行危险操作');
+  } catch (error) {
+    const errorMessage = getApiErrorMessage(error, '确认接口暂不可用，请稍后重试。');
+    messages.value.push(createMessage('error', errorMessage));
+    appendLog('error', errorMessage);
+    message.error(errorMessage);
   } finally {
     confirming.value = false;
     persistCurrentSession();
@@ -214,13 +212,12 @@ async function requestAssistantReply(content: string, taskType: AiAgentTaskType)
       taskType,
     });
 
-    applyChatResult(result, taskType, content);
-  } catch {
-    chatError.value = 'AI Agent 接口暂不可用，已使用本地 mock 回复。';
-    messages.value.push(createMessage('warning', '后端 /api/ai-agent/chat 暂不可用，当前展示本地 mock 方案。'));
-    messages.value.push(createMessage('assistant', createMockAiReply(taskType, content)));
-    plan.value = createDefaultPlan(taskType);
-    appendLog('warning', 'AI Agent chat 接口不可用，使用 mock 回复');
+    applyChatResult(result, taskType);
+  } catch (error) {
+    const errorMessage = getApiErrorMessage(error, 'AI Agent 接口暂不可用，请稍后重试。');
+    chatError.value = errorMessage;
+    messages.value.push(createMessage('error', errorMessage));
+    appendLog('error', errorMessage);
   } finally {
     chatLoading.value = false;
     persistCurrentSession();
@@ -228,13 +225,13 @@ async function requestAssistantReply(content: string, taskType: AiAgentTaskType)
   }
 }
 
-function applyChatResult(result: AiAgentChatResult, taskType: AiAgentTaskType, fallbackMessage: string) {
+function applyChatResult(result: AiAgentChatResult, taskType: AiAgentTaskType) {
   const role = normalizeMessageRole(result.message?.role);
   const content =
     result.message?.content ||
     result.reply ||
     result.content ||
-    `后端已收到请求，但未返回回复内容。\n\n${createMockAiReply(taskType, fallbackMessage)}`;
+    '后端已收到请求，但未返回回复内容。';
 
   messages.value.push(createMessage(role, content));
   plan.value = result.plan ? normalizePlan(result.plan, taskType) : createDefaultPlan(taskType);
@@ -252,9 +249,10 @@ async function loadProjectStatus() {
   try {
     projectStatus.value = await getAiAgentProjectStatus();
     statusSource.value = 'api';
-  } catch {
-    projectStatus.value = deepClone(mockProjectStatus);
-    statusSource.value = 'mock';
+  } catch (error) {
+    projectStatus.value = createEmptyProjectStatus();
+    statusSource.value = 'error';
+    appendLog('error', getApiErrorMessage(error, '项目状态接口暂不可用。'));
   } finally {
     statusLoading.value = false;
   }
@@ -268,8 +266,8 @@ async function loadRecentLogs() {
       logs.value = normalizeLogs(recentLogs);
       persistCurrentSession();
     }
-  } catch {
-    logs.value = deepClone(mockLogs);
+  } catch (error) {
+    appendLog('error', getApiErrorMessage(error, '执行日志接口暂不可用。'));
     persistCurrentSession();
   }
 }
@@ -378,6 +376,21 @@ function createLogTime() {
     second: '2-digit',
     hour12: false,
   }).format(new Date());
+}
+
+function createEmptyProjectStatus(): ProjectStatus {
+  return {
+    frontendProject: '-',
+    backendProject: '-',
+    branch: '-',
+    environment: '-',
+    hasUncommittedChanges: false,
+    latestCommit: '-',
+  };
+}
+
+function getApiErrorMessage(error: unknown, fallback: string) {
+  return error instanceof Error && error.message ? error.message : fallback;
 }
 
 function deepClone<T>(value: T): T {
